@@ -73,7 +73,7 @@ namespace Proyecto1_Compi2.Analizadores
             //tipos
             IdentifierTerminal ID = new IdentifierTerminal("ID");
 
-            RegexBasedTerminal REntero = new RegexBasedTerminal("RINTEGER", "INTEGER");
+            RegexBasedTerminal RINTEGER = new RegexBasedTerminal("RINTEGER", "INTEGER");
             NumberLiteral Entero = new NumberLiteral("entero");
 
             RegexBasedTerminal RDOUBLE = new RegexBasedTerminal("RDOUBLE", "DOUBLE");
@@ -185,17 +185,26 @@ namespace Proyecto1_Compi2.Analizadores
                 retorno = new NonTerminal("retorno"),
                 expresion = new NonTerminal("expresion"),
                 aritemtica = new NonTerminal("aritemtica"),
+                logica = new NonTerminal("logica"),
+                relacional = new NonTerminal("relacional"),
                 campos = new NonTerminal("campos"),
                 valores = new NonTerminal("valores"),
                 tipoins = new NonTerminal("tipoins"),
                 condicion = new NonTerminal("condicion"),
                 logica_consultas = new NonTerminal("logica_consultas"),
+                logica_consulta = new NonTerminal("logica_consulta"),
                 orden = new NonTerminal("orden"),
                 rutaB = new NonTerminal("rutaB"),
                 alterartabla = new NonTerminal("alterartabla"),
                 alterarobjeto = new NonTerminal("alterarobjeto"),
                 variables = new NonTerminal("variables"),
-                variable = new NonTerminal("variable");
+                variable = new NonTerminal("variable"),
+                sino = new NonTerminal("sino"),
+                casos = new NonTerminal("casos"),
+                caso = new NonTerminal("caso"),
+                defecto = new NonTerminal("defecto"),
+                opciones_for = new NonTerminal("opciones_for"),
+                llamada = new NonTerminal("llamada");
 
 
 
@@ -275,9 +284,9 @@ namespace Proyecto1_Compi2.Analizadores
                                 | Tswitch
                                 | Tfor
                                 | Twhile
-                                | fecha
-                                | fecha_hora
-                                | sentencia;
+                                | sentencia
+                                | llamada + PUNTOCOMA
+                                | RDETENER + PUNTOCOMA;
 
             c_funcion.Rule= RFUNCION + ID + "(" + parametros + ")" + "{" + instruccionesR + "}"
                         | RFUNCION + ID + "(" + ")" + "{" + instruccionesR + "}";
@@ -368,9 +377,83 @@ namespace Proyecto1_Compi2.Analizadores
                 | variable + I_ASIGNAR + expresion + PUNTOCOMA;
 
 
+            Tif.Rule = RSI + "(" + logica + ")" + "{" + instrucciones + "}" + sino
+                    | RSI + "(" + logica + ")" + "{" + instrucciones + "}";
 
-            
+            sino.Rule = RSINO + "{" + instrucciones + "}"
+                    | RSINO + Tif;
 
+            Tswitch.Rule = RSELECCIONA + "(" + expresion + ")" + "{" + casos +"}";
+
+            casos.Rule = caso + casos
+                    | caso
+                    | defecto;
+
+            caso.Rule = RCASO + expresion + ":" + instrucciones;
+
+
+            defecto.Rule = RDEFECTO + ":" + instrucciones;
+
+            Tfor.Rule = RPARA + "(" + RDECLARAR + ID + RINTEGER + I_ASIGNAR + expresion + PUNTOCOMA + PUNTOCOMA + logica + PUNTOCOMA + opciones_for + ")" + "{" + instrucciones + "}";
+
+            opciones_for.Rule = INCREMENTAR
+                              | DISMINUIR;
+
+            Twhile.Rule = RMIENTRAS + "(" + logica + ")" + "{" + instrucciones + "}";
+
+            contar.Rule = RCONTAR + "(" + seleccionar + ")" + PUNTOCOMA;
+
+            tipo_dato.Rule = RINTEGER
+                          | RTEXT
+                          | RDOUBLE
+                          | RBOOL
+                          | RDATE
+                          | RDATETIME;
+
+            logica.Rule = logica + OR + relacional
+                        | logica + AND + relacional
+                        | NOT + logica
+                        |"(" + logica + ")"
+                        | relacional;
+
+            relacional.Rule = relacional + IGUAL + aritemtica
+                            | relacional + DISTINTO + aritemtica
+                            | relacional + MAYOR_IGUAL + aritemtica
+                            | relacional + MENOR_IGUAL + aritemtica
+                            | relacional + MAYOR + aritemtica
+                            | relacional + MENOR + aritemtica
+                            |"("+ relacional + ")"
+                            | aritemtica;
+
+            aritemtica.Rule = aritemtica + SUMA + expresion
+                           | aritemtica + RESTA + expresion
+                           | aritemtica + MULTI + expresion
+                           | aritemtica + DIV + expresion
+                           | aritemtica + POTENCIA + expresion
+                           | "(" + aritemtica + ")"
+                           | RESTA + expresion
+                           | expresion;
+
+            expresion.Rule = ID
+                           | variable
+                           | Entero
+                           | Cadena
+                           | fecha
+                           | fecha_hora
+                           | llamada
+                           |rutaB;
+
+            llamada.Rule = RFECHA + "(" + ")"
+                          | RFECHA_HORA + "(" + ")"
+                          | rutaB + "(" + ")"
+                          | rutaB + "(" + valores + ")";
+
+            logica_consultas.Rule = logica_consulta + REN + logica_consultas
+                                  | logica_consulta;
+
+            logica_consulta.Rule = "(" + seleccionar + ")"
+                                  | logica;
+                                 
         }
 
     }
