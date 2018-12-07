@@ -359,8 +359,8 @@ namespace Proyecto1_Compi2.Analizadores
             back.Rule = RBACKUP + RUSQLDUMP + ID + ID + PUNTOCOMA
                     | RBACKUP + RCOMPLETO + ID + ID + PUNTOCOMA;
 
-            restaurar.Rule = RBACKUP + RUSQLDUMP + Cadena + PUNTOCOMA
-                    | RBACKUP + RCOMPLETO + Cadena + PUNTOCOMA;
+            restaurar.Rule = RRESTAURAR + RUSQLDUMP + Cadena + PUNTOCOMA
+                    | RRESTAURAR + RCOMPLETO + Cadena + PUNTOCOMA;
 
 
             alterar.Rule = RALTERAR + RTABLA + ID + alterartabla + PUNTOCOMA

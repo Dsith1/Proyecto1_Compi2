@@ -1,0 +1,278 @@
+"Case Sensitive" = False
+"Start Symbol" = <S>
+
+!----Terminales
+Entero ={Number} 
+Doble ={Number} '.'{Number}*
+identificador ={Letter}({Alphanumeric}|'_')*
+Variable='@'{Letter}({Alphanumeric}|'_')*
+Cadena ='"'{Printable}*'"'
+Fecha={Number}{Number}'-'{Number}{Number}'-'{Number}{Number}
+FechaHora={Number}{Number}'-'{Number}{Number}'-'{Number}{Number}' '{Number}{Number}':'{Number}{Number}':'{Number}{Number}
+
+Comment Start = '#*'
+Comment End   = '*#'
+Comment Line  = '#' 
+
+<S> ::= <Inicio>
+
+<Inicio> ::=<sentencias>
+
+<sentencias> ::= <sentencia> <sentencias>
+                |<sentencia>
+                
+<sentencia> ::=<usar>
+             | <crear>
+             | <imprimir>
+             | <insertar>
+             | <actualizar>
+             | <borrar>
+             | <seleccionar>
+             | <otorgar>
+             | <denegar>
+             | <back>
+             | <restaurar>
+             | <alterar>
+             | <eliminar>
+             | <declarar>
+             | <llamada> ';'
+             
+<usar> ::= 'USAR' <ID>  ';'
+
+<crear> ::= 'CREAR' <opciones_c>
+
+<opciones_c>::=<c_base>
+             | <c_tabla>
+             | <c_objeto>
+             | <c_pro>
+             | <c_funcion>
+             | <c_usuario>
+             
+<c_base>::= 'BASE_DATOS' <ID>   ';'
+
+<c_tabla>::= 'TABLA' <ID>   '('   <campos_tabla>   ')'   ';'
+
+<campos_tabla>::= <campo_tabla>   ','   <campos_tabla>
+                  | <campo_tabla>
+
+<campo_tabla>::=  <tipo_dato>   <ID>   <complementos>
+                  | <tipo_dato>   <ID>
+                  | <ID>   <ID>   <complementos>
+                  | <ID>   <ID>
+
+<complementos>::= <complemento>   <complementos>
+                | <complemento>
+
+<complemento>::=  <RNO>
+                | <RNULO>
+                | 'Autoincrementable'
+                | 'Llave_Primaria'
+                | 'Llave_Foranea'   <ID>
+                | 'UNICO'       
+
+<c_objeto>::= 'OBJETO'   <ID>   '('  <parametros>  ')'   ';'
+             | 'OBJETO'   <ID>   '('   ')'   ';'
+
+<parametros>::= <parametros>   ','   <parametro>
+                | <parametro>
+
+<parametro>::= <tipo_dato>   <ID>
+              | <tipo_dato>   Variable
+
+<c_pro>::= 'PROCEDIMIENTO'   <ID>   '('   <parametros>   ')'   '{'   <instrucciones>   '}'
+         | 'PROCEDIMIENTO'   <ID>   '('   ')'   '{'   <instrucciones>   '}'
+
+<instrucciones>::= <instruccion>   <instrucciones>
+                 | <instruccion>
+
+<instruccion>::= <asignacion>
+               | <Tif>
+               | <Tswitch>
+               | <Tfor>
+               | <Twhile>
+               | <sentencia>
+               | 'DETENER'   ';'
+
+<c_funcion>::= 'FUNCION'   <ID>   '('   <parametros>   ')'   <tipo_dato>   '{'   <instruccionesR>   '}'
+             | 'FUNCION'   <ID>   '('   <parametros>   ')'   <ID>   '{'   <instruccionesR>   '}'
+             | 'FUNCION'   <ID>   '('   ')'   <tipo_dato>   '{'   <instruccionesR>   '}'
+             | 'FUNCION'   <ID>   '('   ')'   <ID>   '{'   <instruccionesR>   '}'
+
+
+<instruccionesR>::= <instrucciones>   <retorno>
+
+<retorno>::= 'RETORNO'   <aritemtica>   ';'
+
+<c_usuario>::= 'USUARIO'   <ID>   'COLOCAR'   'password'   '='   Cadena   ';'
+
+<imprimir>::= 'IMPRIMIR'   '('   <expresion>   ')'   ';'
+
+<insertar>::= 'INSERTAR'   'EN'   'TABLA'   <ID>   <tipoins>
+
+<tipoins>::= '('   <campos>   ')'   'VALORES'   '('   <valores>   ')'   ';'
+            | '('   <valores>   ')'   ';'
+
+<campos>::=   <campos> ',' <rutaB>
+            | <rutaB>
+
+<valores>::= <aritemtica>   ','   <valores>
+            | <aritemtica>
+
+<actualizar>::= 'ACTUALIZAR'   'TABLA'   <ID>   '('   <campos>   ')'   'VALORES'   '('   <valores>   ')'   <condicion>   ';'
+              | 'ACTUALIZAR'   'TABLA'   <ID>   '('   <campos>   ')'   'VALORES'   '('   <valores>   ')'   ';'
+
+<condicion>::= 'DONDE'   <logica_consultas>
+
+<borrar>::= 'BORRAR'   'EN'   'TABLA'   <ID>   <condicion>   ';'
+        | 'BORRAR'   'EN'   'TABLA'   <ID>   ';'
+
+<seleccionar>::= 'SELECCIONAR'  <campos>   'DE'   <campos>   <condicion>   <orden>   ';'
+              | 'SELECCIONAR'   '*'   'DE'   <campos>   <condicion>   <orden>   ';'
+              | 'SELECCIONAR'   <campos>   'DE'   <campos>   <condicion>   ';'
+              | 'SELECCIONAR'   '*'   'DE'   <campos>   <condicion>   ';'
+              | 'SELECCIONAR'   <campos>   'DE'   <campos>   <orden>   ';'
+              | 'SELECCIONAR'   '*'   'DE'   <campos>   <orden>   ';'
+              | 'SELECCIONAR'   <campos>   'DE'   <campos>   ';'
+              | 'SELECCIONAR'   '*'   'DE'   <campos>   ';'
+
+<seleccionarf>::= 'SELECCIONAR'   <campos>   'DE'   <campos>   <condicion>   <orden> 
+                | 'SELECCIONAR'   '*'   'DE'   <campos>   <condicion>   <orden> 
+                | 'SELECCIONAR'   <campos>   'DE'   <campos>   <condicion> 
+                | 'SELECCIONAR'   '*'   'DE'   <campos>   <condicion> 
+                | 'SELECCIONAR'   <campos>   'DE'   <campos>   <orden> 
+                | 'SELECCIONAR'   '*'   'DE'   <campos>   <orden> 
+                | 'SELECCIONAR'   <campos>   'DE'   <campos> 
+                | 'SELECCIONAR'   '*'   'DE'   <campos>
+
+<orden>::= 'ORDENAR_POR'   <ID>   'ASC'
+         | 'ORDENAR_POR'   <ID>   'DESC'
+         | 'ORDENAR_POR'   <ID>
+
+<otorgar>::= 'OTORGAR'   'PERMISOS'   <ID>   ','   <rutaB>   ';'
+
+<rutaB>::= <ID> '.' <rutaB>
+        | Variable'.' <rutaB>
+        | Variable
+        | <ID>
+        | '*'
+
+<denegar>::='DENEGAR'   'PERMISOS'   <ID>   ','   <rutaB>   ';'
+
+<back>::= 'BACKUP'   'USQLDUMP'   <ID>   <ID>   ';'
+        | 'BACKUP'   'COMPLETO'   <ID>   <ID>   ';'
+
+<restaurar>::= 'RESTAURAR'   'USQLDUMP'   Cadena   ';'
+             | 'RESTAURAR'   'COMPLETO'   Cadena   ';'
+
+
+<alterar>::= 'ALTERAR'   'TABLA'   <ID>   <alterartabla>   ';'
+           | 'ALTERAR'   'OBJETO'  <ID>   <alterarobjeto>   ';'
+           | 'ALTERAR'   'USUARIO' <ID>   'CAMBIAR'   'password'   '='   Cadena
+
+<alterartabla>::= 'AGREGAR'   '('   <campos_tabla>   ')'
+                | 'QUITAR'   <campos>
+
+<alterarobjeto>::= 'AGREGAR'   '('   <parametros>   ')'
+                 | 'QUITAR'   <campos>
+
+
+<eliminar>::= 'ELIMINAR'   'TABLA'   <ID>   ';'
+            | 'ELIMINAR'   'BASE_DATOS'   <ID>   ';'
+            | 'ELIMINAR'   'OBJETO'   <ID>   ';'
+            | 'ELIMINAR'   'USUARIO'   <ID>   ';'
+
+<declarar>::= 'DECLARAR'   <variables>   <tipo_dato>   '='   <expresion>   ';'
+            | 'DECLARAR'   <variables>   <ID>   ';'
+            | 'DECLARAR'   <variables>   <tipo_dato>    ';'
+
+<variables>::= Variable   ','   <variables>
+          | Variable
+
+<asignacion>::= <rutaB>   '='   <aritemtica>   ';'
+            | Variable   '='   <aritemtica>   ';'
+
+
+<Tif>::= 'SI'   '('   <logica>   ')'   '{'   <instrucciones>   '}'   <sino>
+       | 'SI'   '('   <logica>   ')'   '{'   <instrucciones>   '}'
+
+<sino>::= 'SINO'   '{'   <instrucciones>   '}'
+        | 'SINO'   <Tif>
+
+<Tswitch>::= 'SELECCIONA'   '('   <expresion>   ')'   '{'   <casos>  '}'
+
+<casos>::= <caso>   <casos>
+         | <caso>
+         | <defecto>
+
+<caso>::= 'CASO'   <expresion>   ':'   <instrucciones>
+
+
+<defecto>::= 'DEFECTO'   ':'   <instrucciones>
+
+<Tfor>::= 'PARA'   '('   'DECLARAR'   Variable   'INTEGER'   '='   <expresion>   ';'   <logica>   ';'   <opciones_for>   ')'   '{'   <instrucciones>   '}'
+
+<opciones_for>::= '++'
+                | '--'
+
+<Twhile>::= 'MIENTRAS'   '('   <logica>   ')'   '{'   <instrucciones>   '}'
+
+<contar>::= 'CONTAR'   '('   '<<'   <seleccionarf>     '>>' ')'   ';'
+
+<contarAsig>::= 'CONTAR'   '('   '<<'  <seleccionarf>   '>>'   ')'
+
+<tipo_dato>::= 'INTEGER'
+              | 'TEXT'
+              | 'DOUBLE'
+              | 'BOOL'
+              | 'DATE'
+              | 'DATETIME'
+
+<logica>::= <logica>   '||'   <relacional>
+          | <logica>   '&&'   <relacional>
+          | '!'  <logica>
+          | '('   <logica>   ')'
+          | <relacional>
+
+<relacional>::= <relacional>   '=='  <aritemtica>
+              | <relacional>   '!='  <aritemtica>
+              | <relacional>   '<='  <aritemtica>
+              | <relacional>   '>='  <aritemtica>
+              | <relacional>   '<'   <aritemtica>
+              | <relacional>   '>'   <aritemtica>
+              | '(' <relacional>  ')'
+              | <aritemtica>
+
+<aritemtica>::=  <aritemtica>   '+'   <expresion>
+               | <aritemtica>   '-'   <expresion>
+               | <aritemtica>   '*'   <expresion>
+               | <aritemtica>   '/'   <expresion>
+               | <aritemtica>   '^'   <expresion>
+               | '('   <aritemtica>   ')'
+               | '-'   <expresion>
+               | <expresion>
+
+<expresion>::=  Entero
+               | Cadena
+               | Fecha
+               | FechaHora
+               | Doble
+               | <llamada>
+               | <contarAsig>
+               | <campos>
+
+<llamada>::= 'FECHA'   '('   ')'
+           | 'FECHA_HORA'   '('   ')'
+           | <rutaB>   '('   ')'
+           | <rutaB>   '('   <valores>   ')'
+
+<logica_consultas>::= <logica_consulta>   'EN'   <logica_consultas>
+                    | <logica_consulta>
+
+<logica_consulta>::= '('   <seleccionar>   ')'
+                      | <logica>            
+
+<ID>::= identificador       
+
+<RNO>::='NO'
+        
+<RNULO>::='Nulo'
