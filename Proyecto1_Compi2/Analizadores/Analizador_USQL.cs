@@ -21,20 +21,20 @@ namespace Proyecto1_Compi2.Analizadores
 
             RegexBasedTerminal PUNTOCOMA = new RegexBasedTerminal("PUNTOCOMA", ";");
             RegexBasedTerminal COMA = new RegexBasedTerminal("COMA", ",");
-            RegexBasedTerminal PUNTO = new RegexBasedTerminal("PUNTO", ".");
-            RegexBasedTerminal RUSAR = new RegexBasedTerminal("RUSAR", "USAR");
-            RegexBasedTerminal RCREAR = new RegexBasedTerminal("RCREAR", "CREAR");
+            RegexBasedTerminal PUNTO = new RegexBasedTerminal("PUNTO", "\\.");
+            RegexBasedTerminal RUSAR = new RegexBasedTerminal("RUSAR", "USAR ");
+            RegexBasedTerminal RCREAR = new RegexBasedTerminal("RCREAR", "CREAR ");
             RegexBasedTerminal RBASE = new RegexBasedTerminal("RBASE", "BASE_DATOS");
             RegexBasedTerminal RTABLA = new RegexBasedTerminal("RTABLA", "TABLA");
             RegexBasedTerminal ROBJETO = new RegexBasedTerminal("ROBJETO", "OBJETO");
             RegexBasedTerminal RPROCEDIMIENTO = new RegexBasedTerminal("RPROCEDIMIENTO", "PROCEDIMIENTO");
-            RegexBasedTerminal RFUNCION = new RegexBasedTerminal("RFUNCION", "RFUNCION");
-            RegexBasedTerminal RRETORNO = new RegexBasedTerminal("RRETORNO", "RETORNO");
+            RegexBasedTerminal RFUNCION = new RegexBasedTerminal("RFUNCION", "FUNCION");
+            RegexBasedTerminal RRETORNO = new RegexBasedTerminal("RRETORNO", "RETORNO ");
             RegexBasedTerminal RUSUARIO = new RegexBasedTerminal("RUSUARIO", "USUARIO");
             RegexBasedTerminal RCOLOCAR = new RegexBasedTerminal("RCOLOCAR", "COLOCAR");
             RegexBasedTerminal RPAS = new RegexBasedTerminal("RPAS", "password");
-            RegexBasedTerminal RIMPRIMIR = new RegexBasedTerminal("RIMPRIMIR", "IMPRIMIR");
-            RegexBasedTerminal RINSERTAR = new RegexBasedTerminal("RINSERTAR", "INSERTAR");
+            RegexBasedTerminal RIMPRIMIR = new RegexBasedTerminal("RIMPRIMIR", "IMPRIMIR ");
+            RegexBasedTerminal RINSERTAR = new RegexBasedTerminal("RINSERTAR", "INSERTAR ");
             RegexBasedTerminal REN = new RegexBasedTerminal("REN", "EN");
             RegexBasedTerminal RVALORES = new RegexBasedTerminal("RVALORES", "VALORES");
             RegexBasedTerminal RACTUALIZAR = new RegexBasedTerminal("RACTUALIZAR", "ACTUALIZAR");
@@ -57,13 +57,13 @@ namespace Proyecto1_Compi2.Analizadores
             RegexBasedTerminal RQUITAR = new RegexBasedTerminal("RQUITAR", "QUITAR");
             RegexBasedTerminal RCAMBIAR = new RegexBasedTerminal("RCAMBIAR", "CAMBIAR");
             RegexBasedTerminal RELIMINAR = new RegexBasedTerminal("RELIMINAR", "ELIMINAR");
-            RegexBasedTerminal RDECLARAR = new RegexBasedTerminal("RDECLARAR", "DECLARAR");
-            RegexBasedTerminal RSI = new RegexBasedTerminal("RSI", "SI");
-            RegexBasedTerminal RSINO = new RegexBasedTerminal("RSINO", "SINO");
+            RegexBasedTerminal RDECLARAR = new RegexBasedTerminal("RDECLARAR", "DECLARAR ");
+            RegexBasedTerminal RSI = new RegexBasedTerminal("RSI", "SI ");
+            RegexBasedTerminal RSINO = new RegexBasedTerminal("RSINO", "SINO ");
             RegexBasedTerminal RSELECCIONA = new RegexBasedTerminal("RSELECCIONA", "SELECCIONA");
             RegexBasedTerminal RCASO = new RegexBasedTerminal("RCASO", "CASO");
             RegexBasedTerminal RDEFECTO = new RegexBasedTerminal("RDEFECTO", "DEFECTO");
-            RegexBasedTerminal RPARA = new RegexBasedTerminal("RPARA", "PARA");
+            RegexBasedTerminal RPARA = new RegexBasedTerminal("RPARA", "PARA ");
             RegexBasedTerminal RMIENTRAS = new RegexBasedTerminal("RMIENTRAS", "MIENTRAS");
             RegexBasedTerminal RDETENER = new RegexBasedTerminal("RDETENER", "DETENER");
             RegexBasedTerminal RFECHA = new RegexBasedTerminal("RFECHA", "FECHA");
@@ -72,29 +72,30 @@ namespace Proyecto1_Compi2.Analizadores
 
             //tipos
             IdentifierTerminal ID = new IdentifierTerminal("ID");
+            RegexBasedTerminal Variable = new RegexBasedTerminal("Variable", "@[a-zA-Z]+([a-zA-Z0-9_])*");
 
-            RegexBasedTerminal RINTEGER = new RegexBasedTerminal("RINTEGER", "INTEGER");
+            RegexBasedTerminal RINTEGER = new RegexBasedTerminal("RINTEGER", "INTEGER ");
             NumberLiteral Entero = new NumberLiteral("entero");
 
-            RegexBasedTerminal RDOUBLE = new RegexBasedTerminal("RDOUBLE", "DOUBLE");
+            RegexBasedTerminal RDOUBLE = new RegexBasedTerminal("RDOUBLE", "DOUBLE ");
             RegexBasedTerminal Doble = new RegexBasedTerminal("Doble", "[0-9]+\\.[0-9]{6}");
 
-            RegexBasedTerminal RBOOL = new RegexBasedTerminal("RBOOL", "BOOL");
+            RegexBasedTerminal RBOOL = new RegexBasedTerminal("RBOOL", "BOOL ");
             //RegexBasedTerminal Verdadero = new RegexBasedTerminal("verdadero", "verdadero|true");
             //RegexBasedTerminal Falso = new RegexBasedTerminal("falso", "falso|false");
             
-            RegexBasedTerminal RTEXT = new RegexBasedTerminal("RTEXT", "TEXT");
+            RegexBasedTerminal RTEXT = new RegexBasedTerminal("RTEXT", "TEXT ");
             StringLiteral Cadena = new StringLiteral("Cadena", "\"");
 
-            RegexBasedTerminal RDATE = new RegexBasedTerminal("RDATE", "DATE");
+            RegexBasedTerminal RDATE = new RegexBasedTerminal("RDATE", "DATE ");
             RegexBasedTerminal tfecha = new RegexBasedTerminal("tfecha", "[1-3]*[0-9]-[0-1][0-9]-[1-2][0-9]{3}");
 
-            RegexBasedTerminal RDATETIME = new RegexBasedTerminal("RDATETIME", "DATETIME");
-            RegexBasedTerminal tfechahora = new RegexBasedTerminal("tfecha", "[1-3]*[0-9]-[0-1][0-9]-[1-2][0-9]{3} [1-2]*[0-9]:[0-9]{2}:[0-9]{2}");
+            RegexBasedTerminal RDATETIME = new RegexBasedTerminal("RDATETIME", "DATETIME ");
+            RegexBasedTerminal tfechahora = new RegexBasedTerminal("tfechahora", "[1-3]*[0-9]-[0-1][0-9]-[1-2][0-9]{3} [1-2]*[0-9]:[0-9]{2}:[0-9]{2}");
 
             //Atributos de campos de tablas
-            RegexBasedTerminal RNO = new RegexBasedTerminal("RNO", "NO");
-            RegexBasedTerminal RNULO = new RegexBasedTerminal("RNULO", "NULO");
+            RegexBasedTerminal RNO = new RegexBasedTerminal("RNO", "NO|no|No");
+            RegexBasedTerminal RNULO = new RegexBasedTerminal("RNULO", "NULO|Nulo|nulo");
             RegexBasedTerminal RAUTOINCREMENTABLE = new RegexBasedTerminal("RAUTOINCREMENTABLE", "Autoincrementable");
             RegexBasedTerminal RPK = new RegexBasedTerminal("RPK", "Llave_Primaria");
             RegexBasedTerminal RFK = new RegexBasedTerminal("RFK", "Llave_Foranea");
@@ -116,7 +117,7 @@ namespace Proyecto1_Compi2.Analizadores
             RegexBasedTerminal IGUAL = new RegexBasedTerminal("IGUAL", "==");
             RegexBasedTerminal DISTINTO = new RegexBasedTerminal("DISTINTO", "!=");
             RegexBasedTerminal MENOR = new RegexBasedTerminal("MENOR", "<");
-            RegexBasedTerminal MAYOR = new RegexBasedTerminal("MAYOR", ">");
+            RegexBasedTerminal MAYOR = new RegexBasedTerminal("MAYOR", "> ");
             RegexBasedTerminal MENOR_IGUAL = new RegexBasedTerminal("MENOR_IGUAL", "<=");
             RegexBasedTerminal MAYOR_IGUAL = new RegexBasedTerminal("MAYOR_IGUAL", ">=");
 
@@ -149,6 +150,7 @@ namespace Proyecto1_Compi2.Analizadores
                 actualizar = new NonTerminal("actualizar"),
                 borrar = new NonTerminal("borrar"),
                 seleccionar = new NonTerminal("seleccionar"),
+                seleccionarf = new NonTerminal("seleccionarf"),
                 otorgar = new NonTerminal("otorgar"),
                 denegar = new NonTerminal("denegar"),
                 back = new NonTerminal("back"),
@@ -157,7 +159,7 @@ namespace Proyecto1_Compi2.Analizadores
                 eliminar = new NonTerminal("eliminar"),
                 declarar = new NonTerminal("declarar"),
                 contar = new NonTerminal("contar"),
-                procedimiento = new NonTerminal("procedimiento"),
+                contarAsig = new NonTerminal("contarAsig"),
                 opciones_crear = new NonTerminal("opciones_crear"),
                 c_base = new NonTerminal("c_base"),
                 c_tabla = new NonTerminal("c_tabla"),
@@ -198,7 +200,6 @@ namespace Proyecto1_Compi2.Analizadores
                 alterartabla = new NonTerminal("alterartabla"),
                 alterarobjeto = new NonTerminal("alterarobjeto"),
                 variables = new NonTerminal("variables"),
-                variable = new NonTerminal("variable"),
                 sino = new NonTerminal("sino"),
                 casos = new NonTerminal("casos"),
                 caso = new NonTerminal("caso"),
@@ -230,8 +231,7 @@ namespace Proyecto1_Compi2.Analizadores
                             | alterar
                             | eliminar
                             | declarar
-                            | contar
-                            | procedimiento;
+                            | llamada + PUNTOCOMA;
 
 
             usar.Rule = RUSAR + ID + PUNTOCOMA;
@@ -253,7 +253,9 @@ namespace Proyecto1_Compi2.Analizadores
                               | campo_tabla;
 
             campo_tabla.Rule = tipo_dato + ID + complementos
-                    | tipo_dato + ID;
+                              | tipo_dato + ID
+                              | ID + ID + complementos
+                              | ID + ID;
 
             complementos.Rule = complemento + complementos
                             | complemento;
@@ -262,7 +264,7 @@ namespace Proyecto1_Compi2.Analizadores
                             | RNULO
                             | RAUTOINCREMENTABLE
                             | RPK
-                            | RFK
+                            | RFK + ID
                             | RUNICO;
 
             c_objeto.Rule = ROBJETO + ID + "(" +parametros+ ")" + PUNTOCOMA
@@ -271,7 +273,8 @@ namespace Proyecto1_Compi2.Analizadores
             parametros.Rule = parametros + COMA + parametro
                             | parametro;
 
-            parametro.Rule = tipo_dato + ID;
+            parametro.Rule = tipo_dato + ID
+                             | tipo_dato + Variable;
 
             c_pro.Rule = RPROCEDIMIENTO + ID + "(" + parametros + ")" + "{" + instrucciones + "}"
                         | RPROCEDIMIENTO + ID + "(" + ")" + "{" + instrucciones + "}";
@@ -288,8 +291,10 @@ namespace Proyecto1_Compi2.Analizadores
                                 | llamada + PUNTOCOMA
                                 | RDETENER + PUNTOCOMA;
 
-            c_funcion.Rule= RFUNCION + ID + "(" + parametros + ")" + "{" + instruccionesR + "}"
-                        | RFUNCION + ID + "(" + ")" + "{" + instruccionesR + "}";
+            c_funcion.Rule = RFUNCION + ID + "(" + parametros + ")" + tipo_dato + "{" + instruccionesR + "}"
+                        | RFUNCION + ID + "(" + parametros + ")" + ID + "{" + instruccionesR + "}"
+                        | RFUNCION + ID + "(" + ")" + tipo_dato + "{" + instruccionesR + "}"
+                        | RFUNCION + ID + "(" + ")" + ID + "{" + instruccionesR + "}";
 
 
             instruccionesR.Rule = instrucciones + retorno;
@@ -329,6 +334,15 @@ namespace Proyecto1_Compi2.Analizadores
                              | RSELECCIONAR + campos + RDE + campos + PUNTOCOMA
                              | RSELECCIONAR + MULTI + RDE + campos + PUNTOCOMA;
 
+            seleccionarf.Rule = RSELECCIONAR + campos + RDE + campos + condicion + orden 
+                             | RSELECCIONAR + MULTI + RDE + campos + condicion + orden 
+                             | RSELECCIONAR + campos + RDE + campos + condicion 
+                             | RSELECCIONAR + MULTI + RDE + campos + condicion 
+                             | RSELECCIONAR + campos + RDE + campos + orden 
+                             | RSELECCIONAR + MULTI + RDE + campos + orden 
+                             | RSELECCIONAR + campos + RDE + campos 
+                             | RSELECCIONAR + MULTI + RDE + campos;
+
             orden.Rule = RORDENAR + ID + RASC
                     | RORDENAR + ID + RDESC
                     | RORDENAR + ID;
@@ -336,6 +350,7 @@ namespace Proyecto1_Compi2.Analizadores
             otorgar.Rule = ROTORGAR + RPERMISOS + ID + COMA + rutaB + PUNTOCOMA;
 
             rutaB.Rule = rutaB + PUNTO + ID
+                    | Variable
                     | ID
                     | MULTI;
 
@@ -368,13 +383,11 @@ namespace Proyecto1_Compi2.Analizadores
                         | RDECLARAR + variables + ID + PUNTOCOMA
                         | RDECLARAR + variables + tipo_dato  + PUNTOCOMA;
 
-            variables.Rule = variable + COMA + variables
-                      | variable;
+            variables.Rule = Variable + COMA + variables
+                      | Variable;
 
-            variable.Rule = "@" + ID;
-
-            asignacion.Rule = variable+rutaB + I_ASIGNAR + expresion + PUNTOCOMA
-                | variable + I_ASIGNAR + expresion + PUNTOCOMA;
+            asignacion.Rule = rutaB + I_ASIGNAR + aritemtica + PUNTOCOMA
+                | Variable + I_ASIGNAR + aritemtica + PUNTOCOMA;
 
 
             Tif.Rule = RSI + "(" + logica + ")" + "{" + instrucciones + "}" + sino
@@ -394,14 +407,16 @@ namespace Proyecto1_Compi2.Analizadores
 
             defecto.Rule = RDEFECTO + ":" + instrucciones;
 
-            Tfor.Rule = RPARA + "(" + RDECLARAR + ID + RINTEGER + I_ASIGNAR + expresion + PUNTOCOMA + PUNTOCOMA + logica + PUNTOCOMA + opciones_for + ")" + "{" + instrucciones + "}";
+            Tfor.Rule = RPARA + "(" + RDECLARAR + Variable + RINTEGER + I_ASIGNAR + expresion + PUNTOCOMA + logica + PUNTOCOMA + opciones_for + ")" + "{" + instrucciones + "}";
 
             opciones_for.Rule = INCREMENTAR
                               | DISMINUIR;
 
             Twhile.Rule = RMIENTRAS + "(" + logica + ")" + "{" + instrucciones + "}";
 
-            contar.Rule = RCONTAR + "(" + seleccionar + ")" + PUNTOCOMA;
+            contar.Rule = RCONTAR + "(" + "<<" + seleccionarf  +  ">>"+")" + PUNTOCOMA;
+
+            contarAsig.Rule = RCONTAR + "(" + "<<" + seleccionarf + ">>" + ")";
 
             tipo_dato.Rule = RINTEGER
                           | RTEXT
@@ -434,14 +449,13 @@ namespace Proyecto1_Compi2.Analizadores
                            | RESTA + expresion
                            | expresion;
 
-            expresion.Rule = ID
-                           | variable
-                           | Entero
+            expresion.Rule = Entero
                            | Cadena
-                           | fecha
-                           | fecha_hora
+                           | tfecha
+                           | tfechahora
                            | llamada
-                           |rutaB;
+                           | contarAsig
+                           | rutaB;
 
             llamada.Rule = RFECHA + "(" + ")"
                           | RFECHA_HORA + "(" + ")"
@@ -453,7 +467,10 @@ namespace Proyecto1_Compi2.Analizadores
 
             logica_consulta.Rule = "(" + seleccionar + ")"
                                   | logica;
-                                 
+
+
+
+            this.Root = S;
         }
 
     }
