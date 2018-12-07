@@ -28,10 +28,7 @@ namespace Proyecto1_Compi2
 
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            Analizar(textBox2.Text);
-        }
+      
 
 
         public void Analizar(string entrada)
@@ -138,7 +135,7 @@ namespace Proyecto1_Compi2
             }
             catch (Exception e)
             {
-
+                Console.WriteLine(e.Message);
             }
         }
 
