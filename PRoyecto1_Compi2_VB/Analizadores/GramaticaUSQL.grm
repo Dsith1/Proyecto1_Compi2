@@ -1,12 +1,12 @@
-﻿"Case Sensitive" = False
+"Case Sensitive" = False
 "Start Symbol" = <S>
 
 !----Terminales
 Entero ={Number} 
 Doble ={Number} '.'{Number}*
 identificador ={Letter}({Alphanumeric}|'_')*
-Variable='@'{Letter}({Alphanumeric}|'_'|'ñ'|'Ñ')*
-Cadena ='"'({Printable}|'ñ'|'Ñ'|'á'|'é'|'í'|'ó'|'ú'|'Á'|'É'|'Í'|'Ó'|'Ú'|'ü'|'Ü')*'"'
+Variable='@'{Letter}({Alphanumeric}|'_')*
+Cadena ='"'{Printable}*'"'
 Fecha={Number}{Number}'-'{Number}{Number}'-'{Number}{Number}
 FechaHora={Number}{Number}'-'{Number}{Number}'-'{Number}{Number}' '{Number}{Number}':'{Number}{Number}':'{Number}{Number}
 

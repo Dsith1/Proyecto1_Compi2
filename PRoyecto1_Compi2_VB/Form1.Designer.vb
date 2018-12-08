@@ -24,11 +24,15 @@ Partial Class Form1
     Private Sub InitializeComponent()
         Me.Panel1 = New System.Windows.Forms.Panel()
         Me.lblPanel1 = New System.Windows.Forms.Label()
+        Me.TextBox1 = New FastColoredTextBoxNS.FastColoredTextBox()
+        Me.Button1 = New System.Windows.Forms.Button()
         Me.Panel1.SuspendLayout()
         Me.SuspendLayout()
         '
         'Panel1
         '
+        Me.Panel1.Controls.Add(Me.Button1)
+        Me.Panel1.Controls.Add(Me.TextBox1)
         Me.Panel1.Controls.Add(Me.lblPanel1)
         Me.Panel1.Location = New System.Drawing.Point(12, 13)
         Me.Panel1.Name = "Panel1"
@@ -43,6 +47,24 @@ Partial Class Form1
         Me.lblPanel1.Size = New System.Drawing.Size(40, 13)
         Me.lblPanel1.TabIndex = 0
         Me.lblPanel1.Text = "Panel1"
+        '
+        'TextBox1
+        '
+        Me.TextBox1.AutoScrollMinSize = New System.Drawing.Size(25, 15)
+        Me.TextBox1.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.TextBox1.Location = New System.Drawing.Point(19, 25)
+        Me.TextBox1.Name = "TextBox1"
+        Me.TextBox1.Size = New System.Drawing.Size(732, 330)
+        Me.TextBox1.TabIndex = 1
+        '
+        'Button1
+        '
+        Me.Button1.Location = New System.Drawing.Point(54, 374)
+        Me.Button1.Name = "Button1"
+        Me.Button1.Size = New System.Drawing.Size(75, 23)
+        Me.Button1.TabIndex = 2
+        Me.Button1.Text = "Button1"
+        Me.Button1.UseVisualStyleBackColor = True
         '
         'Form1
         '
@@ -60,4 +82,6 @@ Partial Class Form1
 
     Friend WithEvents Panel1 As Panel
     Friend WithEvents lblPanel1 As Label
+    Friend WithEvents TextBox1 As FastColoredTextBoxNS.FastColoredTextBox
+    Friend WithEvents Button1 As Button
 End Class
