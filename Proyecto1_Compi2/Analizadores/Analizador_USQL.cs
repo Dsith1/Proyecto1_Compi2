@@ -64,7 +64,7 @@ namespace Proyecto1_Compi2.Analizadores
             RegexBasedTerminal RCASO = new RegexBasedTerminal("RCASO", "CASO");
             RegexBasedTerminal RDEFECTO = new RegexBasedTerminal("RDEFECTO", "DEFECTO");
             RegexBasedTerminal RPARA = new RegexBasedTerminal("RPARA", "PARA ");
-            RegexBasedTerminal RMIENTRAS = new RegexBasedTerminal("RMIENTRAS", "MIENTRAS");
+            RegexBasedTerminal RMIENTRAS = new RegexBasedTerminal("RMIENTRAS", "MIENTRAS ");
             RegexBasedTerminal RDETENER = new RegexBasedTerminal("RDETENER", "DETENER");
             RegexBasedTerminal RFECHA = new RegexBasedTerminal("RFECHA", "FECHA");
             RegexBasedTerminal RFECHA_HORA = new RegexBasedTerminal("RFECHA_HORA", "FECHA_HORA");

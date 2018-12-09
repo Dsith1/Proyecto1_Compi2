@@ -454,10 +454,11 @@ Module MyParser
 
         With Reduction
             Select Case .Parent.TableIndex                        
-                Case ProductionIndex.S                 
+                Case ProductionIndex.S
                     ' <S> ::= <Inicio> 
 
-                Case ProductionIndex.Inicio                 
+
+                Case ProductionIndex.Inicio
                     ' <Inicio> ::= <sentencias> 
 
                 Case ProductionIndex.Sentencias                 
@@ -511,10 +512,10 @@ Module MyParser
                 Case ProductionIndex.Sentencia_Semi                 
                     ' <sentencia> ::= <llamada> ';' 
 
-                Case ProductionIndex.Usar_Usar_Semi                 
+                Case ProductionIndex.Usar_Usar_Semi
                     ' <usar> ::= USAR <ID> ';' 
 
-                Case ProductionIndex.Crear_Crear                 
+                Case ProductionIndex.Crear_Crear
                     ' <crear> ::= CREAR <opciones_c> 
 
                 Case ProductionIndex.Opciones_c                 
@@ -1015,7 +1016,7 @@ Module MyParser
                 Case ProductionIndex.Logica_consulta                 
                     ' <logica_consulta> ::= <logica> 
 
-                Case ProductionIndex.Id_Identificador                 
+                Case ProductionIndex.Id_Identificador
                     ' <ID> ::= identificador 
 
                 Case ProductionIndex.Rno_No                 

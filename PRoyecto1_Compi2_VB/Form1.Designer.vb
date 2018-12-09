@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class Form1
     Inherits System.Windows.Forms.Form
 
     'Form reemplaza a Dispose para limpiar la lista de componentes.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
@@ -20,24 +20,33 @@ Partial Class Form1
     'NOTA: el Diseñador de Windows Forms necesita el siguiente procedimiento
     'Se puede modificar usando el Diseñador de Windows Forms.  
     'No lo modifique con el editor de código.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.Panel1 = New System.Windows.Forms.Panel()
-        Me.lblPanel1 = New System.Windows.Forms.Label()
         Me.TextBox1 = New FastColoredTextBoxNS.FastColoredTextBox()
+        Me.lblPanel1 = New System.Windows.Forms.Label()
         Me.Button1 = New System.Windows.Forms.Button()
         Me.Panel1.SuspendLayout()
         Me.SuspendLayout()
         '
         'Panel1
         '
-        Me.Panel1.Controls.Add(Me.Button1)
         Me.Panel1.Controls.Add(Me.TextBox1)
         Me.Panel1.Controls.Add(Me.lblPanel1)
-        Me.Panel1.Location = New System.Drawing.Point(12, 13)
+        Me.Panel1.Location = New System.Drawing.Point(185, 13)
         Me.Panel1.Name = "Panel1"
         Me.Panel1.Size = New System.Drawing.Size(776, 425)
         Me.Panel1.TabIndex = 0
+        '
+        'TextBox1
+        '
+        Me.TextBox1.AutoScrollMinSize = New System.Drawing.Size(25, 15)
+        Me.TextBox1.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.TextBox1.Language = FastColoredTextBoxNS.Language.CSharp
+        Me.TextBox1.Location = New System.Drawing.Point(19, 25)
+        Me.TextBox1.Name = "TextBox1"
+        Me.TextBox1.Size = New System.Drawing.Size(732, 330)
+        Me.TextBox1.TabIndex = 1
         '
         'lblPanel1
         '
@@ -48,29 +57,21 @@ Partial Class Form1
         Me.lblPanel1.TabIndex = 0
         Me.lblPanel1.Text = "Panel1"
         '
-        'TextBox1
-        '
-        Me.TextBox1.AutoScrollMinSize = New System.Drawing.Size(25, 15)
-        Me.TextBox1.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.TextBox1.Location = New System.Drawing.Point(19, 25)
-        Me.TextBox1.Name = "TextBox1"
-        Me.TextBox1.Size = New System.Drawing.Size(732, 330)
-        Me.TextBox1.TabIndex = 1
-        '
         'Button1
         '
-        Me.Button1.Location = New System.Drawing.Point(54, 374)
+        Me.Button1.Location = New System.Drawing.Point(25, 38)
         Me.Button1.Name = "Button1"
         Me.Button1.Size = New System.Drawing.Size(75, 23)
-        Me.Button1.TabIndex = 2
-        Me.Button1.Text = "Button1"
+        Me.Button1.TabIndex = 3
+        Me.Button1.Text = "Analizar"
         Me.Button1.UseVisualStyleBackColor = True
         '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(800, 450)
+        Me.ClientSize = New System.Drawing.Size(973, 450)
+        Me.Controls.Add(Me.Button1)
         Me.Controls.Add(Me.Panel1)
         Me.Name = "Form1"
         Me.Text = "Google "

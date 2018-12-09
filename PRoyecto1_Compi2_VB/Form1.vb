@@ -1,23 +1,92 @@
 ﻿Imports System.IO
 Imports PRoyecto1_Compi2_VB.MyParser
-
+Imports System.Net
+Imports System.Net.Sockets
+Imports System.Text
 
 Public Class Form1
+
+    Public cliente As TcpClient
+    Public bytes() As Byte = Nothing
+    Public leer_escribir As NetworkStream
+    Dim br As BinaryReader
+    Dim bw As BinaryWriter
+
+    Dim Cadena As String
+
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
     End Sub
 
-    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+
+    Private Sub Button1_Click_1(sender As Object, e As EventArgs) Handles Button1.Click
         If (TextBox1.Text.Equals("")) Then
             MessageBox.Show("No hay nada que analizar", "Error")
         Else
+
             MyParser.Setup()
 
             If (MyParser.Parse(New StringReader(TextBox1.Text))) Then
                 MessageBox.Show("Exito")
+                Cadena = TextBox1.Text
+
+                Cadena = Replace(Cadena, "USAR", "USAR ")
+                Cadena = Replace(Cadena, "CREAR", "CREAR ")
+                Cadena = Replace(Cadena, "RETORNO", "RETORNO ")
+                Cadena = Replace(Cadena, "IMPRIMIR", "IMPRIMIR ")
+                Cadena = Replace(Cadena, "INSERTAR", "INSERTAR ")
+                Cadena = Replace(Cadena, "DECLARAR", "DECLARAR ")
+                Cadena = Replace(Cadena, "SI(", "SI (")
+                Cadena = Replace(Cadena, "SINO", "SINO ")
+                Cadena = Replace(Cadena, "PARA", "PARA ")
+                Cadena = Replace(Cadena, "MIENTRAS", "MIENTRAS ")
+                Cadena = Replace(Cadena, "INTEGER", "INTEGER ")
+                Cadena = Replace(Cadena, "DOUBLE", "DOUBLE ")
+                Cadena = Replace(Cadena, "BOOL", "BOOL ")
+                Cadena = Replace(Cadena, "TEXT", "TEXT ")
+                Cadena = Replace(Cadena, "DATE", "DATE ")
+                Cadena = Replace(Cadena, "DATETIME", "DATETIME ")
+                Cadena = Replace(Cadena, "DATE TIME", "DATETIME")
+                TextBox1.Text = Cadena
+
+
+                Dim Salida As String
+
+                Salida = "[\n ""paquete"":""usql"",\n""instrucción"":""" + Cadena + """,\n]"
+
+                'Cadena += 
+                'bytes = Nothing
+                'Dim x As Integer
+                'x = Cadena.Length
+                'Dim j As Integer = x / 256
+                'If (x Mod 256 <> 0) Then
+                '    j = j + 1
+                'End If
+                'Dim codigo As String = TextBox1.Text
+                'For cont As Integer = 0 To j - 1
+                '    Dim salida As String
+                '    Dim inicio As String = 256 * cont
+                '    If (cont = j - 1) Then
+                '        Dim final As Integer = x Mod 256
+                '        salida = codigo.Substring(inicio, final)
+                '    Else
+                '        salida = codigo.Substring(inicio, 256)
+                '    End If
+                '    cliente = New TcpClient
+                '    Try
+                '        cliente.Connect(IPAddress.Parse("192.168.0.17"), 6000)
+                '    Catch ex As Exception
+                '        MessageBox.Show("IMPOSIBLE CONECTAR CON SERVIDOR", "ERROR")
+                '    End Try
+                '    If cliente.Connected = True Then
+                '        leer_escribir = cliente.GetStream
+                '        bw = New BinaryWriter(leer_escribir)
+                '        bw.Write(TextBox1.Text)
+                '    End If
+                'Next cont
 
             Else
-                MessageBox.Show("Ha habido un Error" + SError, "Error")
+                    MessageBox.Show("Ha habido un Error" + SError, "Error")
             End If
 
         End If
