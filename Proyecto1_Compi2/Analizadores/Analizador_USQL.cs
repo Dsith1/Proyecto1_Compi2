@@ -131,7 +131,7 @@ namespace Proyecto1_Compi2.Analizadores
             //Presedencia
 
             this.RegisterOperators(0, Associativity.Left, SUMA, RESTA);
-            this.RegisterOperators(1, Associativity.Left, MULTI, RESTA);
+            this.RegisterOperators(1, Associativity.Left, MULTI, DIV);
             this.RegisterOperators(2, Associativity.Right, POTENCIA);
             this.RegisterOperators(3 , IGUAL,DISTINTO,MENOR,MAYOR,MENOR_IGUAL,MAYOR_IGUAL);
             this.RegisterOperators(4, Associativity.Left, OR);

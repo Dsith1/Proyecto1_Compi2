@@ -49,6 +49,67 @@ namespace Proyecto1_Compi2.Elementos
             
         }
 
+
+        public string Crear_Usuario(string nombre,string contra)
+        {
+            string activeDir = @"c:\DBMS";
+
+            string PathM = System.IO.Path.Combine(activeDir, "Maestro.usac");
+
+            if (new FileInfo(PathM).Length == 0)
+            {
+                XmlDocument doc = new XmlDocument();
+
+                XmlElement root = doc.DocumentElement;
+
+                XmlElement Maestro = doc.CreateElement(string.Empty, "Maestro", string.Empty);
+                doc.AppendChild(Maestro);
+
+                XmlElement element1 = doc.CreateElement(string.Empty, "Usuario", string.Empty);
+                Maestro.AppendChild(element1);
+
+                XmlElement element2 = doc.CreateElement(string.Empty, "Nombre", string.Empty);
+                XmlText text1 = doc.CreateTextNode(nombre);
+                element2.AppendChild(text1);
+                element1.AppendChild(element2);
+
+                XmlElement element3 = doc.CreateElement(string.Empty, "Contra", string.Empty);
+                XmlText text2 = doc.CreateTextNode(contra);
+                element3.AppendChild(text2);
+                element1.AppendChild(element3);
+
+                doc.Save(PathM);
+
+            }
+            else
+            {
+                XmlDocument doc = new XmlDocument();
+
+                doc.Load(PathM);
+
+                XmlNodeList tablas = doc.GetElementsByTagName("Maestro");
+
+
+                XmlElement element1 = doc.CreateElement(string.Empty, "Usuario", string.Empty);
+                tablas[0].AppendChild(element1);
+
+                XmlElement element2 = doc.CreateElement(string.Empty, "Nombre", string.Empty);
+                XmlText text1 = doc.CreateTextNode(nombre);
+                element2.AppendChild(text1);
+                element1.AppendChild(element2);
+
+                XmlElement element3 = doc.CreateElement(string.Empty, "Contra", string.Empty);
+                XmlText text2 = doc.CreateTextNode(contra);
+                element3.AppendChild(text2);
+                element1.AppendChild(element3);
+
+                doc.Save(PathM);
+            }
+
+            return "Se Ha Creado el Usuario "+nombre;
+        }
+
+
         public string Crear_Base(string nombre)
         {
 
@@ -162,6 +223,8 @@ namespace Proyecto1_Compi2.Elementos
                     element3.AppendChild(text2);
                     element1.AppendChild(element3);
 
+
+
                     XmlElement filas = doc.CreateElement(string.Empty, "rows", string.Empty);
                     
 
@@ -206,15 +269,27 @@ namespace Proyecto1_Compi2.Elementos
                 }
                 else
                 {
-                    XDocument doc = XDocument.Load(PathM);
+                    XmlDocument doc = new XmlDocument();
 
-                    XElement root = new XElement("Tabla");
-                    root.Add(new XElement("Nombre", nombre));
-                    root.Add(new XElement("Path", newPath));
+                    doc.Load(PathM);
 
-                    XElement filas = new XElement("rows");
+                    XmlNodeList tablas = doc.GetElementsByTagName("BASE");
 
 
+                    XmlElement element1 = doc.CreateElement(string.Empty, "Tabla", string.Empty);
+                    tablas[0].AppendChild(element1);
+
+                    XmlElement element2 = doc.CreateElement(string.Empty, "Nombre", string.Empty);
+                    XmlText text1 = doc.CreateTextNode(nombre);
+                    element2.AppendChild(text1);
+                    element1.AppendChild(element2);
+
+                    XmlElement element3 = doc.CreateElement(string.Empty, "Path", string.Empty);
+                    XmlText text2 = doc.CreateTextNode(newPath);
+                    element3.AppendChild(text2);
+                    element1.AppendChild(element3);
+
+                    XmlElement filas = doc.CreateElement(string.Empty, "rows", string.Empty);
 
                     string[] info = campos.Split(';');
 
@@ -239,17 +314,17 @@ namespace Proyecto1_Compi2.Elementos
 
                         }
 
-                        XElement campoT = new XElement(tipo, campo);
+                        XmlElement campoT = doc.CreateElement(string.Empty, tipo, string.Empty);
+                        XmlText ncampo = doc.CreateTextNode(campo);
 
-                        XAttribute attribute = new XAttribute("atributos", atrib);
+                        campoT.SetAttribute("atributos", atrib);
 
-                        campoT.Add(attribute);
-
-                        filas.Add(campoT);
+                        campoT.AppendChild(ncampo);
+                        filas.AppendChild(campoT);
 
                     }
 
-                    root.Add(filas);
+                    element1.AppendChild(filas);
 
                     doc.Save(PathM);
                 }

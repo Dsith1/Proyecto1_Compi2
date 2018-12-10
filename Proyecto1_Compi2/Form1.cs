@@ -19,6 +19,7 @@ namespace Proyecto1_Compi2
         bool activa = true;
         bool escuchar = false;
         string BaseActual;
+        string TablaAux;
         Manejo manejo;
 
 
@@ -40,9 +41,8 @@ namespace Proyecto1_Compi2
             {
                 Consola += manejo.Crear_Maestro();
 
-                Consola += "\r\n" + manejo.Crear_Base("BMaestra") + "\r\n" + manejo.Crear_Tabla("Usuario", "BMaestra", "TEXT,nombre,Llave_Primaria;TEXT,Contra,NO NULO;");
-
-                Consola += manejo.Insertar_Tabla("Admin,1234", "BMaestra", "Usuario");
+                Consola += "\r\n" + manejo.Crear_Usuario("Admin","1234");
+                              
                 txtConsola.Text = Consola;
 
             }
@@ -424,7 +424,86 @@ namespace Proyecto1_Compi2
                     resultado = "\r\nSe Ha Creado la Base "+nombreb;
                     break;
 
+                case "c_tabla":
 
+                    if (BaseActual != "")
+                    {
+                        TablaAux = nodo.ChildNodes[1].Token.Text;
+
+                        string campos = ActuarSQL(nodo.ChildNodes[3]);
+
+                        manejo.Crear_Tabla(TablaAux, BaseActual, campos);
+
+                        resultado = "\r\nSe Ha Creado la Tabla " + TablaAux;
+                    }
+                    else
+                    {
+                        resultado = "\r\nNo Hay Base de DAtos Asignada Actualmente";
+                    }
+
+                    
+                    break;
+
+                case "campos_tabla":
+
+
+                    if (nodo.ChildNodes.Count == 3)
+                    {
+                        resultado = ActuarSQL(nodo.ChildNodes[0])+";";
+                        resultado += ActuarSQL(nodo.ChildNodes[2]);
+                    }
+                    else
+                    {
+                        resultado = ActuarSQL(nodo.ChildNodes[0]);
+                    }
+                    
+                    break;
+
+                case "campo_tabla":
+
+
+                    if (nodo.ChildNodes.Count == 3)
+                    {
+                        if (nodo.ChildNodes[0].Term.Name.ToString().Equals("tipo_dato")){
+
+                            resultado = ActuarSQL(nodo.ChildNodes[0]) + ",";
+                            resultado += nodo.ChildNodes[1].Token.Text + ",";
+                            resultado += ActuarSQL(nodo.ChildNodes[2]);
+                        }
+                        else
+                        {
+                            resultado = nodo.ChildNodes[0].Token.Text + ",";
+                            resultado += nodo.ChildNodes[1].Token.Text + ",";
+                            resultado += ActuarSQL(nodo.ChildNodes[2]); ;
+
+                        }
+
+
+                    }
+                    else
+                    {
+                        if (nodo.ChildNodes[0].Term.Name.ToString().Equals("tipo_dato"))
+                        {
+
+                            resultado = ActuarSQL(nodo.ChildNodes[0]) + ",";
+                            resultado += nodo.ChildNodes[1].Token.Text.Trim(); ;
+                        }
+                        else
+                        {
+                            resultado = nodo.ChildNodes[0].Token.Text + ",";
+                            resultado += nodo.ChildNodes[1].Token.Text;
+
+                        }
+                    }
+
+                    break;
+
+                    case "tipo_dato":
+
+
+                    resultado = nodo.ChildNodes[0].Token.Text.Trim();
+
+                    break;
 
             }
 
@@ -432,3 +511,4 @@ namespace Proyecto1_Compi2
         }
     }
 }
+
