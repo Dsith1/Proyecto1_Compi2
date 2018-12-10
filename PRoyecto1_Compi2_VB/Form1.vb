@@ -47,6 +47,19 @@ Public Class Form1
                 Cadena = Replace(Cadena, "DATE", "DATE ")
                 Cadena = Replace(Cadena, "DATETIME", "DATETIME ")
                 Cadena = Replace(Cadena, "DATE TIME", "DATETIME")
+                Cadena = Replace(Cadena, "no ", "NO ")
+                Cadena = Replace(Cadena, "nO ", "NO ")
+                Cadena = Replace(Cadena, "No ", "NO ")
+                Cadena = Replace(Cadena, "nulo", "NULO")
+                Cadena = Replace(Cadena, "nulO", "NULO")
+                Cadena = Replace(Cadena, "nuLo", "NULO")
+                Cadena = Replace(Cadena, "nUlo", "NULO")
+                Cadena = Replace(Cadena, "Nulo", "NULO")
+                Cadena = Replace(Cadena, "NULo", "NULO")
+                Cadena = Replace(Cadena, "NUlO", "NULO")
+                Cadena = Replace(Cadena, "NuLO", "NULO")
+                Cadena = Replace(Cadena, "nulo", "NULO")
+
 
                 Cadena = Replace(Replace(Cadena, Chr(10), " "), Chr(13), " ")
 

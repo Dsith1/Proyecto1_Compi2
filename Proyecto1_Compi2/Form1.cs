@@ -461,7 +461,6 @@ namespace Proyecto1_Compi2
 
                 case "campo_tabla":
 
-
                     if (nodo.ChildNodes.Count == 3)
                     {
                         if (nodo.ChildNodes[0].Term.Name.ToString().Equals("tipo_dato")){
@@ -502,6 +501,51 @@ namespace Proyecto1_Compi2
 
 
                     resultado = nodo.ChildNodes[0].Token.Text.Trim();
+
+                    break;
+
+                case "complementos":
+
+
+                    if (nodo.ChildNodes.Count == 2)
+                    {
+                        resultado = ActuarSQL(nodo.ChildNodes[0]);
+
+                        
+                        string aux = ActuarSQL(nodo.ChildNodes[1]);
+
+                        if(resultado.Equals("NO") && aux.Equals("NULO"))
+                        {
+                            resultado += " " + aux;
+                        }
+                        else if (resultado.Equals("NO"))
+                        {
+                            resultado = ActuarSQL(nodo.ChildNodes[1]);
+                        }
+                        else
+                        {
+                            resultado += "," + aux;
+                        }
+                    }
+                    else
+                    {
+                        resultado = ActuarSQL(nodo.ChildNodes[0]);
+                    }
+
+                    break;
+
+                case "complemento":
+
+
+                    if (nodo.ChildNodes.Count == 2)
+                    {
+                        resultado = nodo.ChildNodes[0].Token.Text + " ";
+                        resultado += ActuarSQL(nodo.ChildNodes[1]);
+                    }
+                    else
+                    {
+                        resultado = nodo.ChildNodes[0].Token.Text;
+                    }
 
                     break;
 
