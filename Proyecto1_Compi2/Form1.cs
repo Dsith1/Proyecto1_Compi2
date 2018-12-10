@@ -18,6 +18,7 @@ namespace Proyecto1_Compi2
         string cadena;
         bool activa = true;
         bool escuchar = false;
+        string BaseActual;
         Manejo manejo;
 
 
@@ -153,8 +154,11 @@ namespace Proyecto1_Compi2
             {
                 if (arbol.Root != null)
                 {
-                    GenarbolC(arbol.Root);
-                    GenerateGraphC("Entrada.txt", "C:/Fuentes/");
+                    a=ActuarSQL(arbol.Root);
+
+                    string Consola = txtConsola.Text;
+                    Consola += a;
+                    txtConsola.Text = Consola;
 
                 }
             }
@@ -336,6 +340,88 @@ namespace Proyecto1_Compi2
                 case "fin":
 
                     resultado = "Fin";
+                    break;
+
+
+
+            }
+
+            return resultado;
+        }
+
+
+        string ActuarSQL(ParseTreeNode nodo)
+        {
+            string resultado = "";
+
+            switch (nodo.Term.Name.ToString())
+            {
+                case "S":
+                    {
+
+                        resultado = ActuarSQL(nodo.ChildNodes[0]);
+                        //if (nodo.ChildNodes.Count == 2)
+
+
+                        break;
+                    }
+
+                case "inicio":
+
+                    resultado = ActuarSQL(nodo.ChildNodes[0]);
+                    break;
+
+                case "sentencias":
+
+                    if (nodo.ChildNodes.Count == 2)
+                    {
+                        resultado = ActuarSQL(nodo.ChildNodes[0]);
+                        resultado += ActuarSQL(nodo.ChildNodes[1]);
+                    }
+                    else
+                    {
+                        resultado = ActuarSQL(nodo.ChildNodes[0]);
+                    }
+
+                        
+                    break;
+
+                case "sentencia":
+
+                    if (nodo.ChildNodes.Count == 2)
+                    {
+                        resultado = ActuarSQL(nodo.ChildNodes[0]);
+                        
+                    }
+                    else
+                    {
+                        resultado = ActuarSQL(nodo.ChildNodes[0]);
+                    }
+                    break;
+
+                case "usar":
+
+                    BaseActual= nodo.ChildNodes[1].Token.Text;
+
+                    resultado ="\r\nLa Base de Datos que se Usará es "+BaseActual;
+                    break;
+
+                case "crear":
+
+                    resultado = ActuarSQL(nodo.ChildNodes[1]);
+                    break;
+
+                case "opciones_crear":
+
+                    resultado = ActuarSQL(nodo.ChildNodes[0]);
+                    break;
+
+                case "c_base":
+
+                    string nombreb= nodo.ChildNodes[1].Token.Text;
+                    manejo.Crear_Base(nombreb);
+
+                    resultado = "\r\nSe Ha Creado la Base "+nombreb;
                     break;
 
 

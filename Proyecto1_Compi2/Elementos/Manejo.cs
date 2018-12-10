@@ -70,8 +70,11 @@ namespace Proyecto1_Compi2.Elementos
 
                     XmlElement root = doc.DocumentElement;
 
+                    XmlElement Maestro = doc.CreateElement(string.Empty, "Maestro", string.Empty);
+                    doc.AppendChild(Maestro);
+
                     XmlElement element1 = doc.CreateElement(string.Empty, "DB", string.Empty);
-                    doc.AppendChild(element1);
+                    Maestro.AppendChild(element1);
 
                     XmlElement element2 = doc.CreateElement(string.Empty, "Nombre", string.Empty);
                     XmlText text1 = doc.CreateTextNode(nombre);
@@ -87,11 +90,25 @@ namespace Proyecto1_Compi2.Elementos
                 }
                 else
                 {
-                    XDocument doc = XDocument.Load(PathM);
+                    XmlDocument doc = new XmlDocument();
 
-                    XElement root = new XElement("DB");
-                    root.Add(new XElement("Nombre", nombre));
-                    root.Add(new XElement("Path", newPath));
+                    doc.Load(PathM);
+
+                    XmlNodeList tablas = doc.GetElementsByTagName("Maestro");
+
+
+                    XmlElement element1 = doc.CreateElement(string.Empty, "DB", string.Empty);
+                    tablas[0].AppendChild(element1);
+
+                    XmlElement element2 = doc.CreateElement(string.Empty, "Nombre", string.Empty);
+                    XmlText text1 = doc.CreateTextNode(nombre);
+                    element2.AppendChild(text1);
+                    element1.AppendChild(element2);
+
+                    XmlElement element3 = doc.CreateElement(string.Empty, "Path", string.Empty);
+                    XmlText text2 = doc.CreateTextNode(newPath);
+                    element3.AppendChild(text2);
+                    element1.AppendChild(element3);
 
                     doc.Save(PathM);
                 }
@@ -129,8 +146,11 @@ namespace Proyecto1_Compi2.Elementos
 
                     XmlElement root = doc.DocumentElement;
 
+                    XmlElement Maestro = doc.CreateElement(string.Empty, "BASE", string.Empty);
+                    doc.AppendChild(Maestro);
+
                     XmlElement element1 = doc.CreateElement(string.Empty, "Tabla", string.Empty);
-                    doc.AppendChild(element1);
+                    Maestro.AppendChild(element1);
 
                     XmlElement element2 = doc.CreateElement(string.Empty, "Nombre", string.Empty);
                     XmlText text1 = doc.CreateTextNode(nombre);
@@ -301,8 +321,11 @@ namespace Proyecto1_Compi2.Elementos
 
                         XmlElement root = doc.DocumentElement;
 
+                        XmlElement Maestro = doc.CreateElement(string.Empty, "TABLA", string.Empty);
+                        doc.AppendChild(Maestro);
+
                         XmlElement element1 = doc.CreateElement(string.Empty, "ROW", string.Empty);
-                        doc.AppendChild(element1);
+                        Maestro.AppendChild(element1);
 
                         for (int x = 0; x < tipo.Length-1; x++)
                         {
