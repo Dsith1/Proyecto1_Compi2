@@ -3,6 +3,7 @@ using Proyecto1_Compi2.Analizadores;
 using Proyecto1_Compi2.Elementos;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -29,10 +30,23 @@ namespace Proyecto1_Compi2
         {
             manejo = new Manejo();
             string Consola = txtConsola.Text;
-            Consola += manejo.Crear_Maestro();
+           
+            string activeDir = @"c:\DBMS";
 
-            Consola += "\r\n" + manejo.Crear_Base("BMaestra");
-            txtConsola.Text = Consola;
+            string newPath = System.IO.Path.Combine(activeDir, "Maestro.usac");
+
+            if (File.Exists(newPath) == false)
+            {
+                Consola += manejo.Crear_Maestro();
+
+                Consola += "\r\n" + manejo.Crear_Base("BMaestra") + "\r\n" + manejo.Crear_Tabla("Usuario", "BMaestra", "TEXT,nombre,Llave_Primaria;TEXT,Contra,NO NULO;");
+
+                Consola += manejo.Insertar_Tabla("Admin,1234", "BMaestra", "Usuario");
+                txtConsola.Text = Consola;
+
+            }
+
+            
             
         }
 
