@@ -26,7 +26,20 @@ namespace Proyecto1_Compi2
 
         }
 
-      
+        public void AnalizarPaquete(string entrada)
+        {
+            string Consola = txtConsola.Text;
+            Consola += "\r\nAnalizando Paquete ";
+            txtConsola.Text = Consola;
+
+            AnalizadorPaquete gramatica = new AnalizadorPaquete();
+
+
+            string respuesta = esCadenaValidaPaquete(entrada, gramatica);
+
+            MessageBox.Show("Grafo Finalizado");
+
+        }
 
 
         public void Analizar(string entrada)
@@ -45,6 +58,55 @@ namespace Proyecto1_Compi2
 
         }
 
+        public string esCadenaValidaPaquete(string cadenaEntrada, Grammar gramatica)
+        {
+            LanguageData lenguaje = new LanguageData(gramatica);
+            Parser p = new Parser(lenguaje);
+            ParseTree arbol = p.Parse(cadenaEntrada);
+
+            string a = "";
+            if (arbol.HasErrors())
+            {
+                MessageBox.Show("Errores en la cadena de entrada");
+
+
+                if (arbol.Root != null)
+                {
+                  
+
+                }
+            }
+            else
+            {
+                if (arbol.Root != null)
+                {
+                    a = ActuarPaquete(arbol.Root);
+
+                    if (a.Equals("Fin"))
+                    {
+                        string Consola = txtConsola.Text;
+                        Consola += "\r\nFin se Sesion";
+                        txtConsola.Text = Consola;
+                                                
+                    }
+                    else
+                    {
+                        a = a.Substring(1, a.Length - 2);
+
+                        Analizar(a);
+                    }
+
+                    
+
+                }
+            }
+
+
+            return a;
+
+        }
+
+
         public string esCadenaValidSQL(string cadenaEntrada, Grammar gramatica)
         {
             LanguageData lenguaje = new LanguageData(gramatica);
@@ -59,8 +121,7 @@ namespace Proyecto1_Compi2
 
                 if (arbol.Root != null)
                 {
-                    GenarbolC(arbol.Root);
-                    GenerateGraphC("Entrada.txt", "C:/Fuentes/");
+                   
 
                 }
             }
@@ -140,7 +201,7 @@ namespace Proyecto1_Compi2
         private void button1_Click(object sender, EventArgs e)
         {
             escuchar = true;
-            cadena = null;
+            cadena = textBox1.Text;
 
 
             /*
@@ -150,7 +211,7 @@ namespace Proyecto1_Compi2
             }
 
             */
-            Analizar(cadena);
+            AnalizarPaquete(cadena);
 
         }
 
@@ -176,16 +237,16 @@ namespace Proyecto1_Compi2
                 //Una vez conectado, la aplicación sigue su camino  
                 Console.WriteLine("Conectado con exito");
 
-                
-                    int bytesRec = Escuchar.Receive(bytes);
-                    
-                    
 
-                    cadena += Encoding.ASCII.GetString(bytes, 0, bytesRec);
+                int bytesRec = Escuchar.Receive(bytes);
 
-            
-                    
-                
+
+
+                cadena += Encoding.ASCII.GetString(bytes, 0, bytesRec);
+
+
+
+
 
                 /*Aca ponemos todo lo que queramos hacer con el socket, osea antes de 
                 cerrarlo je*/
@@ -199,6 +260,65 @@ namespace Proyecto1_Compi2
             Console.WriteLine("Presione cualquier tecla para terminar");
             Console.ReadLine();
 
+        }
+
+
+        string ActuarPaquete(ParseTreeNode nodo)
+        {
+            string resultado = "";
+
+            switch (nodo.Term.Name.ToString())
+            {
+                case "S":
+                    {
+
+                        resultado=ActuarPaquete(nodo.ChildNodes[0]);
+                        //if (nodo.ChildNodes.Count == 2)
+                        
+
+                        break;
+                    }
+
+                case "inicio":
+
+                    resultado = ActuarPaquete(nodo.ChildNodes[1]);
+                    break;
+
+                case "cuerpo":
+
+                    resultado = ActuarPaquete(nodo.ChildNodes[0]);
+                    break;
+
+                case "login":
+
+                    resultado = ActuarPaquete(nodo.ChildNodes[4]);
+                    break;
+
+                case "sublogin":
+
+                    resultado = nodo.ChildNodes[6].Token.Text;
+                    break;
+
+                case "paquete":
+
+                    resultado = ActuarPaquete(nodo.ChildNodes[2]);
+                    break;
+
+                case "usql":
+
+                    resultado = nodo.ChildNodes[4].Token.Text;
+                    break;
+
+                case "fin":
+
+                    resultado = "Fin";
+                    break;
+
+
+
+            }
+
+            return resultado;
         }
     }
 }

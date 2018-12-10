@@ -47,12 +47,16 @@ Public Class Form1
                 Cadena = Replace(Cadena, "DATE", "DATE ")
                 Cadena = Replace(Cadena, "DATETIME", "DATETIME ")
                 Cadena = Replace(Cadena, "DATE TIME", "DATETIME")
+
+                Cadena = Replace(Replace(Cadena, Chr(10), " "), Chr(13), " ")
+
+
                 TextBox1.Text = Cadena
 
 
                 Dim Salida As String
 
-                Salida = "[\n ""paquete"":""usql"",\n""instrucción"":""" + Cadena + """,\n]"
+                Salida = "[ ""paquete"":""usql"", ""instrucción"":'" + Cadena + "',]"
 
                 'Cadena += 
                 'bytes = Nothing

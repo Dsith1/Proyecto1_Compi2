@@ -14,8 +14,8 @@ namespace Proyecto1_Compi2.Analizadores
         {
             //Reservadas
 
-            RegexBasedTerminal INICIO = new RegexBasedTerminal("Inicio", "[");
-            RegexBasedTerminal FIN = new RegexBasedTerminal("Fin", "]");
+            RegexBasedTerminal INICIO = new RegexBasedTerminal("Inicio", "\\[");
+            RegexBasedTerminal FIN = new RegexBasedTerminal("Fin", "\\]");
             RegexBasedTerminal COMA = new RegexBasedTerminal("COMA", ",");
 
             RegexBasedTerminal PAQUETE = new RegexBasedTerminal("PAQUETE", "\"paquete\"");
@@ -30,7 +30,7 @@ namespace Proyecto1_Compi2.Analizadores
 
 
             //Datos
-            StringLiteral DATOS = new StringLiteral("DATOS", "\'");
+            StringLiteral DATOS = new StringLiteral("DATOS", "'");
             NumberLiteral Entero = new NumberLiteral("entero");
 
             //No Terminales
@@ -52,7 +52,11 @@ namespace Proyecto1_Compi2.Analizadores
 
             login.Rule = VALIDAR + ":" + Entero + COMA + sublogin;
 
+            login.ErrorRule = SyntaxError + FIN;
+
             sublogin.Rule = LOGIN + ":" + INICIO + COMANDO + FLECHA + DATOS + FIN;
+
+            sublogin.ErrorRule= SyntaxError + FIN;
 
 
             paquete.Rule = PAQUETE + ":" + fin
@@ -60,7 +64,13 @@ namespace Proyecto1_Compi2.Analizadores
 
             fin.Rule = FIN;
 
+
+
             usql.Rule = USQL + COMA + INSTRUCCION + ":" + DATOS + COMA;
+
+            usql.ErrorRule = SyntaxError + FIN;
+
+            this.Root = S;
 
         }
     }
