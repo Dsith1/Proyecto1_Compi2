@@ -1,5 +1,6 @@
 ﻿using Irony.Parsing;
 using Proyecto1_Compi2.Analizadores;
+using Proyecto1_Compi2.Elementos;
 using System;
 using System.Diagnostics;
 using System.Net;
@@ -14,7 +15,10 @@ namespace Proyecto1_Compi2
 
         string graph = "";
         string cadena;
+        bool activa = true;
         bool escuchar = false;
+        Manejo manejo;
+
 
         public Form1()
         {
@@ -23,7 +27,13 @@ namespace Proyecto1_Compi2
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            manejo = new Manejo();
+            string Consola = txtConsola.Text;
+            Consola += manejo.Crear_Maestro();
 
+            Consola += "\r\n" + manejo.Crear_Base("BMaestra");
+            txtConsola.Text = Consola;
+            
         }
 
         public void AnalizarPaquete(string entrada)
