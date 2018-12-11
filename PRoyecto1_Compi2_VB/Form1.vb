@@ -36,6 +36,7 @@ Public Class Form1
                 Cadena = Replace(Cadena, "IMPRIMIR", "IMPRIMIR ")
                 Cadena = Replace(Cadena, "INSERTAR", "INSERTAR ")
                 Cadena = Replace(Cadena, "DECLARAR", "DECLARAR ")
+                Cadena = Replace(Cadena, "IMPRIMIR", "IMPRIMIR ")
                 Cadena = Replace(Cadena, "SI(", "SI (")
                 Cadena = Replace(Cadena, "SINO", "SINO ")
                 Cadena = Replace(Cadena, "PARA", "PARA ")

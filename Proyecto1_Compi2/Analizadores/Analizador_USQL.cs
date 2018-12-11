@@ -77,6 +77,7 @@ namespace Proyecto1_Compi2.Analizadores
             RegexBasedTerminal RINTEGER = new RegexBasedTerminal("RINTEGER", "INTEGER ");
             NumberLiteral Entero = new NumberLiteral("entero");
 
+
             RegexBasedTerminal RDOUBLE = new RegexBasedTerminal("RDOUBLE", "DOUBLE ");
             RegexBasedTerminal Doble = new RegexBasedTerminal("Doble", "[0-9]+\\.[0-9]{6}");
 
@@ -210,12 +211,12 @@ namespace Proyecto1_Compi2.Analizadores
 
 
 
-            S.Rule = inicio;
+            S.Rule = inicio;//Ya
 
-            inicio.Rule = sentencias;
+            inicio.Rule = sentencias;//Ya
 
             sentencias.Rule = sentencia + sentencias
-                | sentencia;
+                | sentencia;//Ya
 
             sentencia.Rule = usar
                             | crear
@@ -231,58 +232,58 @@ namespace Proyecto1_Compi2.Analizadores
                             | alterar
                             | eliminar
                             | declarar
-                            | llamada + PUNTOCOMA;
+                            | llamada + PUNTOCOMA;//Ya
 
 
-            usar.Rule = RUSAR + ID + PUNTOCOMA;
+            usar.Rule = RUSAR + ID + PUNTOCOMA;//Ya
 
-            crear.Rule = RCREAR + opciones_crear;
+            crear.Rule = RCREAR + opciones_crear;//Ya
 
             opciones_crear.Rule= c_base
                                 | c_tabla
                                 | c_objeto
                                 | c_pro
                                 | c_funcion
-                                | c_usuario;
+                                | c_usuario;//Ya
 
-            c_base.Rule = RBASE+ID + PUNTOCOMA;
+            c_base.Rule = RBASE+ID + PUNTOCOMA;//Ya
 
-            c_tabla.Rule = RTABLA+ID + "(" + campos_tabla + ")" + PUNTOCOMA;
+            c_tabla.Rule = RTABLA+ID + "(" + campos_tabla + ")" + PUNTOCOMA;//Ya
 
             campos_tabla.Rule = campo_tabla + COMA + campos_tabla
-                              | campo_tabla;
+                              | campo_tabla;//Ya
 
             campo_tabla.Rule = tipo_dato + ID + complementos
                               | tipo_dato + ID
                               | ID + ID + complementos
-                              | ID + ID;
+                              | ID + ID;//Ya
 
             complementos.Rule = complemento + complementos
-                            | complemento;
+                            | complemento;//Ya
 
             complemento.Rule = RNO
                             | RNULO
                             | RAUTOINCREMENTABLE
                             | RPK
                             | RFK + ID
-                            | RUNICO;
+                            | RUNICO;//Ya
 
             c_objeto.Rule = ROBJETO + ID + "(" +parametros+ ")" + PUNTOCOMA
-                        | ROBJETO + ID + "(" + ")" + PUNTOCOMA;
+                        | ROBJETO + ID + "(" + ")" + PUNTOCOMA;//Ya
 
             parametros.Rule = parametros + COMA + parametro
-                            | parametro;
+                            | parametro;//Ya
 
             parametro.Rule = tipo_dato + ID
                              | ID + ID
                              | ID + Variable       
-                             | tipo_dato + Variable;
+                             | tipo_dato + Variable;//Ya
 
             c_pro.Rule = RPROCEDIMIENTO + ID + "(" + parametros + ")" + "{" + instrucciones + "}"
-                        | RPROCEDIMIENTO + ID + "(" + ")" + "{" + instrucciones + "}";
+                        | RPROCEDIMIENTO + ID + "(" + ")" + "{" + instrucciones + "}";//.5
 
             instrucciones.Rule = instruccion + instrucciones
-                                | instruccion;
+                                | instruccion;//.5
 
             instruccion.Rule = asignacion
                                 | Tif
@@ -291,7 +292,7 @@ namespace Proyecto1_Compi2.Analizadores
                                 | Twhile
                                 | sentencia
                                 | llamada + PUNTOCOMA
-                                | RDETENER + PUNTOCOMA;
+                                | RDETENER + PUNTOCOMA;//.5
 
             c_funcion.Rule = RFUNCION + ID + "(" + parametros + ")" + tipo_dato + "{" + instruccionesR + "}"
                         | RFUNCION + ID + "(" + parametros + ")" + ID + "{" + instruccionesR + "}"
@@ -304,9 +305,9 @@ namespace Proyecto1_Compi2.Analizadores
             retorno.Rule = RRETORNO + aritemtica + PUNTOCOMA;
 
 
-            c_usuario.Rule = RUSUARIO + ID + RCOLOCAR + RPAS + I_ASIGNAR + Cadena + PUNTOCOMA;
+            c_usuario.Rule = RUSUARIO + ID + RCOLOCAR + RPAS + I_ASIGNAR + Cadena + PUNTOCOMA;//Ya
 
-            imprimir.Rule = RIMPRIMIR + "(" + expresion + ")" + PUNTOCOMA;
+            imprimir.Rule = RIMPRIMIR + "(" + valores + ")" + PUNTOCOMA;
 
             insertar.Rule = RINSERTAR + REN + RTABLA + ID + tipoins;
 
@@ -425,7 +426,7 @@ namespace Proyecto1_Compi2.Analizadores
                           | RDOUBLE
                           | RBOOL
                           | RDATE
-                          | RDATETIME;
+                          | RDATETIME;//Ya
 
             logica.Rule = logica + OR + relacional
                         | logica + AND + relacional

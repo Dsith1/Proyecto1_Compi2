@@ -35,7 +35,7 @@ namespace Proyecto1_Compi2
         {
             manejo = new Manejo();
             string Consola = txtConsola.Text;
-           
+
             string activeDir = @"c:\DBMS";
 
             string newPath = System.IO.Path.Combine(activeDir, "Maestro.usac");
@@ -44,14 +44,14 @@ namespace Proyecto1_Compi2
             {
                 Consola += manejo.Crear_Maestro();
 
-                Consola += "\r\n" + manejo.Crear_Usuario("Admin","1234");
-                              
+                Consola += "\r\n" + manejo.Crear_Usuario("Admin", "1234");
+
                 txtConsola.Text = Consola;
 
             }
 
-            
-            
+
+
         }
 
         public void AnalizarPaquete(string entrada)
@@ -100,7 +100,7 @@ namespace Proyecto1_Compi2
 
                 if (arbol.Root != null)
                 {
-                  
+
 
                 }
             }
@@ -115,7 +115,7 @@ namespace Proyecto1_Compi2
                         string Consola = txtConsola.Text;
                         Consola += "\r\nFin se Sesion";
                         txtConsola.Text = Consola;
-                                                
+
                     }
                     else
                     {
@@ -124,7 +124,7 @@ namespace Proyecto1_Compi2
                         Analizar(a);
                     }
 
-                    
+
 
                 }
             }
@@ -149,7 +149,7 @@ namespace Proyecto1_Compi2
 
                 if (arbol.Root != null)
                 {
-                   
+
 
                 }
             }
@@ -157,7 +157,7 @@ namespace Proyecto1_Compi2
             {
                 if (arbol.Root != null)
                 {
-                    a=ActuarSQL(arbol.Root);
+                    a = ActuarSQL(arbol.Root);
 
                     string Consola = txtConsola.Text;
                     Consola += a;
@@ -303,9 +303,9 @@ namespace Proyecto1_Compi2
                 case "S":
                     {
 
-                        resultado=ActuarPaquete(nodo.ChildNodes[0]);
+                        resultado = ActuarPaquete(nodo.ChildNodes[0]);
                         //if (nodo.ChildNodes.Count == 2)
-                        
+
 
                         break;
                     }
@@ -370,125 +370,268 @@ namespace Proyecto1_Compi2
                     }
 
                 case "inicio":
-
-                    resultado = ActuarSQL(nodo.ChildNodes[0]);
-                    break;
+                    {
+                        resultado = ActuarSQL(nodo.ChildNodes[0]);
+                        break;
+                    }
 
                 case "sentencias":
-
-                    if (nodo.ChildNodes.Count == 2)
                     {
-                        resultado = ActuarSQL(nodo.ChildNodes[0]);
-                        resultado += ActuarSQL(nodo.ChildNodes[1]);
-                    }
-                    else
-                    {
-                        resultado = ActuarSQL(nodo.ChildNodes[0]);
-                    }
+                        if (nodo.ChildNodes.Count == 2)
+                        {
+                            resultado = ActuarSQL(nodo.ChildNodes[0]);
+                            resultado += ActuarSQL(nodo.ChildNodes[1]);
+                        }
+                        else
+                        {
+                            resultado = ActuarSQL(nodo.ChildNodes[0]);
+                        }
 
-                        
-                    break;
+
+                        break;
+                    }
 
                 case "sentencia":
+                    {
+                        if (nodo.ChildNodes.Count == 2)
+                        {
+                            resultado = ActuarSQL(nodo.ChildNodes[0]);
 
-                    if (nodo.ChildNodes.Count == 2)
-                    {
-                        resultado = ActuarSQL(nodo.ChildNodes[0]);
-                        
+                        }
+                        else
+                        {
+                            resultado = ActuarSQL(nodo.ChildNodes[0]);
+                        }
+                        break;
                     }
-                    else
-                    {
-                        resultado = ActuarSQL(nodo.ChildNodes[0]);
-                    }
-                    break;
 
                 case "usar":
+                    {
+                        BaseActual = nodo.ChildNodes[1].Token.Text;
 
-                    BaseActual= nodo.ChildNodes[1].Token.Text;
-
-                    resultado ="\r\nLa Base de Datos que se Usará es "+BaseActual;
-                    break;
+                        resultado = "\r\nLa Base de Datos que se Usará es " + BaseActual;
+                        break;
+                    }
 
                 case "crear":
-
-                    resultado = ActuarSQL(nodo.ChildNodes[1]);
-                    break;
+                    {
+                        resultado = ActuarSQL(nodo.ChildNodes[1]);
+                        break;
+                    }
 
                 case "opciones_crear":
-
-                    resultado = ActuarSQL(nodo.ChildNodes[0]);
-                    break;
-
-                case "c_base":
-
-                    string nombreb= nodo.ChildNodes[1].Token.Text;
-                    manejo.Crear_Base(nombreb);
-
-                    resultado = "\r\nSe Ha Creado la Base "+nombreb;
-                    break;
-
-                case "c_tabla":
-
-                    if (BaseActual != "")
-                    {
-                        TablaAux = nodo.ChildNodes[1].Token.Text;
-
-                        string campos = ActuarSQL(nodo.ChildNodes[3]);
-
-                        manejo.Crear_Tabla(TablaAux, BaseActual, campos);
-
-                        resultado = "\r\nSe Ha Creado la Tabla " + TablaAux;
-                    }
-                    else
-                    {
-                        resultado = "\r\nNo Hay Base de DAtos Asignada Actualmente";
-                    }
-
-                    
-                    break;
-
-                case "campos_tabla":
-
-
-                    if (nodo.ChildNodes.Count == 3)
-                    {
-                        resultado = ActuarSQL(nodo.ChildNodes[0])+";";
-                        resultado += ActuarSQL(nodo.ChildNodes[2]);
-                    }
-                    else
                     {
                         resultado = ActuarSQL(nodo.ChildNodes[0]);
+                        break;
                     }
-                    
-                    break;
 
-                case "campo_tabla":
-
-                    if (nodo.ChildNodes.Count == 3)
+                case "c_base":
                     {
-                        if (nodo.ChildNodes[0].Term.Name.ToString().Equals("tipo_dato")){
+                        string nombreb = nodo.ChildNodes[1].Token.Text;
+                        manejo.Crear_Base(nombreb);
 
-                            resultado = ActuarSQL(nodo.ChildNodes[0]) + ",";
-                            resultado += nodo.ChildNodes[1].Token.Text + ",";
+                        resultado = "\r\nSe Ha Creado la Base " + nombreb;
+                        break;
+                    }
+
+                case "c_tabla":
+                    {
+                        if (BaseActual != "")
+                        {
+                            TablaAux = nodo.ChildNodes[1].Token.Text;
+
+                            string campos = ActuarSQL(nodo.ChildNodes[3]);
+
+                            manejo.Crear_Tabla(TablaAux, BaseActual, campos);
+
+                            resultado = "\r\nSe Ha Creado la Tabla " + TablaAux;
+                        }
+                        else
+                        {
+                            resultado = "\r\nNo Hay Base de DAtos Asignada Actualmente";
+                        }
+
+
+                        break;
+                    }
+
+                case "campos_tabla":
+                    {
+
+                        if (nodo.ChildNodes.Count == 3)
+                        {
+                            resultado = ActuarSQL(nodo.ChildNodes[0]) + ";";
                             resultado += ActuarSQL(nodo.ChildNodes[2]);
                         }
                         else
                         {
-                            resultado = nodo.ChildNodes[0].Token.Text + ",";
-                            resultado += nodo.ChildNodes[1].Token.Text + ",";
-                            resultado += ActuarSQL(nodo.ChildNodes[2]); ;
+                            resultado = ActuarSQL(nodo.ChildNodes[0]);
+                        }
 
+                        break;
+                    }
+
+                case "campo_tabla":
+                    {
+
+                        if (nodo.ChildNodes.Count == 3)
+                        {
+                            if (nodo.ChildNodes[0].Term.Name.ToString().Equals("tipo_dato"))
+                            {
+
+                                resultado = ActuarSQL(nodo.ChildNodes[0]) + ",";
+                                resultado += nodo.ChildNodes[1].Token.Text + ",";
+                                resultado += ActuarSQL(nodo.ChildNodes[2]);
+                            }
+                            else
+                            {
+                                resultado = nodo.ChildNodes[0].Token.Text + ",";
+                                resultado += nodo.ChildNodes[1].Token.Text + ",";
+                                resultado += ActuarSQL(nodo.ChildNodes[2]); ;
+
+                            }
+
+
+                        }
+                        else
+                        {
+                            if (nodo.ChildNodes[0].Term.Name.ToString().Equals("tipo_dato"))
+                            {
+
+                                resultado = ActuarSQL(nodo.ChildNodes[0]) + ",";
+                                resultado += nodo.ChildNodes[1].Token.Text.Trim(); ;
+                            }
+                            else
+                            {
+                                resultado = nodo.ChildNodes[0].Token.Text + ",";
+                                resultado += nodo.ChildNodes[1].Token.Text;
+
+                            }
+                        }
+
+                        break;
+                    }
+
+                case "tipo_dato":
+                    {
+
+
+                        resultado = nodo.ChildNodes[0].Token.Text.Trim();
+
+                        break;
+                    }
+
+                case "complementos":
+                    {
+
+
+                        if (nodo.ChildNodes.Count == 2)
+                        {
+                            resultado = ActuarSQL(nodo.ChildNodes[0]);
+
+
+                            string aux = ActuarSQL(nodo.ChildNodes[1]);
+
+                            if (resultado.Equals("NO") && aux.Equals("NULO"))
+                            {
+                                resultado += " " + aux;
+                            }
+                            else if (resultado.Equals("NO"))
+                            {
+                                resultado = ActuarSQL(nodo.ChildNodes[1]);
+                            }
+                            else
+                            {
+                                resultado += "," + aux;
+                            }
+                        }
+                        else
+                        {
+                            resultado = ActuarSQL(nodo.ChildNodes[0]);
+                        }
+
+                        break;
+                    }
+
+                case "complemento":
+                    {
+
+
+                        if (nodo.ChildNodes.Count == 2)
+                        {
+                            resultado = nodo.ChildNodes[0].Token.Text + " ";
+                            resultado += ActuarSQL(nodo.ChildNodes[1]);
+                        }
+                        else
+                        {
+                            resultado = nodo.ChildNodes[0].Token.Text;
+                        }
+
+                        break;
+                    }
+
+                case "c_objeto":
+                    {
+
+                        if (BaseActual != "")
+                        {
+
+                            if (nodo.ChildNodes.Count == 6)
+                            {
+                                TablaAux = nodo.ChildNodes[1].Token.Text;
+
+                                string campos = ActuarSQL(nodo.ChildNodes[3]);
+
+                                manejo.Crear_Objeto(TablaAux, BaseActual, campos);
+                            }
+                            else
+                            {
+                                TablaAux = nodo.ChildNodes[1].Token.Text;
+
+                                string campos = "";
+
+                                manejo.Crear_Objeto(TablaAux, BaseActual, campos);
+                            }
+
+
+
+                            resultado = "\r\nSe Ha Creado El Objeto " + TablaAux;
+                        }
+                        else
+                        {
+                            resultado = "\r\nNo Hay Base de Datos Asignada Actualmente";
                         }
 
 
+                        break;
                     }
-                    else
+
+                case "parametros":
                     {
+
+
+                        if (nodo.ChildNodes.Count == 3)
+                        {
+                            resultado = ActuarSQL(nodo.ChildNodes[0]) + ";";
+                            resultado += ActuarSQL(nodo.ChildNodes[2]);
+                        }
+                        else
+                        {
+                            resultado = ActuarSQL(nodo.ChildNodes[0]);
+                        }
+
+                        break;
+                    }
+
+                case "parametro":
+                    {
+
+
                         if (nodo.ChildNodes[0].Term.Name.ToString().Equals("tipo_dato"))
                         {
 
                             resultado = ActuarSQL(nodo.ChildNodes[0]) + ",";
-                            resultado += nodo.ChildNodes[1].Token.Text.Trim(); ;
+                            resultado += nodo.ChildNodes[1].Token.Text;
                         }
                         else
                         {
@@ -496,374 +639,679 @@ namespace Proyecto1_Compi2
                             resultado += nodo.ChildNodes[1].Token.Text;
 
                         }
+
+
+                        break;
                     }
-
-                    break;
-
-                    case "tipo_dato":
-
-
-                    resultado = nodo.ChildNodes[0].Token.Text.Trim();
-
-                    break;
-
-                case "complementos":
-
-
-                    if (nodo.ChildNodes.Count == 2)
-                    {
-                        resultado = ActuarSQL(nodo.ChildNodes[0]);
-
-                        
-                        string aux = ActuarSQL(nodo.ChildNodes[1]);
-
-                        if(resultado.Equals("NO") && aux.Equals("NULO"))
-                        {
-                            resultado += " " + aux;
-                        }
-                        else if (resultado.Equals("NO"))
-                        {
-                            resultado = ActuarSQL(nodo.ChildNodes[1]);
-                        }
-                        else
-                        {
-                            resultado += "," + aux;
-                        }
-                    }
-                    else
-                    {
-                        resultado = ActuarSQL(nodo.ChildNodes[0]);
-                    }
-
-                    break;
-
-                case "complemento":
-
-
-                    if (nodo.ChildNodes.Count == 2)
-                    {
-                        resultado = nodo.ChildNodes[0].Token.Text + " ";
-                        resultado += ActuarSQL(nodo.ChildNodes[1]);
-                    }
-                    else
-                    {
-                        resultado = nodo.ChildNodes[0].Token.Text;
-                    }
-
-                    break;
-
-                case "c_objeto":
-
-                    if (BaseActual != "")
-                    {
-
-                        if (nodo.ChildNodes.Count == 6)
-                        {
-                            TablaAux = nodo.ChildNodes[1].Token.Text;
-
-                            string campos = ActuarSQL(nodo.ChildNodes[3]);
-
-                            manejo.Crear_Objeto(TablaAux, BaseActual, campos);
-                        }
-                        else
-                        {
-                            TablaAux = nodo.ChildNodes[1].Token.Text;
-
-                            string campos = "";
-
-                            manejo.Crear_Objeto(TablaAux, BaseActual, campos);
-                        }
-
-                        
-
-                        resultado = "\r\nSe Ha Creado El Objeto " + TablaAux;
-                    }
-                    else
-                    {
-                        resultado = "\r\nNo Hay Base de Datos Asignada Actualmente";
-                    }
-
-
-                    break;
-
-                case "parametros":
-
-
-                    if (nodo.ChildNodes.Count == 3)
-                    {
-                        resultado = ActuarSQL(nodo.ChildNodes[0]) + ";";
-                        resultado += ActuarSQL(nodo.ChildNodes[2]);
-                    }
-                    else
-                    {
-                        resultado = ActuarSQL(nodo.ChildNodes[0]);
-                    }
-
-                    break;
-
-                case "parametro":
-
-
-                    if (nodo.ChildNodes[0].Term.Name.ToString().Equals("tipo_dato"))
-                    {
-
-                        resultado = ActuarSQL(nodo.ChildNodes[0]) + ",";
-                        resultado += nodo.ChildNodes[1].Token.Text;
-                    }
-                    else
-                    {
-                        resultado = nodo.ChildNodes[0].Token.Text + ",";
-                        resultado += nodo.ChildNodes[1].Token.Text;
-
-                    }
-
-
-                    break;
-
 
                 case "c_pro":
-
-                    if (BaseActual != "")
                     {
-                        
 
-                        if (nodo.ChildNodes.Count == 8)
+                        if (BaseActual != "")
                         {
-                            TablaAux = nodo.ChildNodes[1].Token.Text;
 
-                            string campos = ActuarSQL(nodo.ChildNodes[3]);
-                            Cproc = true;
 
-                            string instrucciones= ActuarSQL(nodo.ChildNodes[6]);
+                            if (nodo.ChildNodes.Count == 8)
+                            {
+                                TablaAux = nodo.ChildNodes[1].Token.Text;
 
-                            Cproc = false;
+                                string campos = ActuarSQL(nodo.ChildNodes[3]);
+                                Cproc = true;
 
-                            manejo.Crear_Objeto(TablaAux, BaseActual, campos);
+                                string instrucciones = ActuarSQL(nodo.ChildNodes[6]);
+
+                                Cproc = false;
+
+                                manejo.Crear_Objeto(TablaAux, BaseActual, campos);
+                            }
+                            else
+                            {
+                                TablaAux = nodo.ChildNodes[1].Token.Text;
+
+                                Cproc = true;
+
+                                string instrucciones = ActuarSQL(nodo.ChildNodes[5]);
+
+                                Cproc = false;
+
+                                //manejo.Crear_Objeto(TablaAux, BaseActual, "");
+                            }
+
+
+
+                            resultado = "\r\nSe Ha Creado El Procedimiento " + TablaAux;
                         }
                         else
                         {
-                            TablaAux = nodo.ChildNodes[1].Token.Text;
-
-                            Cproc = true;
-
-                            string instrucciones = ActuarSQL(nodo.ChildNodes[5]);
-
-                            Cproc = false;
-
-                            manejo.Crear_Objeto(TablaAux, BaseActual, "");
+                            resultado = "\r\nNo Hay Base de Datos Asignada Actualmente";
                         }
 
 
-
-                        resultado = "\r\nSe Ha Creado El Procedimiento " + TablaAux;
+                        break;
                     }
-                    else
-                    {
-                        resultado = "\r\nNo Hay Base de Datos Asignada Actualmente";
-                    }
-
-
-                    break;
 
                 case "instrucciones":
-
-
-                    if (nodo.ChildNodes.Count == 3)
-                    {
-                        resultado = ActuarSQL(nodo.ChildNodes[0]);
-                        resultado += ActuarSQL(nodo.ChildNodes[2]);
-                    }
-                    else
-                    {
-                        resultado = ActuarSQL(nodo.ChildNodes[0]);
-                    }
-
-                    break;
-
-                case "instruccion":
-
-                    if (nodo.ChildNodes[0].Term.Name.ToString().Equals("RDETENER"))
-                    {
-                        //
-                    }
-                    else
-                    {
-                        resultado = ActuarSQL(nodo.ChildNodes[0]);
-                    }
-
-                    break;
-
-                case "c_usuario":
-
-                    string Nusuario= nodo.ChildNodes[1].Token.Text;
-                    string NPass = nodo.ChildNodes[5].Token.Text;
-
-                    resultado = "\r\n"+manejo.Crear_Usuario(Nusuario, NPass);
-
-                    break;
-
-                case "imprimir":
-
-                    resultado = ActuarSQL(nodo.ChildNodes[2]);
-
-                    break;
-
-                case "expresion":
-
-                    if (nodo.ChildNodes[0].Term.Name.ToString().Equals("contarAsig")|| nodo.ChildNodes[0].Term.Name.ToString().Equals("llamada") || nodo.ChildNodes[0].Term.Name.ToString().Equals("rutaB"))
-                    {
-                        resultado = ActuarSQL(nodo.ChildNodes[0]);
-                    }
-                    else
-                    {
-                        resultado = nodo.ChildNodes[0].Token.Text;
-                    }
-                    
-                    break;
-
-                case "llamada":
-
-                    if (nodo.ChildNodes.Count == 4)
                     {
 
-                        string proc= ActuarSQL(nodo.ChildNodes[0]);
 
-                        string param= ActuarSQL(nodo.ChildNodes[2]);
-
-                    }
-                    else
-                    {
-                        if (nodo.ChildNodes[0].Term.Name.ToString().Equals("rutaB"))
+                        if (nodo.ChildNodes.Count == 3)
                         {
-                            resultado = ActuarSQL(nodo.ChildNodes[0]);
-                        }
-                        else if (nodo.ChildNodes[0].Term.Name.ToString().Equals("RFECHA_HORA"))
-                        {
-                            resultado = DateTime.Now.ToString("g");
-                        }
-                        else
-                        {
-                            resultado = DateTime.Now.ToString("d");
-                        }
-                    }
-
-                    break;
-
-                case "rutaB":
-
-                    if (nodo.ChildNodes.Count == 3)
-                    {
-                        resultado = ActuarSQL(nodo.ChildNodes[0])+",";
-
-                        resultado += nodo.ChildNodes[2].Token.Text;
-
-                    }
-                    else
-                    {
-                        resultado += nodo.ChildNodes[0].Token.Text;
-                    }
-
-
-                    break;
-
-
-                case "insertar":
-
-                    TablaAux= nodo.ChildNodes[3].Token.Text;
-
-                    string Datos = ActuarSQL(nodo.ChildNodes[4]);
-
-                    break;
-
-                case "tipoins":
-
-                    if (nodo.ChildNodes.Count == 8)
-                    {
-                        tipoin = 1;
-
-                        resultado = ActuarSQL(nodo.ChildNodes[1])+";";
-                        resultado += ActuarSQL(nodo.ChildNodes[5]);
-
-                    }
-                    else
-                    {
-                        tipoin = 0;
-                        resultado += ActuarSQL(nodo.ChildNodes[1]);
-                    }
-                    
-                    break;
-
-                case "campos":
-
-
-                    if (nodo.ChildNodes.Count == 3)
-                    {
-                        resultado = nodo.ChildNodes[0].Token.Text + ",";
-                        resultado += ActuarSQL(nodo.ChildNodes[2]);
-                    }
-                    else
-                    {
-                        resultado = nodo.ChildNodes[0].Token.Text;
-                    }
-
-                    break;
-
-                case "valores":
-
-
-                    if (nodo.ChildNodes.Count == 3)
-                    {
-                        resultado = ActuarSQL(nodo.ChildNodes[0]) + ",";
-                        resultado += ActuarSQL(nodo.ChildNodes[2]);
-                    }
-                    else
-                    {
-                        resultado = ActuarSQL(nodo.ChildNodes[0]);
-                    }
-
-                    break;
-
-                case "aritemtica":
-
-
-                    if (nodo.ChildNodes.Count == 3)
-                    {
-                        if (nodo.ChildNodes[1].Term.Name.ToString().Equals("SUMA"))
-                        {
-
                             resultado = ActuarSQL(nodo.ChildNodes[0]);
                             resultado += ActuarSQL(nodo.ChildNodes[2]);
                         }
-                        else if (nodo.ChildNodes[1].Term.Name.ToString().Equals("RESTA"))
+                        else
+                        {
+                            resultado = ActuarSQL(nodo.ChildNodes[0]);
+                        }
+
+                        break;
+                    }
+
+                case "instruccion":
+                    {
+
+                        if (nodo.ChildNodes[0].Term.Name.ToString().Equals("RDETENER"))
+                        {
+                            //
+                        }
+                        else
+                        {
+                            resultado = ActuarSQL(nodo.ChildNodes[0]);
+                        }
+
+                        break;
+                    }
+
+                case "c_usuario":
+                    {
+
+                        string Nusuario = nodo.ChildNodes[1].Token.Text;
+                        string NPass = nodo.ChildNodes[5].Token.Text;
+
+                        resultado = "\r\n" + manejo.Crear_Usuario(Nusuario, NPass);
+
+                        break;
+                    }
+
+                case "imprimir":
+                    {
+
+                        resultado = "\r\n" + ActuarSQL(nodo.ChildNodes[2]);
+
+                        if (resultado.Contains("Error")){
+                            if (resultado.Contains(";"))
+                            {
+                                string[] val = resultado.Split(';');
+
+                                resultado = "\r\nError al Imprimir " + val[1];
+                            }
+                        }
+                        else
+                        {
+                            if (resultado.Contains(";"))
+                            {
+                                string[] val = resultado.Split(';');
+
+                                resultado = "\r\n" + val[1];
+                            }
+                        }
+
+                        
+
+                        resultado = resultado.Replace("\"", "");
+
+                        break;
+                    }
+
+                case "expresion":
+                    {
+
+                        if (nodo.ChildNodes[0].Term.Name.ToString().Equals("contarAsig") || nodo.ChildNodes[0].Term.Name.ToString().Equals("llamada") || nodo.ChildNodes[0].Term.Name.ToString().Equals("rutaB"))
+                        {
+                            resultado = ActuarSQL(nodo.ChildNodes[0]);
+                        }
+                        else
                         {
 
+                            if (nodo.ChildNodes[0].Token.Terminal.Name.Equals("entero"))
+                            {
+
+                                string aux = nodo.ChildNodes[0].Token.Text;
+
+                                if (aux.Contains("."))
+                                {
+                                    resultado = "doble;" + nodo.ChildNodes[0].Token.Text;
+                                }
+                                else
+                                {
+                                    resultado = nodo.ChildNodes[0].Token.Terminal.Name + ";" + nodo.ChildNodes[0].Token.Text;
+                                }
+                            }
+                            else
+                            {
+                                resultado = nodo.ChildNodes[0].Token.Terminal.Name + ";" + nodo.ChildNodes[0].Token.Text;
+                            }
+
+                            
                         }
-                        else if (nodo.ChildNodes[1].Term.Name.ToString().Equals("DIV"))
+
+                        break;
+                    }
+
+                case "llamada":
+                    {
+
+                        if (nodo.ChildNodes.Count == 4)
                         {
 
-                        }
-                        else if (nodo.ChildNodes[1].Term.Name.ToString().Equals("MULTI"))
-                        {
+                            string proc = ActuarSQL(nodo.ChildNodes[0]);
+
+                            string param = ActuarSQL(nodo.ChildNodes[2]);
 
                         }
                         else
                         {
-                            resultado = ActuarSQL(nodo.ChildNodes[1]);
+                            if (nodo.ChildNodes[0].Term.Name.ToString().Equals("rutaB"))
+                            {
+                                resultado = ActuarSQL(nodo.ChildNodes[0]);
+                            }
+                            else if (nodo.ChildNodes[0].Term.Name.ToString().Equals("RFECHA_HORA"))
+                            {
+                                resultado = DateTime.Now.ToString("g");
+                            }
+                            else
+                            {
+                                resultado = DateTime.Now.ToString("d");
+                            }
                         }
 
-                        
-                    }
-                    else if (nodo.ChildNodes.Count == 2)
-                    {
-                        resultado = ActuarSQL(nodo.ChildNodes[1]);
-                        
-                    }
-                    else
-                    {
-                        resultado = ActuarSQL(nodo.ChildNodes[0]);
+                        break;
                     }
 
-                    break;
+                case "rutaB":
+                    {
+
+                        if (nodo.ChildNodes.Count == 3)
+                        {
+                            resultado = ActuarSQL(nodo.ChildNodes[0]) + ",";
+
+                            resultado += nodo.ChildNodes[2].Token.Text;
+
+                        }
+                        else
+                        {
+                            resultado += nodo.ChildNodes[0].Token.Text;
+                        }
+
+
+                        break;
+                    }
+
+                case "insertar":
+                    {
+
+                        TablaAux = nodo.ChildNodes[3].Token.Text;
+
+                        string Datos = ActuarSQL(nodo.ChildNodes[4]);
+
+                        break;
+                    }
+
+                case "tipoins":
+                    {
+
+                        if (nodo.ChildNodes.Count == 8)
+                        {
+                            tipoin = 1;
+
+                            resultado = ActuarSQL(nodo.ChildNodes[1]) + ";";
+                            resultado += ActuarSQL(nodo.ChildNodes[5]);
+
+                        }
+                        else
+                        {
+                            tipoin = 0;
+                            resultado += ActuarSQL(nodo.ChildNodes[1]);
+                        }
+
+                        break;
+                    }
+
+                case "campos":
+                    {
+
+
+                        if (nodo.ChildNodes.Count == 3)
+                        {
+                            resultado = nodo.ChildNodes[0].Token.Text + ",";
+                            resultado += ActuarSQL(nodo.ChildNodes[2]);
+                        }
+                        else
+                        {
+                            resultado = nodo.ChildNodes[0].Token.Text;
+                        }
+
+                        break;
+                    }
+
+                case "valores":
+                    {
+
+
+                        if (nodo.ChildNodes.Count == 3)
+                        {
+                            resultado = ActuarSQL(nodo.ChildNodes[0]);                           
+                            resultado += ActuarSQL(nodo.ChildNodes[2]);
+                        }
+                        else
+                        {
+                            resultado = ActuarSQL(nodo.ChildNodes[0]);
+                        }
+
+                        break;
+                    }
+
+                case "actualizar":
+                    {
+
+                        TablaAux = nodo.ChildNodes[2].Token.Text;
+
+                        string camposA = ActuarSQL(nodo.ChildNodes[4]);
+
+                        string valorA = ActuarSQL(nodo.ChildNodes[8]);
+
+                        if (nodo.ChildNodes.Count == 12)
+                        {
+                            string condicion = ActuarSQL(nodo.ChildNodes[10]);
+
+                            //Actualiza con condicion
+                        }
+                        else
+                        {
+                            //Actualiza completo
+                        }
+
+
+                        break;
+                    }
+
+                case "condicion":
+                    {
+
+
+
+                        break;
+                    }
+
+                case "borrar":
+                    {
+
+                        TablaAux = nodo.ChildNodes[3].Token.Text;
+
+
+                        if (nodo.ChildNodes.Count == 6)
+                        {
+                            string condicion = ActuarSQL(nodo.ChildNodes[10]);
+
+                            //Borrar con condicion
+                        }
+                        else
+                        {
+                            //Borrar completo
+                        }
+
+                        break;
+                    }
+
+                case "aritemtica":
+                    {
+
+
+                        if (nodo.ChildNodes.Count == 3)
+                        {
+                            if (nodo.ChildNodes[1].Term.Name.ToString().Equals("SUMA"))
+                            {
+
+                                string term1 = ActuarSQL(nodo.ChildNodes[0]);
+                                string term2 = ActuarSQL(nodo.ChildNodes[2]);
+
+                                string[] OP1 = term1.Split(';');
+                                string[] OP2 = term2.Split(';');
+
+                                string tipo="";
+                                string re = "";
+
+                                if (OP1[0].Equals("entero"))
+                                {
+                                    if (OP2[0].Equals("entero"))
+                                    {
+                                        int aux = Convert.ToInt32(OP1[1]) + Convert.ToInt32(OP2[1]);
+                                        tipo = "entero";
+                                        re = aux.ToString();
+                                    }
+                                    else if (OP2[0].Equals("doble"))
+                                    {
+                                        double aux = Convert.ToDouble(OP1[1]) + Convert.ToDouble(OP2[1]);
+                                        tipo = "doble";
+                                        re = aux.ToString();
+                                    }
+                                    else if (OP2[0].Equals("Cadena"))
+                                    {
+
+                                        string a = OP2[1];
+                                        a = a.Replace("\"", "");
+                                        tipo= "Cadena";
+                                        re = "\"" + OP1[1] + OP2[1] + "\"";
+                                    }                                    
+                                    else
+                                    {
+                                        tipo = "Error";
+                                        re = "Error tipos Incompatibles";
+                                    }
+                                }
+                                else if (OP1[0].Equals("doble"))
+                                {
+                                    if (OP2[0].Equals("entero"))
+                                    {
+                                        double aux = Convert.ToDouble(OP1[1]) + Convert.ToDouble(OP2[1]);
+                                        tipo = "doble";
+                                        re = aux.ToString();
+                                    }
+                                    else if (OP2[0].Equals("doble"))
+                                    {
+                                        double aux = Convert.ToDouble(OP1[1]) + Convert.ToDouble(OP2[1]);
+                                        tipo = "doble";
+                                        re = aux.ToString();
+                                    }
+                                    else if (OP2[0].Equals("Cadena"))
+                                    {
+
+                                        string a = OP2[1];
+                                        a = a.Replace("\"", "");
+                                        tipo = "Cadena";
+                                        re = "\"" + OP1[1] + OP2[1] + "\"";
+                                    }
+                                    else
+                                    {
+                                        tipo = "Error";
+                                        re = "Error tipos Incompatibles";
+                                    }
+                                }
+                                else if (OP1[0].Equals("Cadena"))
+                                {
+                                    if(OP2[0].Equals("entero") || OP2[0].Equals("doble"))
+                                    {
+                                        tipo = "Cadena";
+                                        re = "\"" + OP1[1] + OP2[1] + "\"";
+                                    }
+                                    else if (OP2[0].Equals("Cadena"))
+                                    {
+                                        string a = OP1[1];
+                                        a = a.Replace("\"", "");
+
+                                        tipo = "Cadena";
+                                        re = "\"" + OP1[1] + OP2[1] + "\"";
+                                    }
+                                    else
+                                    {
+                                        tipo = "Error";
+                                        re = "Error tipos Incompatibles";   
+                                    }
+                                }
+
+
+                                    resultado = tipo + ";" + re;
+                            }
+                            else if (nodo.ChildNodes[1].Term.Name.ToString().Equals("RESTA"))
+                            {
+                                string term1 = ActuarSQL(nodo.ChildNodes[0]);
+                                string term2 = ActuarSQL(nodo.ChildNodes[2]);
+
+                                string[] OP1 = term1.Split(';');
+                                string[] OP2 = term2.Split(';');
+
+                                string tipo="";
+                                string re = "";
+
+                                if (OP1[0].Equals("entero"))
+                                {
+                                    if (OP2[0].Equals("entero"))
+                                    {
+                                        int aux = Convert.ToInt32(OP1[1]) - Convert.ToInt32(OP2[1]);
+                                        tipo = "entero";
+                                        re = aux.ToString();
+                                    }
+                                    else if (OP2[0].Equals("doble"))
+                                    {
+                                        double aux = Convert.ToDouble(OP1[1]) - Convert.ToDouble(OP2[1]);
+                                        tipo = "doble";
+                                        re = aux.ToString();
+                                    }
+                                    else
+                                    {
+                                        tipo = "Error";
+                                        re = "Error tipos Incompatibles";
+                                    }
+
+                                }
+                                else if (OP1[0].Equals("doble"))
+                                {
+                                    if (OP2[0].Equals("entero"))
+                                    {
+                                        double aux = Convert.ToDouble(OP1[1]) - Convert.ToDouble(OP2[1]);
+                                        tipo = "doble";
+                                        re = aux.ToString();
+                                    }
+                                    else if (OP2[0].Equals("doble"))
+                                    {
+                                        double aux = Convert.ToDouble(OP1[1]) - Convert.ToDouble(OP2[1]);
+                                        tipo = "doble";
+                                        re = aux.ToString();
+                                    }
+                                    else
+                                    {
+                                        tipo = "Error";
+                                        re = "Error tipos Incompatibles";
+                                    }
+
+                                }
+                                else
+                                {
+                                    tipo = "Error";
+                                    re = "Error tipos Incompatibles";
+                                }
+                                resultado = tipo + ";" + re;
+                            }
+                            else if (nodo.ChildNodes[1].Term.Name.ToString().Equals("DIV"))
+                            {
+                                string term1 = ActuarSQL(nodo.ChildNodes[0]);
+                                string term2 = ActuarSQL(nodo.ChildNodes[2]);
+
+                                string[] OP1 = term1.Split(';');
+                                string[] OP2 = term2.Split(';');
+
+                                string tipo = "";
+                                string re = "";
+
+                                if (OP1[0].Equals("entero"))
+                                {
+                                    if (OP2[0].Equals("entero"))
+                                    {
+                                        int aux = Convert.ToInt32(OP1[1]) / Convert.ToInt32(OP2[1]);
+                                        tipo = "entero";
+                                        re = aux.ToString();
+                                    }
+                                    else if (OP2[0].Equals("doble"))
+                                    {
+                                        double aux = Convert.ToDouble(OP1[1]) / Convert.ToDouble(OP2[1]);
+                                        tipo = "doble";
+                                        re = aux.ToString();
+                                    }
+                                    else
+                                    {
+                                        tipo = "Error";
+                                        re = "Error tipos Incompatibles";
+                                    }
+
+                                }
+                                else if (OP1[0].Equals("doble"))
+                                {
+                                    if (OP2[0].Equals("entero"))
+                                    {
+                                        double aux = Convert.ToDouble(OP1[1]) / Convert.ToDouble(OP2[1]);
+                                        tipo = "doble";
+                                        re = aux.ToString();
+                                    }
+                                    else if (OP2[0].Equals("doble"))
+                                    {
+                                        double aux = Convert.ToDouble(OP1[1]) / Convert.ToDouble(OP2[1]);
+                                        tipo = "doble";
+                                        re = aux.ToString();
+                                    }
+                                    else
+                                    {
+                                        tipo = "Error";
+                                        re = "Error tipos Incompatibles";
+                                    }
+
+                                }
+                                else
+                                {
+                                    tipo = "Error";
+                                    re = "Error tipos Incompatibles";
+                                }
+
+                                resultado = tipo + ";" + re;
+                            }
+                            else if (nodo.ChildNodes[1].Term.Name.ToString().Equals("MULTI"))
+                            {
+                                string term1 = ActuarSQL(nodo.ChildNodes[0]);
+                                string term2 = ActuarSQL(nodo.ChildNodes[2]);
+
+                                string[] OP1 = term1.Split(';');
+                                string[] OP2 = term2.Split(';');
+
+                                string tipo = "";
+                                string re = "";
+
+                                if (OP1[0].Equals("entero"))
+                                {
+                                    if (OP2[0].Equals("entero"))
+                                    {
+                                        int aux = Convert.ToInt32(OP1[1]) * Convert.ToInt32(OP2[1]);
+                                        tipo = "entero";
+                                        re = aux.ToString();
+                                    }
+                                    else if (OP2[0].Equals("doble"))
+                                    {
+                                        double aux = Convert.ToDouble(OP1[1]) * Convert.ToDouble(OP2[1]);
+                                        tipo = "doble";
+                                        re = aux.ToString();
+                                    }
+                                    else
+                                    {
+                                        tipo = "Error";
+                                        re = "Error tipos Incompatibles";
+                                    }
+
+                                }
+                                if (OP1[0].Equals("doble"))
+                                {
+                                    if (OP2[0].Equals("entero"))
+                                    {
+                                        double aux = Convert.ToDouble(OP1[1]) * Convert.ToDouble(OP2[1]);
+                                        tipo = "doble";
+                                        re = aux.ToString();
+                                    }
+                                    else if (OP2[0].Equals("doble"))
+                                    {
+                                        double aux = Convert.ToDouble(OP1[1]) * Convert.ToDouble(OP2[1]);
+                                        tipo = "doble";
+                                        re = aux.ToString();
+                                    }
+                                    else
+                                    {
+                                        tipo = "Error";
+                                        re = "Error tipos Incompatibles";
+                                    }
+
+                                }
+                                else
+                                {
+                                    tipo = "Error";
+                                    re = "Error tipos Incompatibles";
+                                }
+
+                                resultado = tipo + ";" + re;
+                            }
+                            else if (nodo.ChildNodes[1].Term.Name.ToString().Equals("POTENCIA"))
+                            {
+                                string term1 = ActuarSQL(nodo.ChildNodes[0]);
+                                string term2 = ActuarSQL(nodo.ChildNodes[2]);
+
+                                string[] OP1 = term1.Split(';');
+                                string[] OP2 = term2.Split(';');
+
+                                string tipo = "";
+                                string re = "";
+
+                                if (OP1[0].Equals("entero"))
+                                {
+                                    if (OP2[0].Equals("entero") || OP2[0].Equals("doble"))
+                                    {
+                                        double aux = Math.Pow(Convert.ToDouble(OP1[1]), Convert.ToDouble(OP2[1]));
+                                        tipo = "doble";
+                                        re = aux.ToString();
+                                    }
+                                    else
+                                    {
+                                        tipo = "Error";
+                                        re = "Error tipos Incompatibles";
+                                    }
+
+                                }
+                                else if (OP1[0].Equals("doble"))
+                                {
+                                    if (OP2[0].Equals("entero") || OP2[0].Equals("doble"))
+                                    {
+                                        double aux = Math.Pow(Convert.ToDouble(OP1[1]), Convert.ToDouble(OP2[1]));
+                                        tipo = "doble";
+                                        re = aux.ToString();
+                                    }
+                                    else
+                                    {
+                                        tipo = "Error";
+                                        re = "Error tipos Incompatibles";
+                                    }
+
+                                }
+                                else
+                                {
+                                    tipo = "Error";
+                                    re = "Error tipos Incompatibles";
+                                }
+
+                                resultado = tipo + ";" + re;
+                            }
+                            else
+                            {
+                                resultado = ActuarSQL(nodo.ChildNodes[1]);
+                            }
+
+
+                        }
+                        else if (nodo.ChildNodes.Count == 2)
+                        {
+                            resultado = "-" + ActuarSQL(nodo.ChildNodes[1]);
+
+                        }
+                        else
+                        {
+                            resultado = ActuarSQL(nodo.ChildNodes[0]);
+                        }
+
+                        break;
+                    }
 
             }
 

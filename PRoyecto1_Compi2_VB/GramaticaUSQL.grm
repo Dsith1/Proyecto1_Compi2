@@ -105,7 +105,7 @@ Comment Line  = '#'
 
 <c_usuario>::= 'USUARIO'   <ID>   'COLOCAR'   'password'   '='   Cadena   ';'
 
-<imprimir>::= 'IMPRIMIR'   '('   <expresion>   ')'   ';'
+<imprimir>::= 'IMPRIMIR'   '('   <valores>   ')'   ';'
 
 <insertar>::= 'INSERTAR'   'EN'   'TABLA'   <ID>   <tipoins>
 
