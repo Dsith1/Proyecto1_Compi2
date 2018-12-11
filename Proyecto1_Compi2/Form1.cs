@@ -20,6 +20,7 @@ namespace Proyecto1_Compi2
         string BaseActual;
         string UserActaul;
         string TablaAux;
+        int tipoin;
         Manejo manejo;
         bool Cproc = false;
 
@@ -681,9 +682,186 @@ namespace Proyecto1_Compi2
 
                 case "instruccion":
 
+                    if (nodo.ChildNodes[0].Term.Name.ToString().Equals("RDETENER"))
+                    {
+                        //
+                    }
+                    else
+                    {
                         resultado = ActuarSQL(nodo.ChildNodes[0]);
-                    
+                    }
 
+                    break;
+
+                case "c_usuario":
+
+                    string Nusuario= nodo.ChildNodes[1].Token.Text;
+                    string NPass = nodo.ChildNodes[5].Token.Text;
+
+                    resultado = "\r\n"+manejo.Crear_Usuario(Nusuario, NPass);
+
+                    break;
+
+                case "imprimir":
+
+                    resultado = ActuarSQL(nodo.ChildNodes[2]);
+
+                    break;
+
+                case "expresion":
+
+                    if (nodo.ChildNodes[0].Term.Name.ToString().Equals("contarAsig")|| nodo.ChildNodes[0].Term.Name.ToString().Equals("llamada") || nodo.ChildNodes[0].Term.Name.ToString().Equals("rutaB"))
+                    {
+                        resultado = ActuarSQL(nodo.ChildNodes[0]);
+                    }
+                    else
+                    {
+                        resultado = nodo.ChildNodes[0].Token.Text;
+                    }
+                    
+                    break;
+
+                case "llamada":
+
+                    if (nodo.ChildNodes.Count == 4)
+                    {
+
+                        string proc= ActuarSQL(nodo.ChildNodes[0]);
+
+                        string param= ActuarSQL(nodo.ChildNodes[2]);
+
+                    }
+                    else
+                    {
+                        if (nodo.ChildNodes[0].Term.Name.ToString().Equals("rutaB"))
+                        {
+                            resultado = ActuarSQL(nodo.ChildNodes[0]);
+                        }
+                        else if (nodo.ChildNodes[0].Term.Name.ToString().Equals("RFECHA_HORA"))
+                        {
+                            resultado = DateTime.Now.ToString("g");
+                        }
+                        else
+                        {
+                            resultado = DateTime.Now.ToString("d");
+                        }
+                    }
+
+                    break;
+
+                case "rutaB":
+
+                    if (nodo.ChildNodes.Count == 3)
+                    {
+                        resultado = ActuarSQL(nodo.ChildNodes[0])+",";
+
+                        resultado += nodo.ChildNodes[2].Token.Text;
+
+                    }
+                    else
+                    {
+                        resultado += nodo.ChildNodes[0].Token.Text;
+                    }
+
+
+                    break;
+
+
+                case "insertar":
+
+                    TablaAux= nodo.ChildNodes[3].Token.Text;
+
+                    string Datos = ActuarSQL(nodo.ChildNodes[4]);
+
+                    break;
+
+                case "tipoins":
+
+                    if (nodo.ChildNodes.Count == 8)
+                    {
+                        tipoin = 1;
+
+                        resultado = ActuarSQL(nodo.ChildNodes[1])+";";
+                        resultado += ActuarSQL(nodo.ChildNodes[5]);
+
+                    }
+                    else
+                    {
+                        tipoin = 0;
+                        resultado += ActuarSQL(nodo.ChildNodes[1]);
+                    }
+                    
+                    break;
+
+                case "campos":
+
+
+                    if (nodo.ChildNodes.Count == 3)
+                    {
+                        resultado = nodo.ChildNodes[0].Token.Text + ",";
+                        resultado += ActuarSQL(nodo.ChildNodes[2]);
+                    }
+                    else
+                    {
+                        resultado = nodo.ChildNodes[0].Token.Text;
+                    }
+
+                    break;
+
+                case "valores":
+
+
+                    if (nodo.ChildNodes.Count == 3)
+                    {
+                        resultado = ActuarSQL(nodo.ChildNodes[0]) + ",";
+                        resultado += ActuarSQL(nodo.ChildNodes[2]);
+                    }
+                    else
+                    {
+                        resultado = ActuarSQL(nodo.ChildNodes[0]);
+                    }
+
+                    break;
+
+                case "aritemtica":
+
+
+                    if (nodo.ChildNodes.Count == 3)
+                    {
+                        if (nodo.ChildNodes[1].Term.Name.ToString().Equals("SUMA"))
+                        {
+
+                            resultado = ActuarSQL(nodo.ChildNodes[0]);
+                            resultado += ActuarSQL(nodo.ChildNodes[2]);
+                        }
+                        else if (nodo.ChildNodes[1].Term.Name.ToString().Equals("RESTA"))
+                        {
+
+                        }
+                        else if (nodo.ChildNodes[1].Term.Name.ToString().Equals("DIV"))
+                        {
+
+                        }
+                        else if (nodo.ChildNodes[1].Term.Name.ToString().Equals("MULTI"))
+                        {
+
+                        }
+                        else
+                        {
+                            resultado = ActuarSQL(nodo.ChildNodes[1]);
+                        }
+
+                        
+                    }
+                    else if (nodo.ChildNodes.Count == 2)
+                    {
+                        resultado = ActuarSQL(nodo.ChildNodes[1]);
+                        
+                    }
+                    else
+                    {
+                        resultado = ActuarSQL(nodo.ChildNodes[0]);
+                    }
 
                     break;
 

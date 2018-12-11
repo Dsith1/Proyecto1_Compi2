@@ -48,8 +48,7 @@ namespace Proyecto1_Compi2.Elementos
 
             
         }
-
-
+        
         public string Crear_Usuario(string nombre,string contra)
         {
             string activeDir = @"c:\DBMS";
@@ -108,8 +107,7 @@ namespace Proyecto1_Compi2.Elementos
 
             return "Se Ha Creado el Usuario "+nombre;
         }
-
-
+        
         public string Crear_Base(string nombre)
         {
 
@@ -186,8 +184,7 @@ namespace Proyecto1_Compi2.Elementos
             
 
         }
-
-
+        
         public string Crear_Tabla(string nombre,string Base,string campos)
         {
             string activeDir = @"c:\DBMS";

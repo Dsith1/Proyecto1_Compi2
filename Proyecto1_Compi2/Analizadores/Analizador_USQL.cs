@@ -452,6 +452,7 @@ namespace Proyecto1_Compi2.Analizadores
                            | expresion;
 
             expresion.Rule = Entero
+                           | Doble
                            | Cadena
                            | tfecha
                            | tfechahora
