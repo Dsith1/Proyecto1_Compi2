@@ -274,6 +274,8 @@ namespace Proyecto1_Compi2.Analizadores
                             | parametro;
 
             parametro.Rule = tipo_dato + ID
+                             | ID + ID
+                             | ID + Variable       
                              | tipo_dato + Variable;
 
             c_pro.Rule = RPROCEDIMIENTO + ID + "(" + parametros + ")" + "{" + instrucciones + "}"

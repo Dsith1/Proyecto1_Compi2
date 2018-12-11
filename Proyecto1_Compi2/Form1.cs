@@ -16,11 +16,13 @@ namespace Proyecto1_Compi2
 
         string graph = "";
         string cadena;
-        bool activa = true;
         bool escuchar = false;
         string BaseActual;
+        string UserActaul;
         string TablaAux;
         Manejo manejo;
+        bool Cproc = false;
+
 
 
         public Form1()
@@ -546,6 +548,142 @@ namespace Proyecto1_Compi2
                     {
                         resultado = nodo.ChildNodes[0].Token.Text;
                     }
+
+                    break;
+
+                case "c_objeto":
+
+                    if (BaseActual != "")
+                    {
+
+                        if (nodo.ChildNodes.Count == 6)
+                        {
+                            TablaAux = nodo.ChildNodes[1].Token.Text;
+
+                            string campos = ActuarSQL(nodo.ChildNodes[3]);
+
+                            manejo.Crear_Objeto(TablaAux, BaseActual, campos);
+                        }
+                        else
+                        {
+                            TablaAux = nodo.ChildNodes[1].Token.Text;
+
+                            string campos = "";
+
+                            manejo.Crear_Objeto(TablaAux, BaseActual, campos);
+                        }
+
+                        
+
+                        resultado = "\r\nSe Ha Creado El Objeto " + TablaAux;
+                    }
+                    else
+                    {
+                        resultado = "\r\nNo Hay Base de Datos Asignada Actualmente";
+                    }
+
+
+                    break;
+
+                case "parametros":
+
+
+                    if (nodo.ChildNodes.Count == 3)
+                    {
+                        resultado = ActuarSQL(nodo.ChildNodes[0]) + ";";
+                        resultado += ActuarSQL(nodo.ChildNodes[2]);
+                    }
+                    else
+                    {
+                        resultado = ActuarSQL(nodo.ChildNodes[0]);
+                    }
+
+                    break;
+
+                case "parametro":
+
+
+                    if (nodo.ChildNodes[0].Term.Name.ToString().Equals("tipo_dato"))
+                    {
+
+                        resultado = ActuarSQL(nodo.ChildNodes[0]) + ",";
+                        resultado += nodo.ChildNodes[1].Token.Text;
+                    }
+                    else
+                    {
+                        resultado = nodo.ChildNodes[0].Token.Text + ",";
+                        resultado += nodo.ChildNodes[1].Token.Text;
+
+                    }
+
+
+                    break;
+
+
+                case "c_pro":
+
+                    if (BaseActual != "")
+                    {
+                        
+
+                        if (nodo.ChildNodes.Count == 8)
+                        {
+                            TablaAux = nodo.ChildNodes[1].Token.Text;
+
+                            string campos = ActuarSQL(nodo.ChildNodes[3]);
+                            Cproc = true;
+
+                            string instrucciones= ActuarSQL(nodo.ChildNodes[6]);
+
+                            Cproc = false;
+
+                            manejo.Crear_Objeto(TablaAux, BaseActual, campos);
+                        }
+                        else
+                        {
+                            TablaAux = nodo.ChildNodes[1].Token.Text;
+
+                            Cproc = true;
+
+                            string instrucciones = ActuarSQL(nodo.ChildNodes[5]);
+
+                            Cproc = false;
+
+                            manejo.Crear_Objeto(TablaAux, BaseActual, "");
+                        }
+
+
+
+                        resultado = "\r\nSe Ha Creado El Procedimiento " + TablaAux;
+                    }
+                    else
+                    {
+                        resultado = "\r\nNo Hay Base de Datos Asignada Actualmente";
+                    }
+
+
+                    break;
+
+                case "instrucciones":
+
+
+                    if (nodo.ChildNodes.Count == 3)
+                    {
+                        resultado = ActuarSQL(nodo.ChildNodes[0]);
+                        resultado += ActuarSQL(nodo.ChildNodes[2]);
+                    }
+                    else
+                    {
+                        resultado = ActuarSQL(nodo.ChildNodes[0]);
+                    }
+
+                    break;
+
+                case "instruccion":
+
+                        resultado = ActuarSQL(nodo.ChildNodes[0]);
+                    
+
 
                     break;
 

@@ -339,7 +339,6 @@ namespace Proyecto1_Compi2.Elementos
             }
         }
 
-
         public string Insertar_Tabla(string valores,string Base, string Tabla)
         {
             string activeDir = @"c:\DBMS";
@@ -448,6 +447,450 @@ namespace Proyecto1_Compi2.Elementos
 
 
             
+        }
+
+        public string Crear_Objeto(string nombre, string Base, string campos)
+        {
+
+            string activeDir = @"c:\DBMS";
+
+            string newPath = System.IO.Path.Combine(activeDir, Base + "_Objetos.usac");
+
+            string PathM = System.IO.Path.Combine(activeDir, Base + ".usac");
+
+
+            if (File.Exists(newPath) == false)
+            {
+                System.IO.FileStream fs = System.IO.File.Create(newPath);
+                fs.Close();
+
+                if (new FileInfo(PathM).Length == 0)
+                {
+                    XmlDocument doc = new XmlDocument();
+
+                    XmlElement root = doc.DocumentElement;
+
+                    XmlElement Maestro = doc.CreateElement(string.Empty, "BASE", string.Empty);
+                    doc.AppendChild(Maestro);
+
+                    XmlElement element1 = doc.CreateElement(string.Empty, "Object", string.Empty);
+                    Maestro.AppendChild(element1);
+
+                    XmlElement element3 = doc.CreateElement(string.Empty, "Path", string.Empty);
+                    XmlText text2 = doc.CreateTextNode(newPath);
+                    element3.AppendChild(text2);
+                    element1.AppendChild(element3);
+
+                    doc.Save(PathM);
+
+                    doc= new XmlDocument();
+
+                    root = doc.DocumentElement;
+
+                    XmlElement MaestroO = doc.CreateElement(string.Empty, "OBJETO", string.Empty);
+                    doc.AppendChild(MaestroO);
+
+
+                    XmlElement element4 = doc.CreateElement(string.Empty, "Obj", string.Empty);
+                    MaestroO.AppendChild(element4);
+
+                    XmlElement element5 = doc.CreateElement(string.Empty, "nombre", string.Empty);
+                    XmlText text = doc.CreateTextNode(nombre);
+                    element5.AppendChild(text);
+                    element4.AppendChild(element5);
+
+                    XmlElement atributos = doc.CreateElement(string.Empty, "attr", string.Empty);
+                    
+
+                    string[] info = campos.Split(';');
+
+                    for (int x = 0; x < (info.Length - 1); x++)
+                    {
+                        string[] data = info[x].Split(',');
+
+                        string tipo = data[0];
+
+                        string campo = data[1];
+
+
+                        XmlElement campoT = doc.CreateElement(string.Empty, tipo, string.Empty);
+                        XmlText ncampo = doc.CreateTextNode(campo);
+
+
+                        campoT.AppendChild(ncampo);
+                        atributos.AppendChild(campoT);
+
+
+                    }
+
+                    element4.AppendChild(atributos);
+
+                    doc.Save(newPath);
+
+
+                }
+                else
+                {
+                    XmlDocument doc = new XmlDocument();
+
+                    doc.Load(PathM);
+
+                    XmlNodeList maestro = doc.GetElementsByTagName("Object");
+
+                    if (maestro.Count == 0)
+                    {
+                        XmlNodeList NBase = doc.GetElementsByTagName("BASE");
+
+                        XmlElement element1 = doc.CreateElement(string.Empty, "Object", string.Empty);
+                        NBase[0].AppendChild(element1);
+
+                        XmlElement element3 = doc.CreateElement(string.Empty, "Path", string.Empty);
+                        XmlText text2 = doc.CreateTextNode(newPath);
+                        element3.AppendChild(text2);
+                        element1.AppendChild(element3);
+
+
+                        newPath = maestro[0].ChildNodes[0].InnerText;
+
+                        doc.Save(PathM);
+
+                        doc = new XmlDocument();
+
+                        doc.Load(newPath);
+
+                        XmlNodeList objetos = doc.GetElementsByTagName("OBJETO");
+
+
+                        XmlElement element4 = doc.CreateElement(string.Empty, "Obj", string.Empty);
+                        objetos[0].AppendChild(element4);
+
+                        XmlElement element5 = doc.CreateElement(string.Empty, "nombre", string.Empty);
+                        XmlText text = doc.CreateTextNode(nombre);
+                        element5.AppendChild(text);
+                        element4.AppendChild(element5);
+
+                        XmlElement atributos = doc.CreateElement(string.Empty, "attr", string.Empty);
+
+
+                        string[] info = campos.Split(';');
+
+                        for (int x = 0; x < (info.Length - 1); x++)
+                        {
+                            string[] data = info[x].Split(',');
+
+                            string tipo = data[0];
+
+                            string campo = data[1];
+
+
+                            XmlElement campoT = doc.CreateElement(string.Empty, tipo, string.Empty);
+                            XmlText ncampo = doc.CreateTextNode(campo);
+
+
+                            campoT.AppendChild(ncampo);
+                            atributos.AppendChild(campoT);
+
+
+                        }
+
+                        element4.AppendChild(atributos);
+
+                        doc.Save(newPath);
+
+                    }
+                    else
+                    {
+                        newPath = maestro[0].ChildNodes[0].InnerText;
+
+                        doc = new XmlDocument();
+
+                        doc.Load(newPath);
+
+                        XmlNodeList objetos = doc.GetElementsByTagName("OBJETO");
+
+
+                        XmlElement element4 = doc.CreateElement(string.Empty, "Obj", string.Empty);
+                        objetos[0].AppendChild(element4);
+
+                        XmlElement element5 = doc.CreateElement(string.Empty, "nombre", string.Empty);
+                        XmlText text = doc.CreateTextNode(nombre);
+                        element5.AppendChild(text);
+                        element4.AppendChild(element5);
+
+                        XmlElement atributos = doc.CreateElement(string.Empty, "attr", string.Empty);
+
+
+                        string[] info = campos.Split(';');
+
+                        for (int x = 0; x < (info.Length - 1); x++)
+                        {
+                            string[] data = info[x].Split(',');
+
+                            string tipo = data[0];
+
+                            string campo = data[1];
+
+
+                            XmlElement campoT = doc.CreateElement(string.Empty, tipo, string.Empty);
+                            XmlText ncampo = doc.CreateTextNode(campo);
+
+
+                            campoT.AppendChild(ncampo);
+                            atributos.AppendChild(campoT);
+
+
+                        }
+
+                        element4.AppendChild(atributos);
+
+                        doc.Save(newPath);
+                    }
+
+                    
+
+
+                }
+
+
+
+                return "Objeto " + nombre + " Creada en la Base " + Base;
+            }
+            else
+            {
+                return "Ya Existe la Tabla " + nombre + " En la Base " + Base;
+            }
+
+            
+        }
+
+        public string Crear_Procedimiento(string nombre, string Base, string campos,string instrucciones)
+        {
+
+            string activeDir = @"c:\DBMS";
+
+            string newPath = System.IO.Path.Combine(activeDir, Base + "_Procedimientos.usac");
+
+            string PathM = System.IO.Path.Combine(activeDir, Base + ".usac");
+
+
+            if (File.Exists(newPath) == false)
+            {
+                System.IO.FileStream fs = System.IO.File.Create(newPath);
+                fs.Close();
+
+                if (new FileInfo(PathM).Length == 0)
+                {
+                    XmlDocument doc = new XmlDocument();
+
+                    XmlElement root = doc.DocumentElement;
+
+                    XmlElement Maestro = doc.CreateElement(string.Empty, "BASE", string.Empty);
+                    doc.AppendChild(Maestro);
+
+                    XmlElement element1 = doc.CreateElement(string.Empty, "Procedure", string.Empty);
+                    Maestro.AppendChild(element1);
+
+                    XmlElement element3 = doc.CreateElement(string.Empty, "Path", string.Empty);
+                    XmlText text2 = doc.CreateTextNode(newPath);
+                    element3.AppendChild(text2);
+                    element1.AppendChild(element3);
+
+                    doc.Save(PathM);
+
+                    doc = new XmlDocument();
+
+                    root = doc.DocumentElement;
+
+                    XmlElement MaestroO = doc.CreateElement(string.Empty, "PROCEDIMIENTO", string.Empty);
+                    doc.AppendChild(MaestroO);
+
+
+                    XmlElement element4 = doc.CreateElement(string.Empty, "Proc", string.Empty);
+                    MaestroO.AppendChild(element4);
+
+                    XmlElement element5 = doc.CreateElement(string.Empty, "nombre", string.Empty);
+                    XmlText text = doc.CreateTextNode(nombre);
+                    element5.AppendChild(text);
+                    element4.AppendChild(element5);
+
+                    XmlElement atributos = doc.CreateElement(string.Empty, "params", string.Empty);
+
+
+                    string[] info = campos.Split(';');
+
+                    for (int x = 0; x < (info.Length - 1); x++)
+                    {
+                        string[] data = info[x].Split(',');
+
+                        string tipo = data[0];
+
+                        string campo = data[1];
+
+
+                        XmlElement campoT = doc.CreateElement(string.Empty, tipo, string.Empty);
+                        XmlText ncampo = doc.CreateTextNode(campo);
+
+
+                        campoT.AppendChild(ncampo);
+                        atributos.AppendChild(campoT);
+
+
+                    }
+
+                    element4.AppendChild(atributos);
+
+                    XmlElement element6 = doc.CreateElement(string.Empty, "src", string.Empty);
+                    XmlText text3 = doc.CreateTextNode(instrucciones);
+                    element6.AppendChild(text3);
+                    element4.AppendChild(element6);
+
+
+                    doc.Save(newPath);
+
+
+                }
+                else
+                {
+                    XmlDocument doc = new XmlDocument();
+
+                    doc.Load(PathM);
+
+                    XmlNodeList maestro = doc.GetElementsByTagName("Procedure");
+
+                    if (maestro.Count == 0)
+                    {
+                        XmlNodeList NBase = doc.GetElementsByTagName("BASE");
+
+                        XmlElement element1 = doc.CreateElement(string.Empty, "Procedure", string.Empty);
+                        NBase[0].AppendChild(element1);
+
+                        XmlElement element3 = doc.CreateElement(string.Empty, "Path", string.Empty);
+                        XmlText text2 = doc.CreateTextNode(newPath);
+                        element3.AppendChild(text2);
+                        element1.AppendChild(element3);
+
+
+                        newPath = maestro[0].ChildNodes[0].InnerText;
+
+                        doc.Save(PathM);
+
+                        doc = new XmlDocument();
+
+                        doc.Load(newPath);
+
+                        XmlNodeList objetos = doc.GetElementsByTagName("OBJETO");
+
+
+                        XmlElement element4 = doc.CreateElement(string.Empty, "Obj", string.Empty);
+                        objetos[0].AppendChild(element4);
+
+                        XmlElement element5 = doc.CreateElement(string.Empty, "nombre", string.Empty);
+                        XmlText text = doc.CreateTextNode(nombre);
+                        element5.AppendChild(text);
+                        element4.AppendChild(element5);
+
+                        XmlElement atributos = doc.CreateElement(string.Empty, "attr", string.Empty);
+
+
+                        string[] info = campos.Split(';');
+
+                        for (int x = 0; x < (info.Length - 1); x++)
+                        {
+                            string[] data = info[x].Split(',');
+
+                            string tipo = data[0];
+
+                            string campo = data[1];
+
+
+                            XmlElement campoT = doc.CreateElement(string.Empty, tipo, string.Empty);
+                            XmlText ncampo = doc.CreateTextNode(campo);
+
+
+                            campoT.AppendChild(ncampo);
+                            atributos.AppendChild(campoT);
+
+
+                        }
+
+                        element4.AppendChild(atributos);
+
+                        XmlElement element6 = doc.CreateElement(string.Empty, "src", string.Empty);
+                        XmlText text3 = doc.CreateTextNode(instrucciones);
+                        element6.AppendChild(text3);
+                        element4.AppendChild(element6);
+
+                        doc.Save(newPath);
+
+                    }
+                    else
+                    {
+                        newPath = maestro[0].ChildNodes[0].InnerText;
+
+                        doc = new XmlDocument();
+
+                        doc.Load(newPath);
+
+                        XmlNodeList objetos = doc.GetElementsByTagName("PROCEDIMIENTO");
+
+
+                        XmlElement element4 = doc.CreateElement(string.Empty, "Proc", string.Empty);
+                        objetos[0].AppendChild(element4);
+
+                        XmlElement element5 = doc.CreateElement(string.Empty, "nombre", string.Empty);
+                        XmlText text = doc.CreateTextNode(nombre);
+                        element5.AppendChild(text);
+                        element4.AppendChild(element5);
+
+                        XmlElement atributos = doc.CreateElement(string.Empty, "params", string.Empty);
+
+
+                        string[] info = campos.Split(';');
+
+                        for (int x = 0; x < (info.Length - 1); x++)
+                        {
+                            string[] data = info[x].Split(',');
+
+                            string tipo = data[0];
+
+                            string campo = data[1];
+
+
+                            XmlElement campoT = doc.CreateElement(string.Empty, tipo, string.Empty);
+                            XmlText ncampo = doc.CreateTextNode(campo);
+
+
+                            campoT.AppendChild(ncampo);
+                            atributos.AppendChild(campoT);
+
+
+                        }
+
+                        element4.AppendChild(atributos);
+
+                        XmlElement element6 = doc.CreateElement(string.Empty, "src", string.Empty);
+                        XmlText text3 = doc.CreateTextNode(instrucciones);
+                        element6.AppendChild(text3);
+                        element4.AppendChild(element6);
+
+                        doc.Save(newPath);
+                    }
+
+
+
+
+                }
+
+
+
+                return "Procedimiento " + nombre + " Creado en la Base " + Base;
+            }
+            else
+            {
+                return "Ya Existe la Tabla " + nombre + " En la Base " + Base;
+            }
+
+
         }
     }
     
