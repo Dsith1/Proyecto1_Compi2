@@ -364,40 +364,98 @@ namespace Proyecto1_Compi2.Elementos
                     }
                 }
 
-
-                valores = valores.Replace("entero", "INTEGER");
-                valores = valores.Replace("Cadena", "TEXT");
-
-                string[] val = valores.Split(',');
-
-                string subt = "";
-                string subv = "";
-
-                for (int x = 0; x < val.Length; x++)
+                if (encontrado)
                 {
-                    string[] aux = val[x].Split(';');
+                    string[] campo = campos.Split(',');
 
-                    subt += aux[0] + ",";
-                    subv += aux[1] + ",";
-                }
+                    string[] val = valores.Split(',');
 
-                subt = subt.Trim(',');
-                subv = subv.Trim(',');
+                    string tipos = maestro.bases.aux.tablas.aux.tipos;
 
-                string tipos = maestro.bases.aux.tablas.aux.tipos;
+                    string[] tipo = tipos.Split(',');
 
-                if (tipos.Equals(subt))
-                {
-                    Registro nuevo = new Registro(subv);
+                    string subval = "";
 
-                    maestro.bases.aux.tablas.aux.Insertar(nuevo);
+                    int auxF = 0;
 
-                    return "1 Fila Insertada";
+                    for (int x = 0; x < parametro.Length; x++)
+                    {
+                        for(int y = auxF; y < campo.Length; y++)
+                        {
+                            if (parametro[x].Equals(campo[y])){
+                                subval += val[x]+",";
+
+                                auxF = y+1;
+                                break;
+                            }
+                        }
+                    }
+
+
+                    valores = subval.Trim(',');
+
+                    valores = valores.Replace("entero", "INTEGER");
+                    valores = valores.Replace("Cadena", "TEXT");
+
+                    
+
+                    if (auxF < campo.Length)
+                    {
+                        bool seguir = true;
+
+                        while (seguir)
+                        {
+
+                            if (auxF < campo.Length)
+                            {
+                                valores += "," + tipo[auxF] + ";null";
+                                auxF++;
+                            }
+                            else
+                            {
+                                seguir = false;
+                            }
+                        }
+                    }
+
+                    val = valores.Split(',');
+
+                    string subt = "";
+                    string subv = "";
+
+                    for (int x = 0; x < val.Length; x++)
+                    {
+                        string[] aux = val[x].Split(';');
+
+                        subt += aux[0] + ",";
+                        subv += aux[1] + ",";
+                    }
+
+                    subt = subt.Trim(',');
+                    subv = subv.Trim(',');
+
+                    
+
+                    if (tipos.Equals(subt))
+                    {
+                        Registro nuevo = new Registro(subv);
+
+                        maestro.bases.aux.tablas.aux.Insertar(nuevo);
+
+                        return "1 Fila Insertada";
+                    }
+                    else
+                    {
+                        return "Error de Tipos se Esperaba(" + tipos + ") Se Encontro(" + subt + ")";
+                    }
                 }
                 else
                 {
-                    return "Error de Tipos se Esperaba(" + tipos + ") Se Encontro(" + subt + ")";
+                    return "Error Campos inexistentes en la Tabla " + Tabla;
                 }
+
+
+                
 
 
 
