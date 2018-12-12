@@ -37,9 +37,34 @@ namespace Proyecto1_Compi2.Elementos
 
         }
 
-        public string insertarG(string t,string c)
+        public void SetRuta(string r)
         {
-            return "";
+            ruta = r;
+        }
+
+        public void Insertar(Registro nuevo)
+        {
+            if (cabeza == null)
+            {
+                cabeza = nuevo;
+            }
+            else if (ultimo == null)
+            {
+                ultimo = nuevo;
+
+                ultimo.anterior = cabeza;
+                cabeza.siguiente = ultimo;
+            }
+            else
+            {
+                aux = nuevo;
+
+                aux.anterior = ultimo;
+                ultimo.siguiente = aux;
+
+                ultimo = aux;
+
+            }
         }
 
 

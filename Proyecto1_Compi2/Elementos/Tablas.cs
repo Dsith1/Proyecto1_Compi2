@@ -9,9 +9,9 @@ namespace Proyecto1_Compi2.Elementos
     class Tablas
     {
 
-        Tabla cabeza;
-        Tabla ultimo;
-        Tabla aux;
+        public Tabla cabeza;
+        public Tabla ultimo;
+        public Tabla aux;
 
         public Tablas()
         {
@@ -64,6 +64,7 @@ namespace Proyecto1_Compi2.Elementos
                     if (aux.Nombre.Equals(nombre))
                     {
                         respuesta = true;
+                        seguir = false;
                     }
                     else
                     {

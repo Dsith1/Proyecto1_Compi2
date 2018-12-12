@@ -15,7 +15,7 @@ namespace Proyecto1_Compi2.Elementos
 
         public Registro (string n)
         {
-            n = valor;
+            valor = n;
 
             siguiente = null;
             anterior = null;

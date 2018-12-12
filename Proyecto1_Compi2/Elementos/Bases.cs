@@ -62,6 +62,7 @@ namespace Proyecto1_Compi2.Elementos
                     if (aux.Nombre.Equals(nombre))
                     {
                         respuesta = true;
+                        seguir = false;
                     }
                     else
                     {

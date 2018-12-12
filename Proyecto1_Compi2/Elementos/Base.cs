@@ -16,10 +16,10 @@ namespace Proyecto1_Compi2.Elementos
         public Base siguiente;
         public Base anterior;
 
-        public Base(string n,string r)
+        public Base(string n)
         {
             Nombre = n;
-            Ruta = r;
+            Ruta = System.IO.Path.Combine(@"c:\DBMS", Nombre+".usac");
 
             siguiente = null;
             anterior = null;
