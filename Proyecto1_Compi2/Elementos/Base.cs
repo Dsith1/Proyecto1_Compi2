@@ -13,6 +13,8 @@ namespace Proyecto1_Compi2.Elementos
 
         public Tablas tablas;
 
+        public Objetos objetos;
+
         public Base siguiente;
         public Base anterior;
 
@@ -25,6 +27,9 @@ namespace Proyecto1_Compi2.Elementos
             anterior = null;
 
             tablas = new Tablas();
+
+            string or= System.IO.Path.Combine(@"c:\DBMS", Nombre + "_objetos.usac");
+            objetos = new Objetos(or);
         }
     }
 }
