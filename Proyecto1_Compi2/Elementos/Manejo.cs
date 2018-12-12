@@ -12,6 +12,8 @@ namespace Proyecto1_Compi2.Elementos
 {
     class Manejo
     {
+        Maestro maestro;
+
         public Manejo()
         {
             string activeDir = @"c:\";
@@ -21,91 +23,56 @@ namespace Proyecto1_Compi2.Elementos
             {
                 System.IO.Directory.CreateDirectory(newPath);
             }
+
         }
 
         public string Crear_Maestro()
         {
-
-            string activeDir = @"c:\DBMS";
-
-            string newPath = System.IO.Path.Combine(activeDir, "Maestro.usac");
-
-            if (File.Exists(newPath) == false)
-            {
-                System.IO.FileStream fs = System.IO.File.Create(newPath);
-
-                fs.Close();
-                return "Archivo Maestro Creado" ;
-
-                //Crear_Base("BMaestra") + "\r\n" + Crear_Tabla("Usuario", "BMaestra")
-                
+            maestro = new Maestro();
             
-            }
-            else
-            {
-                return "";
-            }
 
-            
+            return "Archivo Maestro Creado";
+
+            //string activeDir = @"c:\DBMS";
+
+            //string newPath = System.IO.Path.Combine(activeDir, "Maestro.usac");
+
+            //if (File.Exists(newPath) == false)
+            //{
+            //    System.IO.FileStream fs = System.IO.File.Create(newPath);
+
+            //    fs.Close();
+            //    return "Archivo Maestro Creado" ;
+
+            //    //Crear_Base("BMaestra") + "\r\n" + Crear_Tabla("Usuario", "BMaestra")
+
+
+            //}
+            //else
+            //{
+            //    return "";
+            //}
+
+
         }
         
         public string Crear_Usuario(string nombre,string contra)
         {
-            string activeDir = @"c:\DBMS";
 
-            string PathM = System.IO.Path.Combine(activeDir, "Maestro.usac");
-
-            if (new FileInfo(PathM).Length == 0)
+            if (maestro.usuarios.existe(nombre))
             {
-                XmlDocument doc = new XmlDocument();
-
-                XmlElement root = doc.DocumentElement;
-
-                XmlElement Maestro = doc.CreateElement(string.Empty, "Maestro", string.Empty);
-                doc.AppendChild(Maestro);
-
-                XmlElement element1 = doc.CreateElement(string.Empty, "Usuario", string.Empty);
-                Maestro.AppendChild(element1);
-
-                XmlElement element2 = doc.CreateElement(string.Empty, "Nombre", string.Empty);
-                XmlText text1 = doc.CreateTextNode(nombre);
-                element2.AppendChild(text1);
-                element1.AppendChild(element2);
-
-                XmlElement element3 = doc.CreateElement(string.Empty, "Contra", string.Empty);
-                XmlText text2 = doc.CreateTextNode(contra);
-                element3.AppendChild(text2);
-                element1.AppendChild(element3);
-
-                doc.Save(PathM);
-
+                return "El Usuario " + nombre + " Ya Existe";
             }
             else
             {
-                XmlDocument doc = new XmlDocument();
+                Usuario nuevo = new Usuario(nombre, contra);
 
-                doc.Load(PathM);
+                maestro.usuarios.Insertar(nuevo);
 
-                XmlNodeList tablas = doc.GetElementsByTagName("Maestro");
-
-
-                XmlElement element1 = doc.CreateElement(string.Empty, "Usuario", string.Empty);
-                tablas[0].AppendChild(element1);
-
-                XmlElement element2 = doc.CreateElement(string.Empty, "Nombre", string.Empty);
-                XmlText text1 = doc.CreateTextNode(nombre);
-                element2.AppendChild(text1);
-                element1.AppendChild(element2);
-
-                XmlElement element3 = doc.CreateElement(string.Empty, "Contra", string.Empty);
-                XmlText text2 = doc.CreateTextNode(contra);
-                element3.AppendChild(text2);
-                element1.AppendChild(element3);
-
-                doc.Save(PathM);
+                return "Se Ha Creado el Usuario " + nombre;
             }
 
-            return "Se Ha Creado el Usuario "+nombre;
+            
         }
         
         public string Crear_Base(string nombre)
@@ -227,7 +194,7 @@ namespace Proyecto1_Compi2.Elementos
 
                     string[] info = campos.Split(';');
 
-                    for (int x = 0; x < (info.Length - 1); x++)
+                    for (int x = 0; x < info.Length; x++)
                     {
                         string[] data = info[x].Split(',');
 
@@ -377,58 +344,140 @@ namespace Proyecto1_Compi2.Elementos
                 if (valor.Length == campos.Count)
                 {
                     string tipos = "";
+                    string tiposC = "";
 
                     for (int x = 0; x < campos.Count; x++)
                     {
                         tipos += campos[x].InnerText+",";
-
+                        tiposC += campos[x].Name+",";
                     }
 
                     string[] tipo = tipos.Split(',');
 
-                    if (new FileInfo(PathT).Length == 0)
+                    string[] tipoC = tiposC.Split(',');
+
+                    string auxval = "";
+
+                    for (int i = 0; i < valor.Length; i++)
                     {
-                        XmlDocument doc = new XmlDocument();
+                        auxval += valor[i].Split(';')[0]+",";
+                    }
 
-                        XmlElement root = doc.DocumentElement;
+                    string[] subval = auxval.Split(',');
 
-                        XmlElement Maestro = doc.CreateElement(string.Empty, "TABLA", string.Empty);
-                        doc.AppendChild(Maestro);
+                    bool seguir = true;
+                    bool EsCorrecto = false;
 
-                        XmlElement element1 = doc.CreateElement(string.Empty, "ROW", string.Empty);
-                        Maestro.AppendChild(element1);
+                    int j = 0;
 
-                        for (int x = 0; x < tipo.Length-1; x++)
+                    while (seguir)
+                    {
+                        if (subval[j].Equals("entero") && tipoC[j].Equals("INTEGER"))
                         {
-                            XmlElement campoT = doc.CreateElement(string.Empty, tipo[x], string.Empty);
-                            XmlText ncampo = doc.CreateTextNode(valor[x]);
-
-                            campoT.AppendChild(ncampo);
-                            element1.AppendChild(campoT);
-
+                            EsCorrecto = true;
+                        }
+                        else if (subval[j].Equals("Cadena") && tipoC[j].Equals("TEXT"))
+                        {
+                            EsCorrecto = true;
+                        }
+                        else if (subval[j].Equals("Doble") && tipoC[j].Equals("DOUBLE"))
+                        {
+                            EsCorrecto = true;
+                        }
+                        else if (subval[j].Equals("tfecha") && tipoC[j].Equals("DATE"))
+                        {
+                            EsCorrecto = true;
+                        }
+                        else if (subval[j].Equals("tfecha") && tipoC[j].Equals("DATE"))
+                        {
+                            EsCorrecto = true;
+                        }
+                        else
+                        {
+                            EsCorrecto = false;
                         }
 
-                        doc.Save(PathT);
+                        if (j < subval.Length - 2)
+                        {
+                            j++;
+                        }
+                        else
+                        {
+                            seguir = false;
+                        }
+                    }
 
+                    if (EsCorrecto)
+                    {
+                        if (new FileInfo(PathT).Length == 0)
+                        {
+                            XmlDocument doc = new XmlDocument();
+
+                            XmlElement root = doc.DocumentElement;
+
+                            XmlElement Maestro = doc.CreateElement(string.Empty, "TABLA", string.Empty);
+                            doc.AppendChild(Maestro);
+
+                            XmlElement element1 = doc.CreateElement(string.Empty, "ROW", string.Empty);
+                            Maestro.AppendChild(element1);
+
+                            for (int x = 0; x < tipo.Length - 1; x++)
+                            {
+                                string a = valor[x].Split(';')[1];
+                                string b = tipo[x];
+                                XmlElement campoT = doc.CreateElement(string.Empty, b, string.Empty);
+                                XmlText ncampo = doc.CreateTextNode(a);
+
+                                campoT.AppendChild(ncampo);
+                                element1.AppendChild(campoT);
+
+                            }
+
+                            doc.Save(PathT);
+
+                        }
+                        else
+                        {
+                            XmlDocument doc = new XmlDocument();
+
+                            doc.Load(PathT);
+
+                            XmlNodeList Maestro = doc.GetElementsByTagName("TABLA");
+
+                            XmlElement element1 = doc.CreateElement(string.Empty, "ROW", string.Empty);
+                            Maestro[0].AppendChild(element1);
+
+                            for (int x = 0; x < tipo.Length - 1; x++)
+                            {
+                                string a = valor[x].Split(';')[1];
+                                string b = tipo[x];
+                                XmlElement campoT = doc.CreateElement(string.Empty, b, string.Empty);
+                                XmlText ncampo = doc.CreateTextNode(a);
+
+                                campoT.AppendChild(ncampo);
+                                element1.AppendChild(campoT);
+
+                            }
+
+                            doc.Save(PathT);
+                        }
+
+
+
+
+                        return "\r\nFila Insertada";
                     }
                     else
                     {
-                        XDocument doc = XDocument.Load(PathT);
 
-                        XElement root = new XElement("ROW");
+                        auxval = auxval.Replace("entero", "INTEGER");
+                        auxval = auxval.Replace("Cadena", "TEXT");
+                        auxval = auxval.Replace("doble", "Double");
 
-                        for (int x = 0; x < tipo.Length - 1; x++)
-                        {
-                            root.Add(new XElement(tipo[x], valor[x]));
-                        }
-
-                        doc.Save(PathT);
+                        return "\r\nNo coinciden los tipos se encontro "+ tiposC +" se esperaba "+ auxval;
                     }
 
-
-
-
-                    return "\r\nFila Insertada";
+                    
                 }
                 else
                 {
@@ -444,6 +493,239 @@ namespace Proyecto1_Compi2.Elementos
 
 
             
+        }
+
+        public string Insertar_Tabla_v(string valores,string parametros, string Base, string Tabla)
+        {
+            string activeDir = @"c:\DBMS";
+
+            string PathT = System.IO.Path.Combine(activeDir, Base + "_" + Tabla + ".usac");
+
+            string PathB = System.IO.Path.Combine(activeDir, Base + ".usac");
+
+            if (File.Exists(PathT))
+            {
+                string campoerror="";
+
+                string[] valor = valores.Split(',');
+
+                XmlDocument BASE = new XmlDocument();
+                BASE.Load(PathB);
+
+                XmlNodeList tablas = BASE.GetElementsByTagName("Tabla");
+
+                int Lugar = 0;
+
+                for (int x = 0; x < tablas.Count; x++)
+                {
+                    XmlNode row = tablas[x];
+
+                    string nombreTabla = row.SelectSingleNode("//Nombre").InnerText;
+
+                    if (nombreTabla.Equals(Tabla))
+                    {
+                        Lugar = x;
+                        break;
+                    }
+                }
+
+                XmlNode fila = tablas[Lugar].SelectSingleNode("//rows");
+
+                XmlNodeList campos = fila.ChildNodes;
+
+
+                string auxcampos = "";
+
+                for(int x = 0; x < campos.Count; x++)
+                {
+                    auxcampos += campos[x].InnerText+",";
+                }
+
+                string[] parametro = parametros.Split(',');
+
+                bool seguirB = true;
+                bool econtrador = false;
+
+                int z = 0;
+
+                while (seguirB)
+                {
+                    if (auxcampos.Contains(parametro[z]))
+                    {
+                        econtrador = true;
+                    }
+                    else
+                    {
+                        campoerror = parametro[z];
+                        econtrador = false;
+                    }
+
+                    if (z < parametro.Length-1)
+                    {
+                        z++;
+                    }
+                    else
+                    {
+                        seguirB = false;
+                    }
+                }
+
+                if (econtrador)
+                {
+                    string tipos = "";
+                    string tiposC = "";
+
+                    
+
+                    for (int x = 0; x < campos.Count; x++)
+                    {
+
+                        tipos += campos[x].InnerText + ",";
+                        tiposC += campos[x].Name + ",";
+                    }
+
+                    
+                    string[] tipo = tipos.Split(',');
+
+                    string[] tipoC = tiposC.Split(',');
+
+                    string auxval = "";
+
+                    for (int i = 0; i < valor.Length; i++)
+                    {
+                        auxval += valor[i].Split(';')[0] + ",";
+                    }
+
+                    string[] subval = auxval.Split(',');
+
+                    bool seguir = true;
+                    bool EsCorrecto = false;
+
+                    int j = 0;
+
+                    while (seguir)
+                    {
+                        if (subval[j].Equals("entero") && tipoC[j].Equals("INTEGER"))
+                        {
+                            EsCorrecto = true;
+                        }
+                        else if (subval[j].Equals("Cadena") && tipoC[j].Equals("TEXT"))
+                        {
+                            EsCorrecto = true;
+                        }
+                        else if (subval[j].Equals("Doble") && tipoC[j].Equals("DOUBLE"))
+                        {
+                            EsCorrecto = true;
+                        }
+                        else if (subval[j].Equals("tfecha") && tipoC[j].Equals("DATE"))
+                        {
+                            EsCorrecto = true;
+                        }
+                        else if (subval[j].Equals("tfecha") && tipoC[j].Equals("DATE"))
+                        {
+                            EsCorrecto = true;
+                        }
+                        else
+                        {
+                            EsCorrecto = false;
+                        }
+
+                        if (j < subval.Length - 2)
+                        {
+                            j++;
+                        }
+                        else
+                        {
+                            seguir = false;
+                        }
+                    }
+
+                    if (EsCorrecto)
+                    {
+                        if (new FileInfo(PathT).Length == 0)
+                        {
+                            XmlDocument doc = new XmlDocument();
+
+                            XmlElement root = doc.DocumentElement;
+
+                            XmlElement Maestro = doc.CreateElement(string.Empty, "TABLA", string.Empty);
+                            doc.AppendChild(Maestro);
+
+                            XmlElement element1 = doc.CreateElement(string.Empty, "ROW", string.Empty);
+                            Maestro.AppendChild(element1);
+
+                            for (int x = 0; x < tipo.Length - 1; x++)
+                            {
+                                string a = valor[x].Split(';')[1];
+                                string b = tipo[x];
+                                XmlElement campoT = doc.CreateElement(string.Empty, b, string.Empty);
+                                XmlText ncampo = doc.CreateTextNode(a);
+
+                                campoT.AppendChild(ncampo);
+                                element1.AppendChild(campoT);
+
+                            }
+
+                            doc.Save(PathT);
+
+                        }
+                        else
+                        {
+                            XmlDocument doc = new XmlDocument();
+
+                            doc.Load(PathT);
+
+                            XmlNodeList Maestro = doc.GetElementsByTagName("TABLA");
+
+                            XmlElement element1 = doc.CreateElement(string.Empty, "ROW", string.Empty);
+                            Maestro[0].AppendChild(element1);
+
+                            for (int x = 0; x < tipo.Length - 1; x++)
+                            {
+                                string a = valor[x].Split(';')[1];
+                                string b = tipo[x];
+                                XmlElement campoT = doc.CreateElement(string.Empty, b, string.Empty);
+                                XmlText ncampo = doc.CreateTextNode(a);
+
+                                campoT.AppendChild(ncampo);
+                                element1.AppendChild(campoT);
+
+                            }
+
+                            doc.Save(PathT);
+                        }
+
+
+
+
+                        return "\r\nFila Insertada";
+                    }
+                    else
+                    {
+
+                        auxval = auxval.Replace("entero", "INTEGER");
+                        auxval = auxval.Replace("Cadena", "TEXT");
+                        auxval = auxval.Replace("doble", "Double");
+
+                        return "\r\nNo coinciden los tipos se encontro " + tiposC + " se esperaba " + auxval;
+                    }
+
+
+                }
+                else
+                {
+                    return " No Existe el campo:"+campoerror+" En la Tabla " + Tabla;
+                }
+
+
+            }
+            else
+            {
+                return "No Existe la Tabla " + Tabla;
+            }
+
+
+
         }
 
         public string Crear_Objeto(string nombre, string Base, string campos)

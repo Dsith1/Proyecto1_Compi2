@@ -743,7 +743,7 @@ namespace Proyecto1_Compi2
                             {
                                 string[] val = resultado.Split(';');
 
-                                resultado = "\r\nError al Imprimir " + val[1];
+                                resultado = "\r\nError al Imprimir " + val[0];
                             }
                         }
                         else
@@ -854,6 +854,22 @@ namespace Proyecto1_Compi2
 
                         string Datos = ActuarSQL(nodo.ChildNodes[4]);
 
+                        if (tipoin == 0)
+                        {
+                           resultado= manejo.Insertar_Tabla(Datos, BaseActual, TablaAux);
+                        }
+                        else
+                        {
+                            string[] aux = Datos.Split('$');
+
+                            string valor = aux[0];
+                            string datos = aux[1];
+
+                            resultado = manejo.Insertar_Tabla_v(datos,valor, BaseActual, TablaAux);
+                        }
+
+                        
+
                         break;
                     }
 
@@ -864,7 +880,7 @@ namespace Proyecto1_Compi2
                         {
                             tipoin = 1;
 
-                            resultado = ActuarSQL(nodo.ChildNodes[1]) + ";";
+                            resultado = ActuarSQL(nodo.ChildNodes[1]) + "$";
                             resultado += ActuarSQL(nodo.ChildNodes[5]);
 
                         }
@@ -900,7 +916,7 @@ namespace Proyecto1_Compi2
 
                         if (nodo.ChildNodes.Count == 3)
                         {
-                            resultado = ActuarSQL(nodo.ChildNodes[0]);                           
+                            resultado = ActuarSQL(nodo.ChildNodes[0])+ ",";                           
                             resultado += ActuarSQL(nodo.ChildNodes[2]);
                         }
                         else
@@ -1006,7 +1022,7 @@ namespace Proyecto1_Compi2
                                     else
                                     {
                                         tipo = "Error";
-                                        re = "Error tipos Incompatibles";
+                                        re = "Error tipos Incompatibles ";
                                     }
                                 }
                                 else if (OP1[0].Equals("doble"))
@@ -1208,14 +1224,18 @@ namespace Proyecto1_Compi2
                                         tipo = "doble";
                                         re = aux.ToString();
                                     }
+                                    else if (OP2[0].Equals("Cadena"))
+                                    {
+                                        tipo = "Error tipos Incompatibles  (entero * Cadena)";
+                                        re = "Error";
+                                    }
                                     else
                                     {
-                                        tipo = "Error";
-                                        re = "Error tipos Incompatibles";
+                                       
                                     }
 
                                 }
-                                if (OP1[0].Equals("doble"))
+                                else if (OP1[0].Equals("doble"))
                                 {
                                     if (OP2[0].Equals("entero"))
                                     {

@@ -51,7 +51,19 @@
   <ItemGroup>
     <Compile Include="Analizadores\AnalizadorPaquete.cs" />
     <Compile Include="Analizadores\Analizador_USQL.cs" />
+    <Compile Include="Elementos\Base.cs" />
+    <Compile Include="Elementos\Bases.cs" />
+    <Compile Include="Elementos\Maestro.cs" />
     <Compile Include="Elementos\Manejo.cs" />
+    <Compile Include="Elementos\Objeto.cs" />
+    <Compile Include="Elementos\Objetos.cs" />
+    <Compile Include="Elementos\Procedimiento.cs" />
+    <Compile Include="Elementos\Procedimientos.cs" />
+    <Compile Include="Elementos\Registro.cs" />
+    <Compile Include="Elementos\Tabla.cs" />
+    <Compile Include="Elementos\Tablas.cs" />
+    <Compile Include="Elementos\Usuario.cs" />
+    <Compile Include="Elementos\Usuarios.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
