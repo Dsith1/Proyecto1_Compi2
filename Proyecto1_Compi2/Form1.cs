@@ -1989,15 +1989,27 @@ namespace Proyecto1_Compi2
 
                 case "while":
                     {
-                        string condicion= ActuarSQL(nodo.ChildNodes[2]);
+                        string condicion = ActuarSQL(nodo.ChildNodes[2]).Split(';')[1];
+
+                        Entorno nuevo = new Entorno(1);
+                        contadorN++;
+                        nuevo.nombre = "while_" + contadorN;
+
+                        Eactual.Hijo = nuevo;
+                        nuevo.Padre = Eactual;
+
+                        Eactual = nuevo;
 
 
                         while (condicion.Equals("1"))
                         {
-                            resultado+= ActuarSQL(nodo.ChildNodes[2]);
+                            resultado+= ActuarSQL(nodo.ChildNodes[5]);
 
-                            condicion= ActuarSQL(nodo.ChildNodes[2]);
+                            condicion = ActuarSQL(nodo.ChildNodes[2]).Split(';')[1];
                         }
+
+                        Eactual = Eactual.Padre;
+                        Eactual.Hijo = null;
 
                         break;
                     }
