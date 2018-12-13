@@ -396,8 +396,8 @@ namespace Proyecto1_Compi2.Analizadores
             Tif.Rule = RSI + "(" + logica + ")" + "{" + instrucciones + "}" + sino
                     | RSI + "(" + logica + ")" + "{" + instrucciones + "}";
 
-            sino.Rule = RSINO + "{" + instrucciones + "}"
-                    | RSINO + Tif;
+            sino.Rule = RSINO + "{" + instrucciones + "}";
+                    
 
             Tswitch.Rule = RSELECCIONA + "(" + expresion + ")" + "{" + casos +"}";
 
@@ -428,8 +428,8 @@ namespace Proyecto1_Compi2.Analizadores
                           | RDATE
                           | RDATETIME;//Ya
 
-            logica.Rule = logica + OR + relacional
-                        | logica + AND + relacional
+            logica.Rule = logica + OR + logica
+                        | logica + AND + logica
                         | NOT + logica
                         |"(" + logica + ")"
                         | relacional;

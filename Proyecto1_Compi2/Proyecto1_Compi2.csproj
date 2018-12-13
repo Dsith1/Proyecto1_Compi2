@@ -51,6 +51,9 @@
   <ItemGroup>
     <Compile Include="Analizadores\AnalizadorPaquete.cs" />
     <Compile Include="Analizadores\Analizador_USQL.cs" />
+    <Compile Include="Ejecucion\Entorno.cs" />
+    <Compile Include="Ejecucion\Variable.cs" />
+    <Compile Include="Ejecucion\Variables.cs" />
     <Compile Include="Elementos\Base.cs" />
     <Compile Include="Elementos\Bases.cs" />
     <Compile Include="Elementos\Maestro.cs" />

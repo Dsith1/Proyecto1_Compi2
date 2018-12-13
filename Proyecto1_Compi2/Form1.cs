@@ -1,6 +1,7 @@
 ﻿using Irony.Parsing;
 using Proyecto1_Compi2.Analizadores;
 using Proyecto1_Compi2.Elementos;
+using Proyecto1_Compi2.Ejecucion;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -22,6 +23,10 @@ namespace Proyecto1_Compi2
         string TablaAux;
         int tipoin;
         Manejo manejo;
+        Entorno Global;
+        Entorno Eactual;
+
+
         bool Cproc = false;
 
 
@@ -29,6 +34,8 @@ namespace Proyecto1_Compi2
         public Form1()
         {
             InitializeComponent();
+            Global = new Entorno(1);
+            Eactual = Global;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -356,6 +363,7 @@ namespace Proyecto1_Compi2
         string ActuarSQL(ParseTreeNode nodo)
         {
             string resultado = "";
+           
 
             switch (nodo.Term.Name.ToString())
             {
@@ -662,7 +670,7 @@ namespace Proyecto1_Compi2
 
                                 Cproc = false;
 
-                                manejo.Crear_Objeto(TablaAux, BaseActual, campos);
+                                //manejo.Crear_Objeto(TablaAux, BaseActual, campos);
                             }
                             else
                             {
@@ -674,7 +682,7 @@ namespace Proyecto1_Compi2
 
                                 Cproc = false;
 
-                                //manejo.Crear_Objeto(TablaAux, BaseActual, "");
+                                
                             }
 
 
@@ -1322,7 +1330,21 @@ namespace Proyecto1_Compi2
                         }
                         else if (nodo.ChildNodes.Count == 2)
                         {
-                            resultado = "-" + ActuarSQL(nodo.ChildNodes[1]);
+                            string term1 = ActuarSQL(nodo.ChildNodes[1]);
+
+                            string[] OP1 = term1.Split(';');
+
+                            if (OP1[0].Equals("entero") || OP1[0].Equals("doble"))
+                            {
+                                resultado = OP1[0] + ";-" + OP1[1];
+                            }
+                            else
+                            {
+                                resultado = "ERROR";
+                                
+                            }
+
+                            
 
                         }
                         else
@@ -1332,6 +1354,515 @@ namespace Proyecto1_Compi2
 
                         break;
                     }
+
+                case "relacional":
+                    {
+
+
+                        if (nodo.ChildNodes.Count == 3)
+                        {
+                            if (nodo.ChildNodes[1].Term.Name.ToString().Equals("IGUAL"))
+                            {
+
+                                string term1 = ActuarSQL(nodo.ChildNodes[0]);
+                                string term2 = ActuarSQL(nodo.ChildNodes[2]);
+
+                                string[] OP1 = term1.Split(';');
+                                string[] OP2 = term2.Split(';');
+
+                                string tipo = "";
+                                string re = "";
+
+                                if (OP1[0].Equals("entero")|| OP1[0].Equals("doble"))
+                                {
+                                    if (OP2[0].Equals("entero")|| OP2[0].Equals("doble"))
+                                    {
+
+                                        tipo = "bool";
+                                        if (OP1[1].Equals(OP2[1]))
+                                        {
+                                            re = "1";
+                                        }
+                                        else
+                                        {
+                                            re = "0";
+                                        }
+                                        
+                                        
+                                    }
+                                    else
+                                    {
+                                        tipo = "Error";
+                                        re = "Error tipos Incompatibles ";
+                                    }
+                                }
+                                else if (OP1[0].Equals("Cadena"))
+                                {
+                                    if (OP2[0].Equals("Cadena"))
+                                    {
+                                        tipo = "bool";
+                                        if (OP1[1].Equals(OP2[1]))
+                                        {
+                                            re = "1";
+                                        }
+                                        else
+                                        {
+                                            re = "0";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        tipo = "Error";
+                                        re = "Error tipos Incompatibles";
+                                    }
+                                }
+
+
+                                resultado = tipo + ";" + re;
+                            }
+                            else if (nodo.ChildNodes[1].Term.Name.ToString().Equals("DISTINTO"))
+                            {
+                                string term1 = ActuarSQL(nodo.ChildNodes[0]);
+                                string term2 = ActuarSQL(nodo.ChildNodes[2]);
+
+                                string[] OP1 = term1.Split(';');
+                                string[] OP2 = term2.Split(';');
+
+                                string tipo = "";
+                                string re = "";
+
+                                tipo = "bool";
+                                if (OP1[1]!=OP2[1])
+                                {
+                                    re = "1";
+                                }
+                                else
+                                {
+                                    re = "0";
+                                }
+
+                                resultado = tipo + ";" + re;
+                            }
+                            else if (nodo.ChildNodes[1].Term.Name.ToString().Equals("MENOR"))
+                            {
+                                string term1 = ActuarSQL(nodo.ChildNodes[0]);
+                                string term2 = ActuarSQL(nodo.ChildNodes[2]);
+
+                                string[] OP1 = term1.Split(';');
+                                string[] OP2 = term2.Split(';');
+
+                                string tipo = "";
+                                string re = "";
+
+                                if (OP1[0].Equals("entero") || OP1[0].Equals("doble"))
+                                {
+                                    if (OP2[0].Equals("entero") || OP2[0].Equals("doble"))
+                                    {
+                                        
+                                        tipo = "bool";
+                                        if (Convert.ToDouble(OP1[1])< Convert.ToDouble(OP2[1]))
+                                        {
+                                            re = "1";
+                                        }
+                                        else
+                                        {
+                                            re = "0";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        tipo = "Error";
+                                        re = "Error tipos Incompatibles";
+                                    }
+
+                                }
+                                else
+                                {
+                                    tipo = "Error";
+                                    re = "Error tipos Incompatibles";
+                                }
+
+                                resultado = tipo + ";" + re;
+                            }
+                            else if (nodo.ChildNodes[1].Term.Name.ToString().Equals("MAYOR"))
+                            {
+                                string term1 = ActuarSQL(nodo.ChildNodes[0]);
+                                string term2 = ActuarSQL(nodo.ChildNodes[2]);
+
+                                string[] OP1 = term1.Split(';');
+                                string[] OP2 = term2.Split(';');
+
+                                string tipo = "";
+                                string re = "";
+
+                                if (OP1[0].Equals("entero") || OP1[0].Equals("doble"))
+                                {
+                                    if (OP2[0].Equals("entero") || OP2[0].Equals("doble"))
+                                    {
+
+                                        tipo = "bool";
+                                        if (Convert.ToDouble(OP1[1]) > Convert.ToDouble(OP2[1]))
+                                        {
+                                            re = "1";
+                                        }
+                                        else
+                                        {
+                                            re = "0";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        tipo = "Error";
+                                        re = "Error tipos Incompatibles";
+                                    }
+
+                                }
+                                else
+                                {
+                                    tipo = "Error";
+                                    re = "Error tipos Incompatibles";
+                                }
+
+                                resultado = tipo + ";" + re;
+                            }
+                            else if (nodo.ChildNodes[1].Term.Name.ToString().Equals("MENOR_IGUAL"))
+                            {
+                                string term1 = ActuarSQL(nodo.ChildNodes[0]);
+                                string term2 = ActuarSQL(nodo.ChildNodes[2]);
+
+                                string[] OP1 = term1.Split(';');
+                                string[] OP2 = term2.Split(';');
+
+                                string tipo = "";
+                                string re = "";
+
+                                if (OP1[0].Equals("entero") || OP1[0].Equals("doble"))
+                                {
+                                    if (OP2[0].Equals("entero") || OP2[0].Equals("doble"))
+                                    {
+
+                                        tipo = "bool";
+                                        if (Convert.ToDouble(OP1[1]) <= Convert.ToDouble(OP2[1]))
+                                        {
+                                            re = "1";
+                                        }
+                                        else
+                                        {
+                                            re = "0";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        tipo = "Error";
+                                        re = "Error tipos Incompatibles";
+                                    }
+
+                                }
+                                else
+                                {
+                                    tipo = "Error";
+                                    re = "Error tipos Incompatibles";
+                                }
+
+                                resultado = tipo + ";" + re;
+                            }
+                            else if (nodo.ChildNodes[1].Term.Name.ToString().Equals("MAYOR_IGUAL"))
+                            {
+                                string term1 = ActuarSQL(nodo.ChildNodes[0]);
+                                string term2 = ActuarSQL(nodo.ChildNodes[2]);
+
+                                string[] OP1 = term1.Split(';');
+                                string[] OP2 = term2.Split(';');
+
+                                string tipo = "";
+                                string re = "";
+
+                                if (OP1[0].Equals("entero") || OP1[0].Equals("doble"))
+                                {
+                                    if (OP2[0].Equals("entero") || OP2[0].Equals("doble"))
+                                    {
+
+                                        tipo = "bool";
+                                        if (Convert.ToDouble(OP1[1]) >= Convert.ToDouble(OP2[1]))
+                                        {
+                                            re = "1";
+                                        }
+                                        else
+                                        {
+                                            re = "0";
+                                        }
+                                    }
+                                    else
+                                    {
+                                        tipo = "Error";
+                                        re = "Error tipos Incompatibles";
+                                    }
+
+                                }
+                                else
+                                {
+                                    tipo = "Error";
+                                    re = "Error tipos Incompatibles";
+                                }
+
+                                resultado = tipo + ";" + re;
+                            }
+                            else
+                            {
+                                resultado = ActuarSQL(nodo.ChildNodes[1]);
+                            }
+
+
+                        }
+                        else
+                        {
+                            resultado = ActuarSQL(nodo.ChildNodes[0]);
+                        }
+
+                        break;
+                    }
+
+                case "logica":
+                    {
+
+
+                        if (nodo.ChildNodes.Count == 3)
+                        {
+                            if (nodo.ChildNodes[1].Term.Name.ToString().Equals("AND"))
+                            {
+
+                                string term1 = ActuarSQL(nodo.ChildNodes[0]);
+                                string term2 = ActuarSQL(nodo.ChildNodes[2]);
+
+                                string[] OP1 = term1.Split(';');
+                                string[] OP2 = term2.Split(';');
+
+                                string tipo = "";
+                                string re = "";
+
+
+
+                                if (OP1[0].Equals("bool"))
+                                {
+                                    if (OP2[0].Equals("bool"))
+                                    {
+
+                                        
+                                        tipo = "bool";
+                                        if (OP1[1].Equals("1") && OP2[1].Equals("1"))
+                                        {
+                                            re = "1";
+                                        }
+                                        else
+                                        {
+                                            re = "0";
+                                        }
+
+
+                                    }
+                                    else
+                                    {
+                                        tipo = "Error";
+                                        re = "Error tipos Incompatibles ";
+                                    }
+                                }
+                                else
+                                {
+                                    tipo = "Error";
+                                    re = "Error tipos Incompatibles";
+                                }
+
+
+                                resultado = tipo + ";" + re;
+                            }
+                            else if (nodo.ChildNodes[1].Term.Name.ToString().Equals("OR"))
+                            {
+                                string term1 = ActuarSQL(nodo.ChildNodes[0]);
+                                string term2 = ActuarSQL(nodo.ChildNodes[2]);
+
+                                string[] OP1 = term1.Split(';');
+                                string[] OP2 = term2.Split(';');
+
+                                string tipo = "";
+                                string re = "";
+
+                                if (OP1[0].Equals("bool"))
+                                {
+                                    if (OP2[0].Equals("bool"))
+                                    {
+
+
+                                        tipo = "bool";
+                                        if (OP1[1].Equals("1") || OP2[1].Equals("1"))
+                                        {
+                                            re = "1";
+                                        }
+                                        else
+                                        {
+                                            re = "0";
+                                        }
+
+
+                                    }
+                                    else
+                                    {
+                                        tipo = "Error";
+                                        re = "Error tipos Incompatibles ";
+                                    }
+                                }
+                                else
+                                {
+                                    tipo = "Error";
+                                    re = "Error tipos Incompatibles";
+                                }
+
+                                resultado = tipo + ";" + re;
+                            }                            
+                            else
+                            {
+                                resultado = ActuarSQL(nodo.ChildNodes[1]);
+                            }
+
+
+                        }
+
+                        else if (nodo.ChildNodes.Count == 2)
+                        {
+                            string term1 = ActuarSQL(nodo.ChildNodes[1]);
+
+                            string[] OP1 = term1.Split(';');
+
+                            string tipo = "";
+                            string re = "";
+
+
+
+                            if (OP1[0].Equals("bool"))
+                            {
+                                tipo = "bool";
+                                if (OP1[1].Equals("1") )
+                                {
+                                    re = "0";
+                                }
+                                else
+                                {
+                                    re = "1";
+                                }
+
+                            }
+                            else
+                            {
+                                tipo = "Error";
+                                re = "Error tipos Incompatibles";
+                            }
+
+                            resultado = tipo + ";" + re;
+                        }
+                        else
+                        {
+                            resultado = ActuarSQL(nodo.ChildNodes[0]);
+                        }
+
+                        break;
+                    }
+
+                case "if":
+                    {
+                        string precondicion= ActuarSQL(nodo.ChildNodes[2]);
+
+                        string[] conaux = precondicion.Split(';');
+
+                        string condicion = conaux[1];
+
+                        if (nodo.ChildNodes.Count ==8)
+                        {
+                            if (condicion.Equals("1"))
+                            {
+                                resultado = ActuarSQL(nodo.ChildNodes[5]);
+                            }
+                            else
+                            {
+                                resultado = ActuarSQL(nodo.ChildNodes[7]);
+                            }
+                        }
+                        else
+                        {
+                            if (condicion.Equals("1"))
+                            {
+                                resultado = ActuarSQL(nodo.ChildNodes[5]);
+                            }
+                            else
+                            {
+                                resultado = "";
+                            }
+                        }
+                        break;
+                    }
+
+                case "sino":
+                    {
+                        resultado = ActuarSQL(nodo.ChildNodes[2]);
+                        break;
+                    }
+
+                case "while":
+                    {
+                        string condicion= ActuarSQL(nodo.ChildNodes[2]);
+
+
+                        while (condicion.Equals("1"))
+                        {
+                            resultado+= ActuarSQL(nodo.ChildNodes[2]);
+
+                            condicion= ActuarSQL(nodo.ChildNodes[2]);
+                        }
+
+                        break;
+                    }
+
+                case "for":
+                    {
+                        Entorno nuevo = new Entorno(1);
+
+                        string subidr = nodo.ChildNodes[0].Token.Text;
+                        string subval = ActuarSQL(nodo.ChildNodes[6]);
+
+                        Variable variable = new Variable(nodo.ChildNodes[4].Token.Text, subidr);
+
+                        variable.SetValor(subval);
+
+                        nuevo.variables.Insertar(variable);
+
+                        string condicion = ActuarSQL(nodo.ChildNodes[8]);
+
+                        while (condicion.Equals("1"))
+                        {
+                            resultado += ActuarSQL(nodo.ChildNodes[13]);
+
+                            string opcionF= ActuarSQL(nodo.ChildNodes[13]);
+
+                            if (opcionF.Equals("ASC"))
+                            {
+                                int tempF = Convert.ToInt16(variable.GetValor());
+                                tempF++;
+
+                                variable.SetValor(tempF.ToString());
+
+                            }
+                            else
+                            {
+                                int tempF = Convert.ToInt16(variable.GetValor());
+                                tempF--;
+
+                                variable.SetValor(tempF.ToString());
+                            }
+
+                            condicion = ActuarSQL(nodo.ChildNodes[2]);
+                        }
+
+                        break;
+                    }
+
 
             }
 
