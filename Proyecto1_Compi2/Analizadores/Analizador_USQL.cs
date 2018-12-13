@@ -266,7 +266,7 @@ namespace Proyecto1_Compi2.Analizadores
                             | RAUTOINCREMENTABLE
                             | RPK
                             | RFK + ID
-                            | RUNICO;//Ya
+                            | RUNICO;
 
             c_objeto.Rule = ROBJETO + ID + "(" +parametros+ ")" + PUNTOCOMA
                         | ROBJETO + ID + "(" + ")" + PUNTOCOMA;//Ya
@@ -307,18 +307,18 @@ namespace Proyecto1_Compi2.Analizadores
 
             c_usuario.Rule = RUSUARIO + ID + RCOLOCAR + RPAS + I_ASIGNAR + Cadena + PUNTOCOMA;//Ya
 
-            imprimir.Rule = RIMPRIMIR + "(" + valores + ")" + PUNTOCOMA;
+            imprimir.Rule = RIMPRIMIR + "(" + valores + ")" + PUNTOCOMA; //Ya
 
-            insertar.Rule = RINSERTAR + REN + RTABLA + ID + tipoins;
+            insertar.Rule = RINSERTAR + REN + RTABLA + ID + tipoins;//ya
 
             tipoins.Rule = "(" + campos + ")" + RVALORES + "(" + valores + ")" + PUNTOCOMA
-                        | "(" + valores + ")" + PUNTOCOMA;
+                        | "(" + valores + ")" + PUNTOCOMA;//ya
 
             campos.Rule = ID + COMA + campos
-                        | ID;
+                        | ID;//ya
 
             valores.Rule = aritemtica + COMA + valores
-                        | aritemtica;
+                        | aritemtica;//ya
 
             actualizar.Rule = RACTUALIZAR + RTABLA + ID + "(" + campos + ")" + RVALORES + "(" + valores + ")" + condicion + PUNTOCOMA
                             | RACTUALIZAR + RTABLA + ID + "(" + campos + ")" + RVALORES + "(" + valores + ")" + PUNTOCOMA;
@@ -390,7 +390,7 @@ namespace Proyecto1_Compi2.Analizadores
                       | Variable;
 
             asignacion.Rule = rutaB + I_ASIGNAR + aritemtica + PUNTOCOMA
-                | Variable + I_ASIGNAR + aritemtica + PUNTOCOMA;
+                        | Variable + I_ASIGNAR + aritemtica + PUNTOCOMA;
 
 
             Tif.Rule = RSI + "(" + logica + ")" + "{" + instrucciones + "}" + sino
@@ -432,7 +432,7 @@ namespace Proyecto1_Compi2.Analizadores
                         | logica + AND + logica
                         | NOT + logica
                         |"(" + logica + ")"
-                        | relacional;
+                        | relacional;//ya
 
             relacional.Rule = relacional + IGUAL + aritemtica
                             | relacional + DISTINTO + aritemtica
@@ -441,7 +441,7 @@ namespace Proyecto1_Compi2.Analizadores
                             | relacional + MAYOR + aritemtica
                             | relacional + MENOR + aritemtica
                             |"("+ relacional + ")"
-                            | aritemtica;
+                            | aritemtica;//ya
 
             aritemtica.Rule = aritemtica + SUMA + expresion
                            | aritemtica + RESTA + expresion
@@ -450,7 +450,7 @@ namespace Proyecto1_Compi2.Analizadores
                            | aritemtica + POTENCIA + expresion
                            | "(" + aritemtica + ")"
                            | RESTA + expresion
-                           | expresion;
+                           | expresion;//ya
 
             expresion.Rule = Entero
                            | Doble
@@ -458,7 +458,7 @@ namespace Proyecto1_Compi2.Analizadores
                            | tfecha
                            | tfechahora
                            | llamada
-                           | contarAsig
+                           | contarAsig//ya
                            | rutaB;
 
             llamada.Rule = RFECHA + "(" + ")"

@@ -359,6 +359,13 @@ namespace Proyecto1_Compi2.Elementos
 
         }
 
+        public bool Buscar_Objeto(string nombre,string Base)
+        {
+            maestro.bases.existe(nombre);
+
+            return maestro.bases.aux.objetos.existe(nombre);
+        }
+
         public string Crear_Procedimiento(string nombre, string Base, string campos,string instrucciones)
         {
 

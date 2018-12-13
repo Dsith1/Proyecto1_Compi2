@@ -35,11 +35,14 @@ namespace Proyecto1_Compi2
         {
             InitializeComponent();
             Global = new Entorno(1);
+            Global.nombre = "Global";
             Eactual = Global;
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
+
+            BaseActual = "";
             manejo = new Manejo();
             string Consola = txtConsola.Text;
 
@@ -522,8 +525,6 @@ namespace Proyecto1_Compi2
 
                 case "tipo_dato":
                     {
-
-
                         resultado = nodo.ChildNodes[0].Token.Text.Trim();
 
                         break;
@@ -1863,10 +1864,230 @@ namespace Proyecto1_Compi2
                         break;
                     }
 
+                    //aun no
+                case "asignacion":
+                    {
+                        if (nodo.ChildNodes[0].Term.Name.ToString().Equals("rutaB"))
+                        {
+                            resultado = ActuarSQL(nodo.ChildNodes[0]);
+                        }
+                        else
+                        {
+                            string var = nodo.ChildNodes[0].Token.Text;
+                            string valor= ActuarSQL(nodo.ChildNodes[2]);
 
+                            bool seguirV = true;
+                            bool EncontradoV = false;
+
+                            Entorno aux = Eactual;
+
+                            while (seguirV)
+                            {
+                                if (aux.variables.existe(var))
+                                {
+                                    seguirV = false;
+                                    EncontradoV = true;
+                                }
+                                else
+                                {
+                                    if (aux.Padre != null)
+                                    {
+                                        aux = aux.Padre;
+                                    }
+                                    else
+                                    {
+                                        seguirV = false;
+                                    }
+                                }
+                            }
+
+                            if (EncontradoV)
+                            {
+
+                                string[] conaux = valor.Split(';');
+
+                                string ntipo = conaux[0];
+
+                                string tipo = aux.variables.aux.tipo;
+
+                                if (tipo.Equals(ntipo))
+                                {
+
+                                }
+                                else
+                                {
+
+                                }
+
+
+                            }
+                            else
+                            {
+                                resultado = "\n\rNo Existe la variable " + var;
+                            }
+
+                            
+                        }
+
+                        break;
+                    }
+
+                case "declarar":
+                    {
+
+                        string vars = ActuarSQL(nodo.ChildNodes[1]);
+                        string[] nombre = vars.Split(',');
+
+                        if (nodo.ChildNodes.Count == 6)
+                        {
+
+                            string valor = ActuarSQL(nodo.ChildNodes[4]);
+
+                            valor = Remplazo_tipos(valor);
+
+                            string[] data = valor.Split(';');
+
+                            string tipo = ActuarSQL(nodo.ChildNodes[2]);
+
+                            bool compatible;
+
+                            if (tipo.Equals(data[0]))
+                            {
+                                compatible = true;
+                            }
+                            else if (tipo.Equals("DOUBLE"))
+                            {
+                                if (data[0].Equals("INTEGER"))
+                                {
+                                    compatible = true;
+                                }
+                                else
+                                {
+                                    compatible = false;
+                                }
+                            }
+                            else
+                            {
+                                compatible = false;
+                            }
+
+
+
+
+                            if (compatible)
+                            {
+                                for (int x = 0; x < nombre.Length; x++)
+                                {
+                                    Variable nuevo = new Variable(tipo, nombre[x]);
+                                    nuevo.SetValor(data[1]);
+
+                                    if (Eactual.variables.existe(nombre[x]))
+                                    {
+                                        resultado += "\r\nYa Existe la Variable " + nombre[x];
+                                    }
+                                    else
+                                    {
+                                        Eactual.variables.Insertar(nuevo);
+                                    }
+
+                                }
+                            }
+                            else
+                            {
+                                resultado = "\r\nError tipos incompatibles";
+                            }
+
+                        }
+                        else
+                        {
+
+                            string tipo;
+                            
+
+                            bool existeO;
+
+                            if (nodo.ChildNodes[2].Term.Name.ToString().Equals("tipo_dato"))
+                            {
+                                tipo = ActuarSQL(nodo.ChildNodes[2]);
+                                existeO = true;
+                            }
+                            else
+                            {
+                                tipo = nodo.ChildNodes[2].Token.Text;
+
+                                if (BaseActual.Equals(""))
+                                {
+                                    existeO = false;
+                                }
+                                else
+                                {
+                                    existeO = manejo.Buscar_Objeto(tipo,BaseActual);
+                                }
+                                
+                            }
+
+
+                            if (existeO)
+                            {
+                                for (int x = 0; x < nombre.Length; x++)
+                                {
+                                    Variable nuevo = new Variable(tipo, nombre[x]);
+
+
+                                    if (Eactual.variables.existe(nombre[x]))
+                                    {
+                                        resultado += "\r\nYa Existe la Variable " + nombre[x];
+                                    }
+                                    else
+                                    {
+                                        Eactual.variables.Insertar(nuevo);
+                                    }
+
+                                }
+                            }
+                            else
+                            {
+                                resultado = "\r\nError no Existe el Objeto " + tipo;
+                            }
+                            
+
+
+                                
+                        }
+
+                        break;
+                    }
+
+                case "variables":
+                    {
+                        if (nodo.ChildNodes.Count == 3)
+                        {
+                            resultado = nodo.ChildNodes[0].Token.Text + ",";
+                            resultado += ActuarSQL(nodo.ChildNodes[2]);
+
+                        }
+                        else
+                        {
+                            resultado = nodo.ChildNodes[0].Token.Text;
+                        }
+
+
+                        break;
+                    }
             }
 
             return resultado;
+        }
+
+
+        public string Remplazo_tipos(string entrada)
+        {
+            entrada = entrada.Replace("entero", "INTEGER");
+            entrada = entrada.Replace("doble", "DOUBLE");
+            entrada = entrada.Replace("Cadena", "TEXT");
+            entrada = entrada.Replace("bool", "BOOL");
+           
+            return entrada;
         }
     }
 }

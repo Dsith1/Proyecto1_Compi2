@@ -14,7 +14,7 @@ namespace Proyecto1_Compi2.Ejecucion
 
         public Variables variables;
 
-        string nombre;
+        public string nombre;
         int tipo;
 
         public ParseTreeNode[] subEntornos;

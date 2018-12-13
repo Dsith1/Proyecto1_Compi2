@@ -9,9 +9,9 @@ namespace Proyecto1_Compi2.Ejecucion
     class Variables
     {
 
-        Variable cabeza;
-        Variable ultimo;
-        Variable aux;
+        public Variable cabeza;
+        public Variable ultimo;
+        public Variable aux;
 
         public Variables()
         {
