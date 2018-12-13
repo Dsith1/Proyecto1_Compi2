@@ -2,7 +2,7 @@
 "Start Symbol" = <S>
 
 !----Terminales
-Entero ={Number} 
+Entero ={Number}+ 
 Doble ={Number} '.'{Number}*
 identificador ={Letter}({Alphanumeric}|'_')*
 Variable='@'{Letter}({Alphanumeric}|'_'|'ñ'|'Ñ')*

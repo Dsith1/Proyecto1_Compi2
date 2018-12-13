@@ -60,6 +60,10 @@ Public Class Form1
                 Cadena = Replace(Cadena, "NUlO", "NULO")
                 Cadena = Replace(Cadena, "NuLO", "NULO")
                 Cadena = Replace(Cadena, "nulo", "NULO")
+                Cadena = Replace(Cadena, ">", "> ")
+                Cadena = Replace(Cadena, "> >", ">>")
+                Cadena = Replace(Cadena, "<", "< ")
+                Cadena = Replace(Cadena, "< <", "<<")
 
 
                 Cadena = Replace(Replace(Cadena, Chr(10), " "), Chr(13), " ")

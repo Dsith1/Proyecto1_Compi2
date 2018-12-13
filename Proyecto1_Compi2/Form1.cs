@@ -25,6 +25,7 @@ namespace Proyecto1_Compi2
         Manejo manejo;
         Entorno Global;
         Entorno Eactual;
+        int contadorN=0;
 
 
         bool Cproc = false;
@@ -658,7 +659,16 @@ namespace Proyecto1_Compi2
 
                         if (BaseActual != "")
                         {
+                            contadorN++;
+                            string nentorno = "procedimiento_" + contadorN;
 
+                            Entorno nuevo = new Entorno(1);
+                            nuevo.nombre = nentorno;
+
+                            Eactual.Hijo = nuevo;
+                            nuevo.Padre = Eactual;
+
+                            Eactual = nuevo;
 
                             if (nodo.ChildNodes.Count == 8)
                             {
@@ -686,7 +696,8 @@ namespace Proyecto1_Compi2
                                 
                             }
 
-
+                            Eactual = Eactual.Padre;
+                            Eactual.Hijo = null;
 
                             resultado = "\r\nSe Ha Creado El Procedimiento " + TablaAux;
                         }
@@ -703,10 +714,10 @@ namespace Proyecto1_Compi2
                     {
 
 
-                        if (nodo.ChildNodes.Count == 3)
+                        if (nodo.ChildNodes.Count == 2)
                         {
                             resultado = ActuarSQL(nodo.ChildNodes[0]);
-                            resultado += ActuarSQL(nodo.ChildNodes[2]);
+                            resultado += ActuarSQL(nodo.ChildNodes[1]);
                         }
                         else
                         {
@@ -998,13 +1009,30 @@ namespace Proyecto1_Compi2
                             {
 
                                 string term1 = ActuarSQL(nodo.ChildNodes[0]);
+
+                                if (term1.Contains("@"))
+                                {
+                                    term1 = Get_VariableV(term1);
+                                }
+
+                                term1 = Remplazo_operaciones(term1);
+
                                 string term2 = ActuarSQL(nodo.ChildNodes[2]);
+
+                                if (term2.Contains("@"))
+                                {
+                                    term2 = Get_VariableV(term1);
+                                }
+
+                                term2 = Remplazo_operaciones(term2);
 
                                 string[] OP1 = term1.Split(';');
                                 string[] OP2 = term2.Split(';');
 
                                 string tipo="";
                                 string re = "";
+                                OP1[0] = OP1[0].Trim();
+                                OP2[0] = OP2[0].Trim();
 
                                 if (OP1[0].Equals("entero"))
                                 {
@@ -1090,13 +1118,27 @@ namespace Proyecto1_Compi2
                             else if (nodo.ChildNodes[1].Term.Name.ToString().Equals("RESTA"))
                             {
                                 string term1 = ActuarSQL(nodo.ChildNodes[0]);
+                                if (term1.Contains("@"))
+                                {
+                                    term1 = Get_VariableV(term1);
+                                }
+
+                                term1 = Remplazo_operaciones(term1);
+
                                 string term2 = ActuarSQL(nodo.ChildNodes[2]);
+
+                                if (term2.Contains("@"))
+                                {
+                                    term2 = Get_VariableV(term1);
+                                }
 
                                 string[] OP1 = term1.Split(';');
                                 string[] OP2 = term2.Split(';');
 
                                 string tipo="";
                                 string re = "";
+                                OP1[0] = OP1[0].Trim();
+                                OP2[0] = OP2[0].Trim();
 
                                 if (OP1[0].Equals("entero"))
                                 {
@@ -1150,13 +1192,28 @@ namespace Proyecto1_Compi2
                             else if (nodo.ChildNodes[1].Term.Name.ToString().Equals("DIV"))
                             {
                                 string term1 = ActuarSQL(nodo.ChildNodes[0]);
+                                if (term1.Contains("@"))
+                                {
+                                    term1 = Get_VariableV(term1);
+                                }
+
+                                term1 = Remplazo_operaciones(term1);
+
                                 string term2 = ActuarSQL(nodo.ChildNodes[2]);
+
+                                if (term2.Contains("@"))
+                                {
+                                    term2 = Get_VariableV(term1);
+                                }
 
                                 string[] OP1 = term1.Split(';');
                                 string[] OP2 = term2.Split(';');
 
                                 string tipo = "";
                                 string re = "";
+                                OP1[0] = OP1[0].Trim();
+                                OP2[0] = OP2[0].Trim();
+
 
                                 if (OP1[0].Equals("entero"))
                                 {
@@ -1211,13 +1268,27 @@ namespace Proyecto1_Compi2
                             else if (nodo.ChildNodes[1].Term.Name.ToString().Equals("MULTI"))
                             {
                                 string term1 = ActuarSQL(nodo.ChildNodes[0]);
+                                if (term1.Contains("@"))
+                                {
+                                    term1 = Get_VariableV(term1);
+                                }
+
+                                term1 = Remplazo_operaciones(term1);
+
                                 string term2 = ActuarSQL(nodo.ChildNodes[2]);
+
+                                if (term2.Contains("@"))
+                                {
+                                    term2 = Get_VariableV(term1);
+                                }
 
                                 string[] OP1 = term1.Split(';');
                                 string[] OP2 = term2.Split(';');
 
                                 string tipo = "";
                                 string re = "";
+                                OP1[0] = OP1[0].Trim();
+                                OP2[0] = OP2[0].Trim();
 
                                 if (OP1[0].Equals("entero"))
                                 {
@@ -1276,13 +1347,27 @@ namespace Proyecto1_Compi2
                             else if (nodo.ChildNodes[1].Term.Name.ToString().Equals("POTENCIA"))
                             {
                                 string term1 = ActuarSQL(nodo.ChildNodes[0]);
+                                if (term1.Contains("@"))
+                                {
+                                    term1 = Get_VariableV(term1);
+                                }
+
+                                term1 = Remplazo_operaciones(term1);
+
                                 string term2 = ActuarSQL(nodo.ChildNodes[2]);
+
+                                if (term2.Contains("@"))
+                                {
+                                    term2 = Get_VariableV(term1);
+                                }
 
                                 string[] OP1 = term1.Split(';');
                                 string[] OP2 = term2.Split(';');
 
                                 string tipo = "";
                                 string re = "";
+                                OP1[0] = OP1[0].Trim();
+                                OP2[0] = OP2[0].Trim();
 
                                 if (OP1[0].Equals("entero"))
                                 {
@@ -1332,7 +1417,14 @@ namespace Proyecto1_Compi2
                         else if (nodo.ChildNodes.Count == 2)
                         {
                             string term1 = ActuarSQL(nodo.ChildNodes[1]);
+                            if (term1.Contains("@"))
+                            {
+                                term1 = Get_VariableV(term1);
+                            }
 
+                            term1 = Remplazo_operaciones(term1);
+
+                            
                             string[] OP1 = term1.Split(';');
 
                             if (OP1[0].Equals("entero") || OP1[0].Equals("doble"))
@@ -1366,13 +1458,27 @@ namespace Proyecto1_Compi2
                             {
 
                                 string term1 = ActuarSQL(nodo.ChildNodes[0]);
+                                if (term1.Contains("@"))
+                                {
+                                    term1 = Get_VariableV(term1);
+                                }
+
+                                term1 = Remplazo_operaciones(term1);
+
                                 string term2 = ActuarSQL(nodo.ChildNodes[2]);
+
+                                if (term2.Contains("@"))
+                                {
+                                    term2 = Get_VariableV(term1);
+                                }
 
                                 string[] OP1 = term1.Split(';');
                                 string[] OP2 = term2.Split(';');
 
                                 string tipo = "";
                                 string re = "";
+                                OP1[0] = OP1[0].Trim();
+                                OP2[0] = OP2[0].Trim();
 
                                 if (OP1[0].Equals("entero")|| OP1[0].Equals("doble"))
                                 {
@@ -1424,13 +1530,27 @@ namespace Proyecto1_Compi2
                             else if (nodo.ChildNodes[1].Term.Name.ToString().Equals("DISTINTO"))
                             {
                                 string term1 = ActuarSQL(nodo.ChildNodes[0]);
+                                if (term1.Contains("@"))
+                                {
+                                    term1 = Get_VariableV(term1);
+                                }
+
+                                term1 = Remplazo_operaciones(term1);
+
                                 string term2 = ActuarSQL(nodo.ChildNodes[2]);
+
+                                if (term2.Contains("@"))
+                                {
+                                    term2 = Get_VariableV(term1);
+                                }
 
                                 string[] OP1 = term1.Split(';');
                                 string[] OP2 = term2.Split(';');
 
                                 string tipo = "";
                                 string re = "";
+                                OP1[0] = OP1[0].Trim();
+                                OP2[0] = OP2[0].Trim();
 
                                 tipo = "bool";
                                 if (OP1[1]!=OP2[1])
@@ -1447,13 +1567,28 @@ namespace Proyecto1_Compi2
                             else if (nodo.ChildNodes[1].Term.Name.ToString().Equals("MENOR"))
                             {
                                 string term1 = ActuarSQL(nodo.ChildNodes[0]);
+                                if (term1.Contains("@"))
+                                {
+                                    term1 = Get_VariableV(term1);
+                                }
+
+                                term1 = Remplazo_operaciones(term1);
+
                                 string term2 = ActuarSQL(nodo.ChildNodes[2]);
+
+                                if (term2.Contains("@"))
+                                {
+                                    term2 = Get_VariableV(term1);
+                                }
 
                                 string[] OP1 = term1.Split(';');
                                 string[] OP2 = term2.Split(';');
 
                                 string tipo = "";
                                 string re = "";
+
+                                OP1[0] = OP1[0].Trim();
+                                OP2[0] = OP2[0].Trim();
 
                                 if (OP1[0].Equals("entero") || OP1[0].Equals("doble"))
                                 {
@@ -1488,13 +1623,27 @@ namespace Proyecto1_Compi2
                             else if (nodo.ChildNodes[1].Term.Name.ToString().Equals("MAYOR"))
                             {
                                 string term1 = ActuarSQL(nodo.ChildNodes[0]);
+                                if (term1.Contains("@"))
+                                {
+                                    term1 = Get_VariableV(term1);
+                                }
+
+                                term1 = Remplazo_operaciones(term1);
+
                                 string term2 = ActuarSQL(nodo.ChildNodes[2]);
+
+                                if (term2.Contains("@"))
+                                {
+                                    term2 = Get_VariableV(term1);
+                                }
 
                                 string[] OP1 = term1.Split(';');
                                 string[] OP2 = term2.Split(';');
 
                                 string tipo = "";
                                 string re = "";
+                                OP1[0] = OP1[0].Trim();
+                                OP2[0] = OP2[0].Trim();
 
                                 if (OP1[0].Equals("entero") || OP1[0].Equals("doble"))
                                 {
@@ -1529,13 +1678,27 @@ namespace Proyecto1_Compi2
                             else if (nodo.ChildNodes[1].Term.Name.ToString().Equals("MENOR_IGUAL"))
                             {
                                 string term1 = ActuarSQL(nodo.ChildNodes[0]);
+                                if (term1.Contains("@"))
+                                {
+                                    term1 = Get_VariableV(term1);
+                                }
+
+                                term1 = Remplazo_operaciones(term1);
+
                                 string term2 = ActuarSQL(nodo.ChildNodes[2]);
+
+                                if (term2.Contains("@"))
+                                {
+                                    term2 = Get_VariableV(term1);
+                                }
 
                                 string[] OP1 = term1.Split(';');
                                 string[] OP2 = term2.Split(';');
 
                                 string tipo = "";
                                 string re = "";
+                                OP1[0] = OP1[0].Trim();
+                                OP2[0] = OP2[0].Trim();
 
                                 if (OP1[0].Equals("entero") || OP1[0].Equals("doble"))
                                 {
@@ -1570,13 +1733,27 @@ namespace Proyecto1_Compi2
                             else if (nodo.ChildNodes[1].Term.Name.ToString().Equals("MAYOR_IGUAL"))
                             {
                                 string term1 = ActuarSQL(nodo.ChildNodes[0]);
+                                if (term1.Contains("@"))
+                                {
+                                    term1 = Get_VariableV(term1);
+                                }
+
+                                term1 = Remplazo_operaciones(term1);
+
                                 string term2 = ActuarSQL(nodo.ChildNodes[2]);
+
+                                if (term2.Contains("@"))
+                                {
+                                    term2 = Get_VariableV(term1);
+                                }
 
                                 string[] OP1 = term1.Split(';');
                                 string[] OP2 = term2.Split(';');
 
                                 string tipo = "";
                                 string re = "";
+                                OP1[0] = OP1[0].Trim();
+                                OP2[0] = OP2[0].Trim();
 
                                 if (OP1[0].Equals("entero") || OP1[0].Equals("doble"))
                                 {
@@ -1640,7 +1817,8 @@ namespace Proyecto1_Compi2
 
                                 string tipo = "";
                                 string re = "";
-
+                                OP1[0] = OP1[0].Trim();
+                                OP2[0] = OP2[0].Trim();
 
 
                                 if (OP1[0].Equals("bool"))
@@ -1686,6 +1864,9 @@ namespace Proyecto1_Compi2
 
                                 string tipo = "";
                                 string re = "";
+
+                                OP1[0] = OP1[0].Trim();
+                                OP2[0] = OP2[0].Trim();
 
                                 if (OP1[0].Equals("bool"))
                                 {
@@ -1736,7 +1917,7 @@ namespace Proyecto1_Compi2
                             string tipo = "";
                             string re = "";
 
-
+                            OP1[0] = OP1[0].Trim();
 
                             if (OP1[0].Equals("bool"))
                             {
@@ -1823,48 +2004,72 @@ namespace Proyecto1_Compi2
 
                 case "for":
                     {
+                        contadorN++;
+                        string nombren = "for_" + contadorN;
                         Entorno nuevo = new Entorno(1);
+                        nuevo.nombre = nombren;
 
-                        string subidr = nodo.ChildNodes[0].Token.Text;
+                        Eactual.Hijo = nuevo;
+                        nuevo.Padre = Eactual;
+
+                        Eactual = Eactual.Hijo;
+
+                        string subidr = nodo.ChildNodes[3].Token.Text;
                         string subval = ActuarSQL(nodo.ChildNodes[6]);
+
+                        string[] subsval = subval.Split(';');
 
                         Variable variable = new Variable(nodo.ChildNodes[4].Token.Text, subidr);
 
-                        variable.SetValor(subval);
+                        variable.SetValor(subsval[1]);
 
-                        nuevo.variables.Insertar(variable);
+                        Eactual.variables.Insertar(variable);
 
-                        string condicion = ActuarSQL(nodo.ChildNodes[8]);
+                        string condicion = ActuarSQL(nodo.ChildNodes[8]).Split(';')[1];
 
                         while (condicion.Equals("1"))
                         {
                             resultado += ActuarSQL(nodo.ChildNodes[13]);
 
-                            string opcionF= ActuarSQL(nodo.ChildNodes[13]);
+                            
 
-                            if (opcionF.Equals("ASC"))
+                            string opcionF= ActuarSQL(nodo.ChildNodes[10]);
+
+                            if (opcionF.Equals("++"))
                             {
-                                int tempF = Convert.ToInt16(variable.GetValor());
+
+                                Eactual.variables.existe(subidr);
+                                string subv = Eactual.variables.aux.GetValor();
+                                string[] subsv = subv.Split(';');
+
+                                int tempF = Convert.ToInt32(subsv[1]);
                                 tempF++;
 
-                                variable.SetValor(tempF.ToString());
+                                Eactual.variables.aux.SetValor(tempF.ToString());
 
                             }
                             else
                             {
-                                int tempF = Convert.ToInt16(variable.GetValor());
+                                Eactual.variables.existe(subidr);
+                                string subv = Eactual.variables.aux.GetValor();
+                                string[] subsv = subv.Split(';');
+
+                                int tempF = Convert.ToInt32(subsv[1]);
                                 tempF--;
 
-                                variable.SetValor(tempF.ToString());
+                                Eactual.variables.aux.SetValor(tempF.ToString());
                             }
 
-                            condicion = ActuarSQL(nodo.ChildNodes[2]);
+                            condicion = ActuarSQL(nodo.ChildNodes[8]).Split(';')[1];
                         }
+
+                        Eactual = Eactual.Padre;
+                        Eactual.Hijo = null;
 
                         break;
                     }
 
-                    //aun no
+                    
                 case "asignacion":
                     {
                         if (nodo.ChildNodes[0].Term.Name.ToString().Equals("rutaB"))
@@ -1904,6 +2109,10 @@ namespace Proyecto1_Compi2
                             if (EncontradoV)
                             {
 
+                                bool compatible;
+
+                                valor = Remplazo_tipos(valor);
+
                                 string[] conaux = valor.Split(';');
 
                                 string ntipo = conaux[0];
@@ -1912,14 +2121,32 @@ namespace Proyecto1_Compi2
 
                                 if (tipo.Equals(ntipo))
                                 {
-
+                                    compatible = true;
+                                }
+                                else if (tipo.Equals("DOUBLE"))
+                                {
+                                    if (ntipo.Equals("INTEGER"))
+                                    {
+                                        compatible = true;
+                                    }
+                                    else
+                                    {
+                                        compatible = false;
+                                    }
                                 }
                                 else
                                 {
-
+                                    compatible = false;
                                 }
 
-
+                                if (compatible)
+                                {
+                                    aux.variables.aux.SetValor(conaux[1]);
+                                }
+                                else
+                                {
+                                    resultado = "\r\nError de tipos";
+                                }
                             }
                             else
                             {
@@ -2074,6 +2301,12 @@ namespace Proyecto1_Compi2
 
                         break;
                     }
+
+                case "opciones_for":
+                    {
+                        resultado = nodo.ChildNodes[0].Token.Text;
+                        break;
+                    }
             }
 
             return resultado;
@@ -2088,6 +2321,48 @@ namespace Proyecto1_Compi2
             entrada = entrada.Replace("bool", "BOOL");
            
             return entrada;
+        }
+
+        public string Remplazo_operaciones(string entrada)
+        {
+            entrada = entrada.Replace("INTEGER", "entero");
+            entrada = entrada.Replace("DOUBLE", "doble");
+            entrada = entrada.Replace("TEXT", "Cadena");
+            entrada = entrada.Replace("BOOL", "bool");
+
+            return entrada;
+        }
+
+        string Get_VariableV(string var)
+        {
+            string respuesta = "";
+            Entorno aux = Eactual;
+
+            bool seguir = true;
+
+            while (seguir)
+            {
+                if (aux.variables.existe(var))
+                {                    
+
+                    respuesta = aux.variables.aux.GetValor();
+                    seguir = false;
+                }
+                else
+                {
+                    if (aux.Padre != null)
+                    {
+                        aux = aux.Padre;
+                    }
+                    else
+                    {
+                        seguir = false;
+                    }
+                }
+            }
+
+
+            return respuesta;
         }
     }
 }
