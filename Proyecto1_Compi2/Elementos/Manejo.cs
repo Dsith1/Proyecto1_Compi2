@@ -74,7 +74,25 @@ namespace Proyecto1_Compi2.Elementos
 
             
         }
-        
+
+        public string Modificar_Usuario(string nombre,string contra)
+        {
+            string respuesta = "";
+
+            if (maestro.usuarios.existe(nombre))
+            {
+                maestro.usuarios.aux.Contraseña = contra;
+
+                respuesta = "\r\nUsuario: " + nombre+" Actualizado";
+            }
+            else
+            {
+                respuesta = "\r\nNo existe el Usuario: " + nombre;
+            }
+
+            return respuesta;
+        }
+
         public string Crear_Base(string nombre)
         {
 
@@ -340,8 +358,8 @@ namespace Proyecto1_Compi2.Elementos
                 {
                     string[] dato = campo[x].Split(',');
 
-                    tipos += dato[0] + ",";
-                    fields += dato[1] + ",";
+                    tipos += dato[1] + ",";
+                    fields += dato[0] + ",";
                 }
 
                 tipos = tipos.Trim(',');
@@ -366,11 +384,123 @@ namespace Proyecto1_Compi2.Elementos
             return maestro.bases.aux.objetos.existe(nombre);
         }
 
-        public string Crear_Procedimiento(string nombre, string Base, string campos,string instrucciones)
+        public string Quitar_Objeto(string nombre, string Base, string campo)
+        {
+            maestro.bases.existe(Base);
+
+            if (maestro.bases.aux.objetos.existe(nombre))
+            {
+                string campos = maestro.bases.aux.objetos.aux.campos;
+                string tipos = maestro.bases.aux.objetos.aux.tipos;
+
+                string[] subcampo = campos.Split(',');
+                string[] subtipos = tipos.Split(',');
+
+                string ncampos = "";
+                string ntipos = "";
+
+
+
+
+
+                    for (int x = 0; x < subcampo.Length; x++)
+                    {
+                        if (subcampo[x].Equals(campo))
+                        {
+
+                        }
+                        else
+                        {
+                            ncampos += subcampo[x]+",";
+                            ntipos += subtipos[x] + ",";
+                        }
+                    }
+                
+
+                ncampos = ncampos.Trim(',');
+                ntipos = ntipos.Trim(',');
+
+                maestro.bases.aux.objetos.aux.campos = ncampos;
+                maestro.bases.aux.objetos.aux.tipos = ntipos;
+
+                return "Objeto:"+nombre+" modificado";
+            }
+            else
+            {
+                return "NO Existe el Objeto:"+nombre;
+            }
+
+            
+        }
+
+        public string Agregar_Objeto(string nombre, string Base, string campo)
+        {
+            maestro.bases.existe(Base);
+
+            if (maestro.bases.aux.objetos.existe(nombre))
+            {
+                string campos = maestro.bases.aux.objetos.aux.campos;
+                string tipos = maestro.bases.aux.objetos.aux.tipos;
+
+                string[] ncampos = campo.Split(';');
+
+                for (int x = 0; x < ncampos.Length; x++)
+                {
+                    string[] valor = ncampos[x].Split(',');
+
+                    campos += "," + valor[1];
+                    tipos += "," + valor[0];
+                }
+
+                campos = campos.Trim(',');
+                tipos = tipos.Trim(',');
+
+                maestro.bases.aux.objetos.aux.campos = campos;
+                maestro.bases.aux.objetos.aux.tipos = tipos;
+
+                return "Objeto:" + nombre + " modificado";
+            }
+            else
+            {
+                return "NO Existe el Objeto:" + nombre;
+            }
+
+
+        }
+
+        public string Crear_Procedimiento(string nombre, string Base, string campos, string instrucciones)
         {
 
+            maestro.bases.existe(Base);
 
-            return "";
+            if (maestro.bases.aux.procedimientos.existe(nombre))
+            {
+                return "\r\nYa Existe el Procedimiento:" + nombre;
+            }
+            else
+            {
+                Procedimiento nuevo = new Procedimiento(nombre, instrucciones);
+
+                maestro.bases.aux.procedimientos.Insertar(nuevo);
+
+
+                return "\r\nSe ha Creado el Procedimiento:" + nombre.Trim('_');
+            }
+
+        }
+
+        public string EjecutarProcedimeinto(string nombre,string Base)
+        {
+            maestro.bases.existe(Base);
+
+            if (maestro.bases.aux.procedimientos.existe(nombre))
+            {
+                return maestro.bases.aux.procedimientos.aux.instrucciones;
+            }
+            else
+            {
+                return "\r\nNa Existe el Procedimiento:" + nombre;
+            }
 
         }
     }

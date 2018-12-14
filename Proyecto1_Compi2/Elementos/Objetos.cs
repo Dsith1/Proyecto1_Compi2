@@ -13,7 +13,7 @@ namespace Proyecto1_Compi2.Elementos
         public Objeto ultimo;
         public Objeto aux;
 
-        string ruta;
+        public string ruta;
 
         public Objetos(string r)
         {

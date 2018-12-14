@@ -30,7 +30,7 @@ namespace Proyecto1_Compi2.Analizadores
             RegexBasedTerminal RPROCEDIMIENTO = new RegexBasedTerminal("RPROCEDIMIENTO", "PROCEDIMIENTO");
             RegexBasedTerminal RFUNCION = new RegexBasedTerminal("RFUNCION", "FUNCION");
             RegexBasedTerminal RRETORNO = new RegexBasedTerminal("RRETORNO", "RETORNO ");
-            RegexBasedTerminal RUSUARIO = new RegexBasedTerminal("RUSUARIO", "USUARIO");
+            RegexBasedTerminal RUSUARIO = new RegexBasedTerminal("RUSUARIO", "USUARIO ");
             RegexBasedTerminal RCOLOCAR = new RegexBasedTerminal("RCOLOCAR", "COLOCAR");
             RegexBasedTerminal RPAS = new RegexBasedTerminal("RPAS", "password");
             RegexBasedTerminal RIMPRIMIR = new RegexBasedTerminal("RIMPRIMIR", "IMPRIMIR ");
@@ -52,7 +52,7 @@ namespace Proyecto1_Compi2.Analizadores
             RegexBasedTerminal RUSQLDUMP = new RegexBasedTerminal("RUSQLDUMP", "USQLDUMP");
             RegexBasedTerminal RCOMPLETO = new RegexBasedTerminal("RCOMPLETO", "COMPLETO");
             RegexBasedTerminal RRESTAURAR = new RegexBasedTerminal("RRESTAURAR", "RESTAURAR");
-            RegexBasedTerminal RALTERAR = new RegexBasedTerminal("RALTERAR", "ALTERAR");
+            RegexBasedTerminal RALTERAR = new RegexBasedTerminal("RALTERAR", "ALTERAR ");
             RegexBasedTerminal RAGREGAR = new RegexBasedTerminal("RAGREGAR", "AGREGAR");
             RegexBasedTerminal RQUITAR = new RegexBasedTerminal("RQUITAR", "QUITAR");
             RegexBasedTerminal RCAMBIAR = new RegexBasedTerminal("RCAMBIAR", "CAMBIAR");
@@ -369,7 +369,7 @@ namespace Proyecto1_Compi2.Analizadores
 
             alterar.Rule = RALTERAR + RTABLA + ID + alterartabla + PUNTOCOMA
                         | RALTERAR + ROBJETO + ID + alterarobjeto + PUNTOCOMA
-                        | RALTERAR + RUSUARIO + ID + RCAMBIAR + RPAS + I_ASIGNAR + Cadena;
+                        | RALTERAR + RUSUARIO + ID + RCAMBIAR + RPAS + I_ASIGNAR + Cadena + PUNTOCOMA;
 
             alterartabla.Rule = RAGREGAR + "(" + campos_tabla + ")"
                             | RQUITAR + campos;

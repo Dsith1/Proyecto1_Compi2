@@ -65,6 +65,8 @@ Public Class Form1
                 Cadena = Replace(Cadena, "DEFECTO", "DEFECTO ")
                 Cadena = Replace(Cadena, "SELECCIONA R", "SELECCIONAR ")
                 Cadena = Replace(Cadena, "DETENER", "DETENER ")
+                Cadena = Replace(Cadena, "ALTERAR", "ALTERAR ")
+                Cadena = Replace(Cadena, "USUARIO", "USUARIO ")
                 Cadena = Replace(Cadena, ">", "> ")
                 Cadena = Replace(Cadena, "> >", ">>")
                 Cadena = Replace(Cadena, "<", "< ")

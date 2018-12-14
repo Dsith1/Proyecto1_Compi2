@@ -15,6 +15,8 @@ namespace Proyecto1_Compi2.Elementos
 
         public Objetos objetos;
 
+        public Procedimientos procedimientos;
+
         public Base siguiente;
         public Base anterior;
 
@@ -30,6 +32,9 @@ namespace Proyecto1_Compi2.Elementos
 
             string or= System.IO.Path.Combine(@"c:\DBMS", Nombre + "_objetos.usac");
             objetos = new Objetos(or);
+
+            string pr = System.IO.Path.Combine(@"c:\DBMS", Nombre + "_procedimientos.usac");
+            procedimientos = new Procedimientos(pr);
         }
     }
 }

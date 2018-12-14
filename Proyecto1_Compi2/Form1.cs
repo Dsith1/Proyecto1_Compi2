@@ -1,7 +1,7 @@
 ﻿using Irony.Parsing;
 using Proyecto1_Compi2.Analizadores;
-using Proyecto1_Compi2.Elementos;
 using Proyecto1_Compi2.Ejecucion;
+using Proyecto1_Compi2.Elementos;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -20,17 +20,15 @@ namespace Proyecto1_Compi2
         bool escuchar = false;
         string BaseActual;
         string UserActaul;
+        string alteraraux;
         string TablaAux;
         int tipoin;
         Manejo manejo;
         Entorno Global;
         Entorno Eactual;
         int contadorN=0;        
-
-
         bool Cproc = false;
-
-
+        string codigo;
 
         public Form1()
         {
@@ -79,7 +77,6 @@ namespace Proyecto1_Compi2
             MessageBox.Show("Grafo Finalizado");
 
         }
-
 
         public void Analizar(string entrada)
         {
@@ -145,13 +142,13 @@ namespace Proyecto1_Compi2
 
         }
 
-
         public string esCadenaValidSQL(string cadenaEntrada, Grammar gramatica)
         {
             LanguageData lenguaje = new LanguageData(gramatica);
             Parser p = new Parser(lenguaje);
             ParseTree arbol = p.Parse(cadenaEntrada);
 
+            codigo = cadenaEntrada;
             string a = "";
             if (arbol.HasErrors())
             {
@@ -181,7 +178,6 @@ namespace Proyecto1_Compi2
             return a;
 
         }
-
 
         public void GenarbolC(ParseTreeNode raiz)
         {
@@ -310,7 +306,6 @@ namespace Proyecto1_Compi2
 
         }
 
-
         string ActuarPaquete(ParseTreeNode nodo)
         {
             string resultado = "";
@@ -368,7 +363,6 @@ namespace Proyecto1_Compi2
 
             return resultado;
         }
-
 
         string ActuarSQL(ParseTreeNode nodo)
         {
@@ -681,26 +675,29 @@ namespace Proyecto1_Compi2
                                 TablaAux = nodo.ChildNodes[1].Token.Text;
 
                                 string campos = ActuarSQL(nodo.ChildNodes[3]);
-                                Cproc = true;
 
-                                string instrucciones = ActuarSQL(nodo.ChildNodes[6]);                                
+                                string p = nodo.ChildNodes[6].Span.Location.ToString();
 
-                                Cproc = false;
+                                int inicio = Convert.ToInt32(p.Split(':')[1].Trim(')'));
 
-                                //manejo.Crear_Objeto(TablaAux, BaseActual, campos);
+                                string instrucciones = codigo.Substring(inicio, nodo.ChildNodes[6].Span.Length);
+
+                                resultado = manejo.Crear_Procedimiento(TablaAux, BaseActual, "", instrucciones);
                             }
                             else
                             {
-                                TablaAux = nodo.ChildNodes[1].Token.Text;
+                                TablaAux = nodo.ChildNodes[1].Token.Text + "_";
 
-                                Cproc = true;
+                                string p = nodo.ChildNodes[5].Span.Location.ToString();
 
-                                string instrucciones = ActuarSQL(nodo.ChildNodes[5]);
-                                
+                                int inicio =Convert.ToInt32( p.Split(':')[1].Trim(')'));
 
-                                Cproc = false;
+                                string instrucciones = codigo.Substring(inicio, nodo.ChildNodes[5].Span.Length);
 
-                                
+                                instrucciones = instrucciones.Trim('}');
+
+                                resultado = manejo.Crear_Procedimiento(TablaAux, BaseActual, "", instrucciones);
+
                             }
 
                             Eactual = Eactual.Padre;
@@ -2383,11 +2380,53 @@ namespace Proyecto1_Compi2
 
                         break;
                     }
+
+                case "alterar":
+                    {
+                        alteraraux = nodo.ChildNodes[2].Token.Text;
+
+                        if (nodo.ChildNodes.Count ==8)
+                        {
+                            string nuevo_pass= nodo.ChildNodes[6].Token.Text;
+                            nuevo_pass = nuevo_pass.Trim('\"');
+
+                            resultado = manejo.Modificar_Usuario(alteraraux, nuevo_pass);
+                        }
+                        else
+                        {
+                            resultado = ActuarSQL(nodo.ChildNodes[3]);
+                        }
+
+                        break;
+                    }
+
+                case "alterarobjeto":
+                    {
+                        if (nodo.ChildNodes.Count == 4)
+                        {
+                            string campos= ActuarSQL(nodo.ChildNodes[2]);
+
+                            resultado = manejo.Agregar_Objeto(alteraraux, BaseActual, campos);
+                        }
+                        else
+                        {
+                            string campos= ActuarSQL(nodo.ChildNodes[1]);
+
+                            string[] campo = campos.Split(',');
+
+                            for(int x = 0; x < campo.Length; x++)
+                            {
+                               resultado= "\r\n" + manejo.Quitar_Objeto(alteraraux, BaseActual, campo[x]);
+                            }
+                            
+                        }
+
+                        break;
+                    }
             }
 
             return resultado;
         }
-
 
         public string Remplazo_tipos(string entrada)
         {
