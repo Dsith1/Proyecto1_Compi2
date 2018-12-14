@@ -25,7 +25,7 @@ namespace Proyecto1_Compi2
         Manejo manejo;
         Entorno Global;
         Entorno Eactual;
-        int contadorN=0;
+        int contadorN=0;        
 
 
         bool Cproc = false;
@@ -246,6 +246,7 @@ namespace Proyecto1_Compi2
             cadena = textBox1.Text;
 
 
+
             /*
             while (escuchar)
             {
@@ -254,6 +255,11 @@ namespace Proyecto1_Compi2
 
             */
             AnalizarPaquete(cadena);
+            
+            
+
+
+
 
         }
 
@@ -677,7 +683,7 @@ namespace Proyecto1_Compi2
                                 string campos = ActuarSQL(nodo.ChildNodes[3]);
                                 Cproc = true;
 
-                                string instrucciones = ActuarSQL(nodo.ChildNodes[6]);
+                                string instrucciones = ActuarSQL(nodo.ChildNodes[6]);                                
 
                                 Cproc = false;
 
@@ -690,6 +696,7 @@ namespace Proyecto1_Compi2
                                 Cproc = true;
 
                                 string instrucciones = ActuarSQL(nodo.ChildNodes[5]);
+                                
 
                                 Cproc = false;
 
@@ -732,7 +739,17 @@ namespace Proyecto1_Compi2
 
                         if (nodo.ChildNodes[0].Term.Name.ToString().Equals("RDETENER"))
                         {
-                            //
+                            int validarD = DetenerValido();
+
+                            if (validarD == -1)
+                            {
+                                resultado="Break Erroneo en "+nodo.ChildNodes[0].Token.Location;
+                            }
+                            else
+                            {
+                                setDetener(validarD);
+                            }
+                            
                         }
                         else
                         {
@@ -1014,6 +1031,7 @@ namespace Proyecto1_Compi2
                                 {
                                     term1 = Get_VariableV(term1);
                                 }
+                               
 
                                 term1 = Remplazo_operaciones(term1);
 
@@ -1021,8 +1039,9 @@ namespace Proyecto1_Compi2
 
                                 if (term2.Contains("@"))
                                 {
-                                    term2 = Get_VariableV(term1);
+                                    term2 = Get_VariableV(term2);
                                 }
+                               
 
                                 term2 = Remplazo_operaciones(term2);
 
@@ -1950,6 +1969,13 @@ namespace Proyecto1_Compi2
 
                 case "if":
                     {
+                        Entorno nuevo = new Entorno(1);
+                        nuevo.nombre = "if";
+
+                        Eactual.Hijo = nuevo;
+                        nuevo.Padre = Eactual;
+                        Eactual = Eactual.Hijo;
+
                         string precondicion= ActuarSQL(nodo.ChildNodes[2]);
 
                         string[] conaux = precondicion.Split(';');
@@ -1978,12 +2004,25 @@ namespace Proyecto1_Compi2
                                 resultado = "";
                             }
                         }
+
+                        Eactual = Eactual.Padre;
+                        Eactual.Hijo = null;
+
                         break;
                     }
 
                 case "sino":
                     {
+                        Entorno nuevo = new Entorno(1);
+                        Eactual.Hijo = nuevo;
+                        nuevo.Padre = Eactual;
+
+                        Eactual = Eactual.Hijo;
+
                         resultado = ActuarSQL(nodo.ChildNodes[2]);
+
+                        Eactual = Eactual.Padre;
+                        Eactual.Hijo = null;
                         break;
                     }
 
@@ -2001,7 +2040,7 @@ namespace Proyecto1_Compi2
                         Eactual = nuevo;
 
 
-                        while (condicion.Equals("1"))
+                        while (condicion.Equals("1") && Eactual.detener==false)
                         {
                             resultado+= ActuarSQL(nodo.ChildNodes[5]);
 
@@ -2080,7 +2119,6 @@ namespace Proyecto1_Compi2
 
                         break;
                     }
-
                     
                 case "asignacion":
                     {
@@ -2319,6 +2357,32 @@ namespace Proyecto1_Compi2
                         resultado = nodo.ChildNodes[0].Token.Text;
                         break;
                     }
+
+                case "switch":
+                    {
+                        Entorno nuevo = new Entorno(1);
+                        nuevo.nombre = "switch";
+
+
+                        Eactual.Hijo = nuevo;
+                        nuevo.Padre = Eactual;
+
+                        Eactual = nuevo;
+
+                        resultado = Actuarswitch(nodo.ChildNodes[5], nodo.ChildNodes[2]);
+
+                        Eactual = Eactual.Padre;
+                        Eactual.Hijo = null;
+
+                        break;
+                    }
+
+                case "defecto":
+                    {
+                        resultado = ActuarSQL(nodo.ChildNodes[2]);
+
+                        break;
+                    }
             }
 
             return resultado;
@@ -2375,6 +2439,121 @@ namespace Proyecto1_Compi2
 
 
             return respuesta;
+        }
+
+        string Actuarswitch(ParseTreeNode nodo, ParseTreeNode nodocondicion)
+        {
+            string resultado="";
+
+            switch (nodo.Term.Name.ToString())
+            {
+                case "casos":
+                    {
+                        if (nodo.ChildNodes.Count == 2)
+                        {
+                            resultado = Actuarswitch(nodo.ChildNodes[0], nodocondicion);
+
+                            resultado += Actuarswitch(nodo.ChildNodes[1], nodocondicion);
+                        }
+                        else
+                        {
+                            if (nodo.ChildNodes[0].Term.Name.ToString().Equals("defecto"))
+                            {
+                                if (Eactual.defectoS)
+                                {
+                                    resultado = ActuarSQL(nodo.ChildNodes[0]);
+                                }
+                                
+
+                            }
+                            else
+                            {
+                                resultado = Actuarswitch(nodo.ChildNodes[0], nodocondicion);
+                            }
+                        }
+                        break;
+
+                    }
+
+                case "caso":
+                    {
+                        
+                        string caso = ActuarSQL(nodo.ChildNodes[1]);
+
+                        string validacion= ActuarSQL(nodocondicion);
+
+                        if (caso.Equals(validacion)||Eactual.continuarSwitch && Eactual.detener==false)
+                        {
+                            Eactual.continuarSwitch = true;
+                            resultado = ActuarSQL(nodo.ChildNodes[3]);
+
+                        }
+                        else if(Eactual.detener == true)
+                        {
+                            
+                        }
+                        else
+                        {
+                            Eactual.defectoS = true;
+                        }
+
+
+                        break;
+                    }
+            }
+
+
+            return resultado;
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        int DetenerValido()
+        {
+            int resultado = 0;
+
+            bool seguir = true;
+
+            Entorno aux = Eactual;
+
+            while (seguir)
+            {
+                if ( aux.nombre.Contains("while") || aux.nombre.Contains("for")|| aux.nombre.Contains("switch"))
+                {
+                    resultado++;
+                    seguir = false;
+                }
+                else
+                {
+                    if(aux.Padre== null)
+                    {
+                        seguir = false;
+                        resultado= - 1;
+                        
+                    }
+                    else
+                    {
+                        aux = aux.Padre;
+                        resultado++;
+                    }
+                }
+            }
+
+
+            return resultado;
+        }
+
+        void setDetener(int niveles)
+        {
+            Entorno aux = Eactual;
+            for(int x = 0; x < niveles;x++)
+            {
+                aux.detener = true;
+                aux = aux.Padre;
+            }
         }
     }
 }

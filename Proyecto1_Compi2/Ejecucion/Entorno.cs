@@ -14,6 +14,10 @@ namespace Proyecto1_Compi2.Ejecucion
 
         public Variables variables;
 
+        public bool detener = false;
+        public bool continuarSwitch = false;
+        public bool defectoS = false;
+
         public string nombre;
         int tipo;
 

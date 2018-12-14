@@ -40,17 +40,18 @@
             this.txtConsola.Multiline = true;
             this.txtConsola.Name = "txtConsola";
             this.txtConsola.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtConsola.Size = new System.Drawing.Size(737, 324);
+            this.txtConsola.Size = new System.Drawing.Size(715, 192);
             this.txtConsola.TabIndex = 0;
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(36, 353);
+            this.textBox1.Location = new System.Drawing.Point(36, 210);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
-            this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
-            this.textBox1.Size = new System.Drawing.Size(584, 20);
+            this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.textBox1.Size = new System.Drawing.Size(584, 163);
             this.textBox1.TabIndex = 1;
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // button1
             // 

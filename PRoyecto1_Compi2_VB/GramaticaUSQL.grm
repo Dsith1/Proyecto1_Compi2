@@ -198,7 +198,7 @@ Comment Line  = '#'
 <sino>::= 'SINO'   '{'   <instrucciones>   '}'
         | 'SINO'   <Tif>
 
-<Tswitch>::= 'SELECCIONA'   '('   <expresion>   ')'   '{'   <casos>  '}'
+<Tswitch>::= 'SELECCIONA'   '('   <logica>   ')'   '{'   <casos>  '}'
 
 <casos>::= <caso>   <casos>
          | <caso>

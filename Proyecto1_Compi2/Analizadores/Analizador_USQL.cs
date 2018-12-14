@@ -9,7 +9,7 @@ namespace Proyecto1_Compi2.Analizadores
 {
     class Analizador_USQL:Grammar
     {
-        public Analizador_USQL():base(false)
+        public Analizador_USQL() : base(false)
         {
             CommentTerminal comentarioSimple = new CommentTerminal("comentarioSimple", "#", "\n", "\r\n");
             CommentTerminal comentarioMulti = new CommentTerminal("comentarioMulti", "#*", "*#");
@@ -60,12 +60,12 @@ namespace Proyecto1_Compi2.Analizadores
             RegexBasedTerminal RDECLARAR = new RegexBasedTerminal("RDECLARAR", "DECLARAR ");
             RegexBasedTerminal RSI = new RegexBasedTerminal("RSI", "SI ");
             RegexBasedTerminal RSINO = new RegexBasedTerminal("RSINO", "SINO ");
-            RegexBasedTerminal RSELECCIONA = new RegexBasedTerminal("RSELECCIONA", "SELECCIONA");
-            RegexBasedTerminal RCASO = new RegexBasedTerminal("RCASO", "CASO");
-            RegexBasedTerminal RDEFECTO = new RegexBasedTerminal("RDEFECTO", "DEFECTO");
+            RegexBasedTerminal RSELECCIONA = new RegexBasedTerminal("RSELECCIONA", "SELECCIONA ");
+            RegexBasedTerminal RCASO = new RegexBasedTerminal("RCASO", "CASO ");
+            RegexBasedTerminal RDEFECTO = new RegexBasedTerminal("RDEFECTO", "DEFECTO ");
             RegexBasedTerminal RPARA = new RegexBasedTerminal("RPARA", "PARA ");
             RegexBasedTerminal RMIENTRAS = new RegexBasedTerminal("RMIENTRAS", "MIENTRAS ");
-            RegexBasedTerminal RDETENER = new RegexBasedTerminal("RDETENER", "DETENER");
+            RegexBasedTerminal RDETENER = new RegexBasedTerminal("RDETENER", "DETENER ");
             RegexBasedTerminal RFECHA = new RegexBasedTerminal("RFECHA", "FECHA");
             RegexBasedTerminal RFECHA_HORA = new RegexBasedTerminal("RFECHA_HORA", "FECHA_HORA");
             RegexBasedTerminal RCONTAR = new RegexBasedTerminal("RCONTAR", "CONTAR");
@@ -84,7 +84,7 @@ namespace Proyecto1_Compi2.Analizadores
             RegexBasedTerminal RBOOL = new RegexBasedTerminal("RBOOL", "BOOL ");
             //RegexBasedTerminal Verdadero = new RegexBasedTerminal("verdadero", "verdadero|true");
             //RegexBasedTerminal Falso = new RegexBasedTerminal("falso", "falso|false");
-            
+
             RegexBasedTerminal RTEXT = new RegexBasedTerminal("RTEXT", "TEXT ");
             StringLiteral Cadena = new StringLiteral("Cadena", "\"");
 
@@ -134,7 +134,7 @@ namespace Proyecto1_Compi2.Analizadores
             this.RegisterOperators(0, Associativity.Left, SUMA, RESTA);
             this.RegisterOperators(1, Associativity.Left, MULTI, DIV);
             this.RegisterOperators(2, Associativity.Right, POTENCIA);
-            this.RegisterOperators(3 , IGUAL,DISTINTO,MENOR,MAYOR,MENOR_IGUAL,MAYOR_IGUAL);
+            this.RegisterOperators(3, IGUAL, DISTINTO, MENOR, MAYOR, MENOR_IGUAL, MAYOR_IGUAL);
             this.RegisterOperators(4, Associativity.Left, OR);
             this.RegisterOperators(5, Associativity.Left, AND);
             this.RegisterOperators(6, Associativity.Left, NOT);
@@ -233,6 +233,7 @@ namespace Proyecto1_Compi2.Analizadores
                             | eliminar
                             | declarar
                             | llamada + PUNTOCOMA;//Ya
+
 
 
             usar.Rule = RUSAR + ID + PUNTOCOMA;//Ya
@@ -399,7 +400,7 @@ namespace Proyecto1_Compi2.Analizadores
             sino.Rule = RSINO + "{" + instrucciones + "}";
                     
 
-            Tswitch.Rule = RSELECCIONA + "(" + expresion + ")" + "{" + casos +"}";
+            Tswitch.Rule = RSELECCIONA + "(" + logica + ")" + "{" + casos +"}";
 
             casos.Rule = caso + casos
                     | caso
