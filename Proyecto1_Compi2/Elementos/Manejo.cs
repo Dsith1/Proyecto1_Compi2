@@ -489,7 +489,43 @@ namespace Proyecto1_Compi2.Elementos
 
         }
 
+        public string Crear_funcion(string nombre, string Base, string campos, string instrucciones,string tipo)
+        {
+
+            maestro.bases.existe(Base);
+
+            if (maestro.bases.aux.procedimientos.existe(nombre))
+            {
+                return "\r\nYa Existe el Procedimiento:" + nombre;
+            }
+            else
+            {
+                Procedimiento nuevo = new Procedimiento(nombre, instrucciones);
+
+                maestro.bases.aux.procedimientos.Insertar(nuevo);
+
+
+                return "\r\nSe ha Creado el Procedimiento:" + nombre.Trim('_');
+            }
+
+        }
+
         public string EjecutarProcedimeinto(string nombre,string Base)
+        {
+            maestro.bases.existe(Base);
+
+            if (maestro.bases.aux.procedimientos.existe(nombre))
+            {
+                return maestro.bases.aux.procedimientos.aux.instrucciones;
+            }
+            else
+            {
+                return "\r\nNa Existe el Procedimiento:" + nombre;
+            }
+
+        }
+
+        public string EjecutarProcedimeinto(string nombre, string Base,string parametros) 
         {
             maestro.bases.existe(Base);
 

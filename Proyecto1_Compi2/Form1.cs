@@ -179,6 +179,22 @@ namespace Proyecto1_Compi2
 
         }
 
+        public string esCadenaValidSQL2(string cadenaEntrada, Grammar gramatica)
+        {
+            LanguageData lenguaje = new LanguageData(gramatica);
+            Parser p = new Parser(lenguaje);
+            ParseTree arbol = p.Parse(cadenaEntrada);
+
+            codigo = cadenaEntrada;
+            string a = "";
+
+            a = ActuarSQL(arbol.Root);
+
+
+            return a;
+
+        }
+
         public void GenarbolC(ParseTreeNode raiz)
         {
             System.IO.StreamWriter f = new System.IO.StreamWriter("C:/Arboles/ArbolC.txt");
@@ -680,7 +696,7 @@ namespace Proyecto1_Compi2
 
                                 int inicio = Convert.ToInt32(p.Split(':')[1].Trim(')'));
 
-                                string instrucciones = codigo.Substring(inicio, nodo.ChildNodes[6].Span.Length);
+                                string instrucciones = codigo.Substring(inicio-1, nodo.ChildNodes[6].Span.Length+1);
 
                                 resultado = manejo.Crear_Procedimiento(TablaAux, BaseActual, "", instrucciones);
                             }
@@ -692,7 +708,7 @@ namespace Proyecto1_Compi2
 
                                 int inicio =Convert.ToInt32( p.Split(':')[1].Trim(')'));
 
-                                string instrucciones = codigo.Substring(inicio, nodo.ChildNodes[5].Span.Length);
+                                string instrucciones = codigo.Substring(inicio-1, nodo.ChildNodes[5].Span.Length+1);
 
                                 instrucciones = instrucciones.Trim('}');
 
@@ -847,7 +863,13 @@ namespace Proyecto1_Compi2
                         {
                             if (nodo.ChildNodes[0].Term.Name.ToString().Equals("rutaB"))
                             {
-                                resultado = ActuarSQL(nodo.ChildNodes[0]);
+                                string proc = ActuarSQL(nodo.ChildNodes[0])+"_";
+
+                                string codigo=manejo.EjecutarProcedimeinto(proc, BaseActual);
+
+                                Analizador_Procedimientos gramatica = new Analizador_Procedimientos();
+
+                                resultado = esCadenaValidSQL2(codigo, gramatica);
                             }
                             else if (nodo.ChildNodes[0].Term.Name.ToString().Equals("RFECHA_HORA"))
                             {
@@ -1145,7 +1167,7 @@ namespace Proyecto1_Compi2
 
                                 if (term2.Contains("@"))
                                 {
-                                    term2 = Get_VariableV(term1);
+                                    term2 = Get_VariableV(term2);
                                 }
 
                                 string[] OP1 = term1.Split(';');
@@ -1219,7 +1241,7 @@ namespace Proyecto1_Compi2
 
                                 if (term2.Contains("@"))
                                 {
-                                    term2 = Get_VariableV(term1);
+                                    term2 = Get_VariableV(term2);
                                 }
 
                                 string[] OP1 = term1.Split(';');
@@ -1295,7 +1317,7 @@ namespace Proyecto1_Compi2
 
                                 if (term2.Contains("@"))
                                 {
-                                    term2 = Get_VariableV(term1);
+                                    term2 = Get_VariableV(term2);
                                 }
 
                                 string[] OP1 = term1.Split(';');
@@ -1374,7 +1396,7 @@ namespace Proyecto1_Compi2
 
                                 if (term2.Contains("@"))
                                 {
-                                    term2 = Get_VariableV(term1);
+                                    term2 = Get_VariableV(term2);
                                 }
 
                                 string[] OP1 = term1.Split(';');
@@ -1485,7 +1507,7 @@ namespace Proyecto1_Compi2
 
                                 if (term2.Contains("@"))
                                 {
-                                    term2 = Get_VariableV(term1);
+                                    term2 = Get_VariableV(term2);
                                 }
 
                                 string[] OP1 = term1.Split(';');
@@ -1557,7 +1579,7 @@ namespace Proyecto1_Compi2
 
                                 if (term2.Contains("@"))
                                 {
-                                    term2 = Get_VariableV(term1);
+                                    term2 = Get_VariableV(term2);
                                 }
 
                                 string[] OP1 = term1.Split(';');
@@ -1594,7 +1616,7 @@ namespace Proyecto1_Compi2
 
                                 if (term2.Contains("@"))
                                 {
-                                    term2 = Get_VariableV(term1);
+                                    term2 = Get_VariableV(term2);
                                 }
 
                                 string[] OP1 = term1.Split(';');
@@ -1650,7 +1672,7 @@ namespace Proyecto1_Compi2
 
                                 if (term2.Contains("@"))
                                 {
-                                    term2 = Get_VariableV(term1);
+                                    term2 = Get_VariableV(term2);
                                 }
 
                                 string[] OP1 = term1.Split(';');
@@ -1705,7 +1727,7 @@ namespace Proyecto1_Compi2
 
                                 if (term2.Contains("@"))
                                 {
-                                    term2 = Get_VariableV(term1);
+                                    term2 = Get_VariableV(term2);
                                 }
 
                                 string[] OP1 = term1.Split(';');
@@ -1760,7 +1782,7 @@ namespace Proyecto1_Compi2
 
                                 if (term2.Contains("@"))
                                 {
-                                    term2 = Get_VariableV(term1);
+                                    term2 = Get_VariableV(term2);
                                 }
 
                                 string[] OP1 = term1.Split(';');
@@ -2524,6 +2546,7 @@ namespace Proyecto1_Compi2
                         if (caso.Equals(validacion)||Eactual.continuarSwitch && Eactual.detener==false)
                         {
                             Eactual.continuarSwitch = true;
+                            Eactual.defectoS = false;
                             resultado = ActuarSQL(nodo.ChildNodes[3]);
 
                         }

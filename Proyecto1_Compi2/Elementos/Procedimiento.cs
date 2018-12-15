@@ -12,6 +12,8 @@ namespace Proyecto1_Compi2.Elementos
         public string campos;
         public string tipos;
         public string instrucciones;
+        public bool funcion = false;
+        public string tipo;
 
         public Procedimiento siguiente;
         public Procedimiento anterior;
