@@ -28,7 +28,7 @@ namespace Proyecto1_Compi2.Analizadores
             RegexBasedTerminal RTABLA = new RegexBasedTerminal("RTABLA", "TABLA");
             RegexBasedTerminal ROBJETO = new RegexBasedTerminal("ROBJETO", "OBJETO");
             RegexBasedTerminal RPROCEDIMIENTO = new RegexBasedTerminal("RPROCEDIMIENTO", "PROCEDIMIENTO");
-            RegexBasedTerminal RFUNCION = new RegexBasedTerminal("RFUNCION", "FUNCION");
+            RegexBasedTerminal RFUNCION = new RegexBasedTerminal("RFUNCION", "FUNCION ");
             RegexBasedTerminal RRETORNO = new RegexBasedTerminal("RRETORNO", "RETORNO ");
             RegexBasedTerminal RUSUARIO = new RegexBasedTerminal("RUSUARIO", "USUARIO ");
             RegexBasedTerminal RCOLOCAR = new RegexBasedTerminal("RCOLOCAR", "COLOCAR");
@@ -293,12 +293,13 @@ namespace Proyecto1_Compi2.Analizadores
                                 | Twhile
                                 | sentencia
                                 | llamada + PUNTOCOMA
-                                | RDETENER + PUNTOCOMA;//.5
+                                | RDETENER + PUNTOCOMA
+                                | retorno;//.5
 
-            c_funcion.Rule = RFUNCION + ID + "(" + parametros + ")" + tipo_dato + "{" + instruccionesR + "}"
-                        | RFUNCION + ID + "(" + parametros + ")" + ID + "{" + instruccionesR + "}"
-                        | RFUNCION + ID + "(" + ")" + tipo_dato + "{" + instruccionesR + "}"
-                        | RFUNCION + ID + "(" + ")" + ID + "{" + instruccionesR + "}";
+            c_funcion.Rule = RFUNCION + ID + "(" + parametros + ")" + tipo_dato + "{" + instrucciones + "}"//9
+                           | RFUNCION + ID + "(" + parametros + ")" + ID + "{" + instrucciones + "}"//9
+                           | RFUNCION + ID + "(" + ")" + tipo_dato + "{" + instrucciones + "}"//8
+                           | RFUNCION + ID + "(" + ")" + ID + "{" + instrucciones + "}";//8
 
 
             instruccionesR.Rule = instrucciones + retorno;

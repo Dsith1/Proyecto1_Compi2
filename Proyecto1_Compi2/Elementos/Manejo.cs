@@ -494,6 +494,8 @@ namespace Proyecto1_Compi2.Elementos
 
             maestro.bases.existe(Base);
 
+            nombre += "_";
+
             if (maestro.bases.aux.procedimientos.existe(nombre))
             {
                 return "\r\nYa Existe el Procedimiento:" + nombre;
@@ -501,6 +503,10 @@ namespace Proyecto1_Compi2.Elementos
             else
             {
                 Procedimiento nuevo = new Procedimiento(nombre, instrucciones);
+
+                nuevo.funcion = true;
+
+                nuevo.tipo = tipo;
 
                 maestro.bases.aux.procedimientos.Insertar(nuevo);
 
@@ -539,6 +545,51 @@ namespace Proyecto1_Compi2.Elementos
             }
 
         }
+
+        public bool EsFuncion(string nombre,string Base)
+        {
+            maestro.bases.existe(Base);
+
+            if (maestro.bases.aux.procedimientos.existe(nombre))
+            {
+                return maestro.bases.aux.procedimientos.aux.funcion;
+            }
+            else
+            {
+                return false;
+            }
+
+        }
+
+        public bool EsFuncion(string nombre, string Base, string parametros)
+        {
+            maestro.bases.existe(Base);
+
+            if (maestro.bases.aux.procedimientos.existe(nombre))
+            {
+                return maestro.bases.aux.procedimientos.aux.funcion;
+            }
+            else
+            {
+                return false;
+            }
+
+        }
+
+        public string getTipoF(string nombre, string Base)
+        {
+            maestro.bases.existe(Base);
+
+            if (maestro.bases.aux.procedimientos.existe(nombre))
+            {
+                return maestro.bases.aux.procedimientos.aux.tipo;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
     }
     
 }

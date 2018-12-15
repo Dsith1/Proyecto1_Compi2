@@ -710,8 +710,6 @@ namespace Proyecto1_Compi2
 
                                 string instrucciones = codigo.Substring(inicio-1, nodo.ChildNodes[5].Span.Length+1);
 
-                                instrucciones = instrucciones.Trim('}');
-
                                 resultado = manejo.Crear_Procedimiento(TablaAux, BaseActual, "", instrucciones);
 
                             }
@@ -786,7 +784,7 @@ namespace Proyecto1_Compi2
                 case "imprimir":
                     {
 
-                        resultado = "\r\n" + ActuarSQL(nodo.ChildNodes[2]);
+                        resultado =ActuarSQL(nodo.ChildNodes[2]);
 
                         if (resultado.Contains("Error")){
                             if (resultado.Contains(";"))
@@ -802,11 +800,19 @@ namespace Proyecto1_Compi2
                             {
                                 string[] val = resultado.Split(';');
 
-                                resultado = "\r\n" + val[1];
+                                resultado = val[1];
+                            }
+                            else if (resultado.Contains("@"))
+                            {
+                                resultado=Get_VariableV(resultado);
+                                string[] val = resultado.Split(';');
+
+                                resultado = val[1];
                             }
                         }
 
-                        
+                        resultado = "\r\n" + resultado;
+
 
                         resultado = resultado.Replace("\"", "");
 
@@ -863,13 +869,59 @@ namespace Proyecto1_Compi2
                         {
                             if (nodo.ChildNodes[0].Term.Name.ToString().Equals("rutaB"))
                             {
+                                
                                 string proc = ActuarSQL(nodo.ChildNodes[0])+"_";
 
                                 string codigo=manejo.EjecutarProcedimeinto(proc, BaseActual);
 
-                                Analizador_Procedimientos gramatica = new Analizador_Procedimientos();
 
-                                resultado = esCadenaValidSQL2(codigo, gramatica);
+                                if (manejo.EsFuncion(proc, BaseActual))
+                                {
+
+                                    Entorno nuevo = new Entorno(1);
+                                    nuevo.nombre = "funcion_";
+
+                                    Eactual.Hijo = nuevo;
+                                    nuevo.Padre = Eactual;
+
+                                    Eactual = nuevo;
+
+                                    string tipo = manejo.getTipoF(proc, BaseActual);
+
+                                    Variable variable = new Variable(tipo, "Retorno");
+
+                                    Eactual.variables.Insertar(variable);
+
+                                    Analizador_Procedimientos gramatica = new Analizador_Procedimientos();
+
+                                    esCadenaValidSQL2(codigo, gramatica);
+
+                                    Eactual.variables.existe("Retorno");
+
+                                    resultado = Eactual.variables.aux.GetValor();
+
+                                    Eactual = Eactual.Padre;
+                                    Eactual.Hijo = null;
+                                }
+                                else
+                                {
+                                    Entorno nuevo = new Entorno(1);
+                                    nuevo.nombre = "procedimiento_";
+
+                                    Eactual.Hijo = nuevo;
+                                    nuevo.Padre = Eactual;
+
+                                    Eactual = nuevo;
+
+                                    Analizador_Procedimientos gramatica = new Analizador_Procedimientos();
+
+                                    resultado = esCadenaValidSQL2(codigo, gramatica);
+
+                                    Eactual = Eactual.Padre;
+                                    Eactual.Hijo = null;
+                                }
+
+                                
                             }
                             else if (nodo.ChildNodes[0].Term.Name.ToString().Equals("RFECHA_HORA"))
                             {
@@ -2444,6 +2496,137 @@ namespace Proyecto1_Compi2
                         }
 
                         break;
+                    }
+
+                case "c_funcion":
+                    {
+                        if (nodo.ChildNodes.Count == 9)
+                        {
+                            string nombre = nodo.ChildNodes[1].Token.Text;
+
+                            string tipo;
+
+                            if (nodo.ChildNodes[5].Term.Name.ToString().Equals("tipo_dato"))
+                            {
+                                tipo = ActuarSQL(nodo.ChildNodes[5]);
+                            }
+                            else
+                            {
+                                tipo = nodo.ChildNodes[5].Token.Text;
+                            }
+
+                            string p = nodo.ChildNodes[7].Span.Location.ToString();
+
+                            int inicio = Convert.ToInt32(p.Split(':')[1].Trim(')'));
+
+                            string instrucciones = codigo.Substring(inicio - 1, nodo.ChildNodes[7].Span.Length + 1);
+
+                            manejo.Crear_funcion(nombre, BaseActual, "", instrucciones, tipo);
+
+                        }
+                        else
+                        {
+                            string nombre= nodo.ChildNodes[1].Token.Text;
+
+                            string tipo;
+
+                            if (nodo.ChildNodes[4].Term.Name.ToString().Equals("tipo_dato"))
+                            {
+                                tipo = ActuarSQL(nodo.ChildNodes[4]);
+                            }
+                            else
+                            {
+                                tipo= nodo.ChildNodes[4].Token.Text;
+                            }
+
+                            string p = nodo.ChildNodes[6].Span.Location.ToString();
+
+                            int inicio = Convert.ToInt32(p.Split(':')[1].Trim(')'));
+
+                            string instrucciones = codigo.Substring(inicio - 1, nodo.ChildNodes[6].Span.Length + 1);
+
+                            manejo.Crear_funcion(nombre, BaseActual, "", instrucciones, tipo);
+
+                        }
+                        
+                        break;
+                    }
+
+                case "retorno":
+                    {
+
+                        string retornar = ActuarSQL(nodo.ChildNodes[1]);
+
+                        bool seguirV = true;
+                        bool EncontradoV = false;
+
+                        Entorno aux = Eactual;
+
+                        while (seguirV)
+                        {
+                            if (aux.variables.existe("Retorno"))
+                            {
+                                seguirV = false;
+                                EncontradoV = true;
+                            }
+                            else
+                            {
+                                if (aux.Padre != null)
+                                {
+                                    aux = aux.Padre;
+                                }
+                                else
+                                {
+                                    seguirV = false;
+                                }
+                            }
+                        }
+
+                        if (EncontradoV)
+                        {
+
+                            bool compatible;
+
+                            retornar = Remplazo_tipos(retornar);
+
+                            string[] conaux = retornar.Split(';');
+
+                            string ntipo = conaux[0];
+
+                            string tipo = aux.variables.aux.tipo;
+
+                            if (tipo.Equals(ntipo))
+                            {
+                                compatible = true;
+                            }
+                            else if (tipo.Equals("DOUBLE"))
+                            {
+                                if (ntipo.Equals("INTEGER"))
+                                {
+                                    compatible = true;
+                                }
+                                else
+                                {
+                                    compatible = false;
+                                }
+                            }
+                            else
+                            {
+                                compatible = false;
+                            }
+
+                            if (compatible)
+                            {
+                                aux.variables.aux.SetValor(conaux[1]);
+                            }
+                            else
+                            {
+                                resultado = "\r\nError de tipos";
+                            }
+
+                        }
+
+                            break;
                     }
             }
 
