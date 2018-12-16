@@ -13,6 +13,8 @@ namespace Proyecto1_Compi2.Elementos
         public string tipos;
         public string campos;
 
+        public string atributos;
+
         public string ruta;
 
         public Tabla siguiente;
@@ -27,6 +29,8 @@ namespace Proyecto1_Compi2.Elementos
             Nombre = n;
             tipos = t;
             campos = c;
+
+            atributos = "";
 
             siguiente = null;
             anterior = null;

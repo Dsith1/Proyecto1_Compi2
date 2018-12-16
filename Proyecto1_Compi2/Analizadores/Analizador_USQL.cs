@@ -36,7 +36,7 @@ namespace Proyecto1_Compi2.Analizadores
             RegexBasedTerminal RIMPRIMIR = new RegexBasedTerminal("RIMPRIMIR", "IMPRIMIR ");
             RegexBasedTerminal RINSERTAR = new RegexBasedTerminal("RINSERTAR", "INSERTAR ");
             RegexBasedTerminal REN = new RegexBasedTerminal("REN", "EN");
-            RegexBasedTerminal RVALORES = new RegexBasedTerminal("RVALORES", "VALORES");
+            RegexBasedTerminal RVALORES = new RegexBasedTerminal("RVALORES", "VALORES ");
             RegexBasedTerminal RACTUALIZAR = new RegexBasedTerminal("RACTUALIZAR", "ACTUALIZAR");
             RegexBasedTerminal RDONDE = new RegexBasedTerminal("RDONDE", "DONDE");
             RegexBasedTerminal RBORRAR = new RegexBasedTerminal("RBORRAR", "BORRAR");

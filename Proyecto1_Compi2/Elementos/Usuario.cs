@@ -14,6 +14,8 @@ namespace Proyecto1_Compi2.Elementos
         public Usuario siguiente;
         public Usuario anterior;
 
+        public string permiso;
+
 
         public Usuario(string n,string c)
         {
@@ -21,6 +23,8 @@ namespace Proyecto1_Compi2.Elementos
             Contraseña = c;
             siguiente = null;
             anterior = null;
+
+            permiso = "";
         }
     }
 }

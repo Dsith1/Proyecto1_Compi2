@@ -10,6 +10,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Windows.Forms;
 
+
 namespace Proyecto1_Compi2
 {
     public partial class Form1 : Form
@@ -19,7 +20,7 @@ namespace Proyecto1_Compi2
         string cadena;
         bool escuchar = false;
         string BaseActual;
-        string UserActaul;
+        string UserActaul= "Admin";
         string alteraraux;
         string TablaAux;
         int tipoin;
@@ -43,6 +44,7 @@ namespace Proyecto1_Compi2
 
             BaseActual = "";
             manejo = new Manejo();
+            manejo.usuario = UserActaul;
             string Consola = txtConsola.Text;
 
             string activeDir = @"c:\DBMS";
@@ -254,11 +256,8 @@ namespace Proyecto1_Compi2
 
         private void button1_Click(object sender, EventArgs e)
         {
-            escuchar = true;
+
             cadena = textBox1.Text;
-
-
-
             /*
             while (escuchar)
             {
@@ -267,10 +266,6 @@ namespace Proyecto1_Compi2
 
             */
             AnalizarPaquete(cadena);
-            
-            
-
-
 
 
         }
@@ -688,7 +683,7 @@ namespace Proyecto1_Compi2
 
                             if (nodo.ChildNodes.Count == 8)
                             {
-                                TablaAux = nodo.ChildNodes[1].Token.Text;
+                                TablaAux = nodo.ChildNodes[1].Token.Text+"_";
 
                                 string campos = ActuarSQL(nodo.ChildNodes[3]);
 
@@ -698,7 +693,7 @@ namespace Proyecto1_Compi2
 
                                 string instrucciones = codigo.Substring(inicio-1, nodo.ChildNodes[6].Span.Length+1);
 
-                                resultado = manejo.Crear_Procedimiento(TablaAux, BaseActual, "", instrucciones);
+                                resultado = manejo.Crear_Procedimiento(TablaAux, BaseActual, campos, instrucciones);
                             }
                             else
                             {
@@ -863,6 +858,108 @@ namespace Proyecto1_Compi2
                             string proc = ActuarSQL(nodo.ChildNodes[0]);
 
                             string param = ActuarSQL(nodo.ChildNodes[2]);
+
+                            param = Remplazo_tipos(param);
+
+                            string[] parametros = param.Split(',');
+                            string val = "";
+
+                            for(int x = 0; x < parametros.Length; x++)
+                            {
+                                string[] dato = parametros[x].Split(';');
+
+                                proc += "_" + dato[0];
+                                val += dato[1] + ",";
+                            }
+
+
+                            val = val.Trim(',');
+
+                            string codigo = manejo.EjecutarProcedimeinto(proc, BaseActual);
+                            string detalles = manejo.ProcedimientoParam(proc, BaseActual);
+
+                            if (manejo.EsFuncion(proc, BaseActual))
+                            {
+
+                                Entorno nuevo = new Entorno(1);
+                                nuevo.nombre = "funcion_";
+
+                                Eactual.Hijo = nuevo;
+                                nuevo.Padre = Eactual;
+
+                                Eactual = nuevo;
+
+                                string tipo = manejo.getTipoF(proc, BaseActual);
+
+                                Variable variable = new Variable(tipo, "Retorno");
+
+                                Eactual.variables.Insertar(variable);
+
+                                string[] detalle = detalles.Split(';');
+
+                                string[] var = detalle[0].Split(',');
+                                string[] tipos = detalle[1].Split(',');
+
+                                string[] valor = val.Split(',');
+
+                                for (int y = 0; y < var.Length; y++)
+                                {
+                                    Variable variablep = new Variable(tipos[y], var[0]);
+                                    variablep.SetValor(valor[y]);
+
+                                    nuevo.variables.Insertar(variablep);
+
+                                }
+
+
+                                Analizador_Procedimientos gramatica = new Analizador_Procedimientos();
+
+                                esCadenaValidSQL2(codigo, gramatica);
+
+                                Eactual.variables.existe("Retorno");
+
+                                resultado = Eactual.variables.aux.GetValor();
+
+                                Eactual = Eactual.Padre;
+                                Eactual.Hijo = null;
+                            }
+                            else
+                            {
+                                Entorno nuevo = new Entorno(1);
+                                nuevo.nombre = "procedimiento_";
+
+                                Eactual.Hijo = nuevo;
+                                nuevo.Padre = Eactual;
+
+                                Eactual = nuevo;
+
+                                string[] detalle = detalles.Split(';');
+
+                                string[] var = detalle[0].Split(',');
+                                string[] tipos= detalle[1].Split(',');
+
+                                string[] valor = val.Split(',');
+
+                                for(int y = 0; y < var.Length; y++)
+                                {
+                                    Variable variable = new Variable(tipos[y], var[0]);
+                                    variable.SetValor(valor[y]);
+
+                                    nuevo.variables.Insertar(variable);
+
+                                }
+
+
+
+
+                                Analizador_Procedimientos gramatica = new Analizador_Procedimientos();
+
+                                resultado = esCadenaValidSQL2(codigo, gramatica);
+
+                                Eactual = Eactual.Padre;
+                                Eactual.Hijo = null;
+                            }
+
 
                         }
                         else
@@ -2205,6 +2302,11 @@ namespace Proyecto1_Compi2
                             bool seguirV = true;
                             bool EncontradoV = false;
 
+                            if (valor.Contains("@"))
+                            {
+                                valor = Get_VariableV(valor);
+                            }
+
                             Entorno aux = Eactual;
 
                             while (seguirV)
@@ -2625,6 +2727,29 @@ namespace Proyecto1_Compi2
                             }
 
                         }
+
+                            break;
+                    }
+
+                case "eliminar":
+                    {
+                        if (nodo.ChildNodes[1].Term.Name.ToString().Equals("RTABLA"))
+                        {
+
+                        }
+                        else if (nodo.ChildNodes[1].Term.Name.ToString().Equals("RBASE"))
+                        {
+
+                        }
+                        else if (nodo.ChildNodes[1].Term.Name.ToString().Equals("ROBJETO"))
+                        {
+
+                        }
+                        else
+                        {
+
+                        }
+
 
                             break;
                     }

@@ -4,6 +4,12 @@ Imports System.Net
 Imports System.Net.Sockets
 Imports System.Text
 
+
+
+
+
+
+
 Public Class Form1
 
     Public cliente As TcpClient
@@ -67,6 +73,7 @@ Public Class Form1
                 Cadena = Replace(Cadena, "DETENER", "DETENER ")
                 Cadena = Replace(Cadena, "ALTERAR", "ALTERAR ")
                 Cadena = Replace(Cadena, "USUARIO", "USUARIO ")
+                Cadena = Replace(Cadena, "VALORES", "VALORES ")
                 Cadena = Replace(Cadena, ">", "> ")
                 Cadena = Replace(Cadena, "> >", ">>")
                 Cadena = Replace(Cadena, "<", "< ")
@@ -82,6 +89,9 @@ Public Class Form1
                 Dim Salida As String
 
                 Salida = "[ ""paquete"":""usql"", ""instrucción"":'" + Cadena + "',]"
+
+
+
 
                 'Cadena += 
                 'bytes = Nothing
@@ -115,9 +125,11 @@ Public Class Form1
                 'Next cont
 
             Else
-                    MessageBox.Show("Ha habido un Error" + SError, "Error")
+                MessageBox.Show("Ha habido un Error" + SError, "Error")
             End If
 
         End If
     End Sub
+
+
 End Class
