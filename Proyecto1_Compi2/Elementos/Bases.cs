@@ -82,5 +82,88 @@ namespace Proyecto1_Compi2.Elementos
             }
 
         }
+
+        public string Eliminar(string nombre)
+        {
+
+
+            if (cabeza == null)
+            {
+                return "No Existe el usuario " + nombre;
+
+            }
+            else
+            {
+                string respuesta = "";
+
+                if (ultimo == null)
+                {
+                    if (cabeza.Nombre.Equals(nombre))
+                    {
+                        cabeza = null;
+
+                        respuesta = "Usuario " + nombre + " Eliminado";
+
+                    }
+                    else
+                    {
+                        respuesta = "No Existe el usuario " + nombre;
+                    }
+                }
+                else
+                {
+
+                    aux = cabeza;
+
+                    bool seguir = true;
+
+                    while (seguir)
+                    {
+                        if (aux.Nombre.Equals(nombre))
+                        {
+
+                            if (aux == cabeza)
+                            {
+                                cabeza = aux.siguiente;
+                                cabeza.anterior = null;
+
+                            }
+                            else if (aux == ultimo)
+                            {
+                                ultimo = aux.anterior;
+                                ultimo.siguiente = null;
+
+                            }
+                            else
+                            {
+                                aux.anterior.siguiente = aux.siguiente;
+                                aux.siguiente.anterior = aux.anterior;
+                            }
+                            seguir = false;
+
+                            respuesta = "Usuario " + nombre + " Eliminado";
+
+                        }
+                        else
+                        {
+                            if (aux.siguiente != null)
+                            {
+                                aux = aux.siguiente;
+                            }
+                            else
+                            {
+                                seguir = false;
+                                respuesta = "No Existe el usuario " + nombre;
+                            }
+                        }
+                    }
+
+                }
+
+
+                return respuesta;
+            }
+
+        }
     }
 }

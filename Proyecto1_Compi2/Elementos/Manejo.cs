@@ -110,7 +110,7 @@ namespace Proyecto1_Compi2.Elementos
 
             if (maestro.usuarios.existe(nombre))
             {
-                
+                maestro.usuarios.Eliminar(nombre);
                 
 
                 respuesta = "\r\nUsuario: " + nombre + " Eliminado";
@@ -158,7 +158,26 @@ namespace Proyecto1_Compi2.Elementos
             }
             
         }
-        
+
+        public string Eliminar_Base(string nombre)
+        {
+            string respuesta = "";
+
+            if (maestro.bases.existe(nombre))
+            {
+                maestro.bases.Eliminar(nombre);
+
+
+                respuesta = "\r\nUsuario: " + nombre + " Eliminado";
+            }
+            else
+            {
+                respuesta = "\r\nNo existe el Usuario: " + nombre;
+            }
+
+            return respuesta;
+        }
+
         public string Crear_Tabla(string nombre,string Base,string campos)
         {
 
@@ -220,37 +239,24 @@ namespace Proyecto1_Compi2.Elementos
 
         }
 
-        public string Eliminar_Tabla(string nombre, string Base)
+        public string Eliminar_Tabla(string nombre,string Base)
         {
-
             maestro.bases.existe(Base);
+            string respuesta = "";
 
-            if (GetPermiso(usuario, Base))
+            if (maestro.bases.aux.tablas.existe(nombre))
             {
+                maestro.bases.aux.tablas.Eliminar(nombre);
 
-                if (maestro.bases.aux.tablas.existe(nombre))
-                {
 
-                    
-
-                    return "La Tabla " + nombre + " Se ha Eliminado de la Base " + Base;
-                }
-                else
-                {
-
-                   
-
-                    return "No Existe la tabla " + nombre + " En la Base de Datos " + Base;
-                }
+                respuesta = "\r\nUsuario: " + nombre + " Eliminado";
             }
             else
             {
-                return "Usted no tiene Permisos sobre la Base:" + Base;
+                respuesta = "\r\nNo existe el Usuario: " + nombre;
             }
 
-
-
-
+            return respuesta;
         }
 
         public string Insertar_Tabla(string valores,string Base, string Tabla)
@@ -566,6 +572,26 @@ namespace Proyecto1_Compi2.Elementos
                 return "Usted no tiene Permisos sobre la Base:" + Base;
             }
 
+        }
+
+        public string Eliminar_Objeto(string nombre, string Base)
+        {
+            maestro.bases.existe(Base);
+            string respuesta = "";
+
+            if (maestro.bases.aux.objetos.existe(nombre))
+            {
+                maestro.bases.aux.objetos.Eliminar(nombre);
+
+
+                respuesta = "\r\nObjeto: " + nombre + " Eliminado";
+            }
+            else
+            {
+                respuesta = "\r\nNo existe el Usuario: " + nombre;
+            }
+
+            return respuesta;
         }
 
         public bool Buscar_Objeto(string nombre,string Base)

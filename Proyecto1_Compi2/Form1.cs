@@ -2737,15 +2737,15 @@ namespace Proyecto1_Compi2
 
                         if (nodo.ChildNodes[1].Term.Name.ToString().Equals("RTABLA"))
                         {
-
+                            resultado = manejo.Eliminar_Tabla(nombre, BaseActual);
                         }
                         else if (nodo.ChildNodes[1].Term.Name.ToString().Equals("RBASE"))
                         {
-
+                            resultado = manejo.Eliminar_Base(nombre);
                         }
                         else if (nodo.ChildNodes[1].Term.Name.ToString().Equals("ROBJETO"))
                         {
-
+                            resultado = manejo.Eliminar_Objeto(nombre, BaseActual);
                         }
                         else
                         {
