@@ -316,8 +316,8 @@ namespace Proyecto1_Compi2.Analizadores
             tipoins.Rule = "(" + campos + ")" + RVALORES + "(" + valores + ")" + PUNTOCOMA
                         | "(" + valores + ")" + PUNTOCOMA;//ya
 
-            campos.Rule = ID + COMA + campos
-                        | ID;//ya
+            campos.Rule = rutaB + COMA + campos
+                        | rutaB;//ya
 
             valores.Rule = aritemtica + COMA + valores
                         | aritemtica;//ya
@@ -330,14 +330,14 @@ namespace Proyecto1_Compi2.Analizadores
             borrar.Rule = RBORRAR + REN + RTABLA + ID + condicion + PUNTOCOMA
                         | RBORRAR + REN + RTABLA + ID + PUNTOCOMA;
 
-            seleccionar.Rule = RSELECCIONAR + campos + RDE + campos + condicion + orden + PUNTOCOMA
-                             | RSELECCIONAR + MULTI + RDE + campos + condicion + orden + PUNTOCOMA
-                             | RSELECCIONAR + campos + RDE + campos + condicion + PUNTOCOMA
-                             | RSELECCIONAR + MULTI + RDE + campos + condicion + PUNTOCOMA
-                             | RSELECCIONAR + campos + RDE + campos + orden + PUNTOCOMA
-                             | RSELECCIONAR + MULTI + RDE + campos + orden + PUNTOCOMA
-                             | RSELECCIONAR + campos + RDE + campos + PUNTOCOMA
-                             | RSELECCIONAR + MULTI + RDE + campos + PUNTOCOMA;
+            seleccionar.Rule = RSELECCIONAR + campos + RDE + campos + condicion + orden + PUNTOCOMA//7
+                             | RSELECCIONAR + MULTI + RDE + campos + condicion + orden + PUNTOCOMA//7
+                             | RSELECCIONAR + campos + RDE + campos + condicion + PUNTOCOMA//6
+                             | RSELECCIONAR + MULTI + RDE + campos + condicion + PUNTOCOMA//6
+                             | RSELECCIONAR + campos + RDE + campos + orden + PUNTOCOMA//6
+                             | RSELECCIONAR + MULTI + RDE + campos + orden + PUNTOCOMA//6
+                             | RSELECCIONAR + campos + RDE + campos + PUNTOCOMA//5
+                             | RSELECCIONAR + MULTI + RDE + campos + PUNTOCOMA;//5
 
             seleccionarf.Rule = RSELECCIONAR + campos + RDE + campos + condicion + orden 
                              | RSELECCIONAR + MULTI + RDE + campos + condicion + orden 

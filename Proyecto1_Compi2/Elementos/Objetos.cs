@@ -103,7 +103,7 @@ namespace Proyecto1_Compi2.Elementos
 
                 if (ultimo == null)
                 {
-                    if (cabeza.Nombre.Equals(nombre))
+                    if (cabeza.nombre.Equals(nombre))
                     {
                         cabeza = null;
 
@@ -124,7 +124,7 @@ namespace Proyecto1_Compi2.Elementos
 
                     while (seguir)
                     {
-                        if (aux.Nombre.Equals(nombre))
+                        if (aux.nombre.Equals(nombre))
                         {
 
                             if (aux == cabeza)

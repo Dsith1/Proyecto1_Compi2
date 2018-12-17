@@ -216,17 +216,76 @@ namespace Proyecto1_Compi2.Elementos
                     tipos = tipos.Trim(',');
                     fields = fields.Trim(',');
                     atrib = atrib.Trim(',');
-                    
 
-                    Tabla nuevo = new Tabla(nombre, tipos, fields);
+                    if (atrib.Contains("Llave_Foranea"))
+                    {
+                        string[] atributos = atrib.Split(',');
 
-                    nuevo.atributos = atrib;
+                        int ba = 0;
+                        bool seguir = true;
 
-                    nuevo.SetRuta(System.IO.Path.Combine(@"c:\DBMS", Base + "_" + nombre + ".usac"));
+                        while (seguir)
+                        {
+                            if (atributos[ba].Contains("Llave_Foranea"))
+                            {
+                                seguir = false;
+                            }
+                            else
+                            {
+                                ba++;
+                            }
+                        }
 
-                    maestro.bases.aux.tablas.Insertar(nuevo);
+                        string[] subatrib = atributos[ba].Split(' ');
 
-                    return "Se Ha Creado La Tabla " + nombre + " En la Base de Datos " + Base;
+                        string baseR = subatrib[subatrib.Length - 1];
+
+                        if (maestro.bases.aux.tablas.existe(baseR))
+                        {
+                            int pllave = getPLlave(maestro.bases.aux.tablas.aux);
+
+                            string tipoR = getTipoLlave(maestro.bases.aux.tablas.aux, pllave);
+
+                            if (tipos.Split(',')[ba].Equals(tipoR))
+                            {
+                                Tabla nuevo = new Tabla(nombre, tipos, fields);
+
+                                nuevo.atributos = atrib;
+
+                                nuevo.SetRuta(System.IO.Path.Combine(@"c:\DBMS", Base + "_" + nombre + ".usac"));
+
+                                maestro.bases.aux.tablas.Insertar(nuevo);
+
+                                return "Se Ha Creado La Tabla " + nombre + " En la Base de Datos " + Base;
+                            }
+                            else
+                            {
+                                return "La Llave foranea es de distinto tipo de dato";
+                            }
+
+                            
+                        }
+                        else
+                        {
+                            return "No Existe la Base "+baseR+" para hacer referencia";
+                        }
+
+                        
+                    }
+                    else
+                    {
+                        Tabla nuevo = new Tabla(nombre, tipos, fields);
+
+                        nuevo.atributos = atrib;
+
+                        nuevo.SetRuta(System.IO.Path.Combine(@"c:\DBMS", Base + "_" + nombre + ".usac"));
+
+                        maestro.bases.aux.tablas.Insertar(nuevo);
+
+                        return "Se Ha Creado La Tabla " + nombre + " En la Base de Datos " + Base;
+                    }
+
+                  
                 }
             }
             else
@@ -307,24 +366,30 @@ namespace Proyecto1_Compi2.Elementos
                     int r = getSiguiente(maestro.bases.aux.tablas.aux, pos);
 
                     string[] vals = subv.Split(',');
+                    string[] tips = subt.Split(',');
 
                     subv = "";
+                    subt = "";
 
                     for (int x = 0; x < pos; x++)
                     {
                         subv += vals[x]+",";
+                        subt += tips[x] + ",";
                     }
 
                     subv += r + ",";
+                    subt += "INTEGER,";
 
                     for (int x = pos+1; x <= vals.Length; x++)
                     {
                         subv += vals[x-1] + ",";
+                        subt += tips[x - 1] + ",";
                     }
 
                     subv = subv.Trim(',');
+                    subt = subt.Trim(',');
 
-                    if (subv.Split(',').Length ==subt.Length)
+                    if (subv.Split(',').Length ==subt.Split(',').Length)
                     {
                         Registro nuevo = new Registro(subv);
 
@@ -956,6 +1021,269 @@ namespace Proyecto1_Compi2.Elementos
 
                 return t;
             }
+        }
+
+        int getPLlave(Tabla aux)
+        {
+            string atributos = aux.atributos;
+
+            string[] atributo = atributos.Split(',');
+
+            int x = 0;
+            bool seguir = true;
+
+            while (seguir)
+            {
+                if (atributo[x].Contains("Llave_Primaria"))
+                {
+                    seguir = false;
+                }
+                else
+                {
+                    if (x < atributo.Length)
+                    {
+                        x++;
+                    }
+                    else
+                    {
+                        x = -1;
+                        seguir = false;
+                    }
+                }
+            }
+
+            return x;
+
+        }
+
+        string getTipoLlave(Tabla aux,int pos)
+        {
+            string[] tipos = aux.tipos.Split(',');
+
+            return tipos[pos];
+        }
+
+        public string Select(string Base, string Tablas, string campos, string orden, string condicion)
+        {
+            maestro.bases.existe(Base);
+            string registros="";
+            string encabezado="";
+
+            if (Tablas.Contains(','))
+            {
+                string[] subT = Tablas.Split(',');
+                registros = getRegistrosTabla(subT[0]);
+
+                for(int x = 1; x < subT.Length; x++)
+                {
+                    string[] subR1 = registros.Split(';');
+
+                    string registros2= getRegistrosTabla(subT[x]);
+
+                    string[] subR2 = registros2.Split(';');
+
+                    registros = "";
+
+                    for(int y = 0; y < subR1.Length - 1; y++)
+                    {
+                        for (int j = 0; j < subR2.Length - 1; j++)
+                        {
+                            registros += subR1[y] + "," + subR2[j] + ";";
+                        }
+
+                    }
+
+                }
+
+            }
+            else
+            {
+                registros = getRegistrosTabla(Tablas);
+            }
+
+            //condicion
+
+            //orden
+
+            if (campos.Equals("*"))
+            {
+                if (Tablas.Contains(','))
+                {
+                    string[] subT = Tablas.Split(',');
+
+                    for (int x = 0; x < subT.Length; x++)
+                    {
+                        encabezado += getcamposTabla(subT[x])+",";
+                    }
+
+                    encabezado = encabezado.Trim(',');
+                }
+                else
+                {
+                    encabezado = getcamposTabla(Tablas);
+                }
+            }
+            else
+            {
+                if (Tablas.Contains(','))
+                {
+                    string[] subT = Tablas.Split(',');
+
+                    for (int x = 0; x < subT.Length; x++)
+                    {
+                        encabezado += getcamposTabla(subT[x]) + ",";
+                    }
+
+                    encabezado = encabezado.Trim(',');
+
+                    string[] subE = encabezado.Split(',');
+
+                    string[] subc = campos.Split(',');
+
+                    string pos = "";
+
+                    for (int x = 0; x < subE.Length; x++)
+                    {
+                        for (int y = 0; y < subc.Length; y++)
+                        {
+                            if (subE[x].Equals(subc[y]))
+                            {
+                                pos += x + ",";
+                            }
+                        }
+                    }
+
+                    encabezado = campos;
+
+                    pos = pos.Trim(',');
+
+                    string[] subr = registros.Split(';');
+
+                    registros = "";
+
+                    int[] posiciones = Array.ConvertAll(pos.Split(','), int.Parse);
+
+                    for (int x = 0; x < subr.Length - 1; x++)
+                    {
+                        string[] subsubr = subr[x].Split(',');
+
+                        for (int y = 0; y < posiciones.Length; y++)
+                        {
+
+                            registros += subsubr[posiciones[y]] + ",";
+                        }
+
+                        registros = registros.Trim(',');
+                        registros += ";";
+                    }
+                }
+                else
+                {
+                    encabezado = getcamposTabla(Tablas);
+
+                    string[] subE = encabezado.Split(',');
+
+                    string[] subc = campos.Split(',');
+
+                    string pos = "";
+
+                    for (int x = 0; x < subE.Length; x++)
+                    {
+                        for(int y = 0; y < subc.Length; y++)
+                        {
+                            if (subE[x].Equals(subc[y]))
+                            {
+                                pos += x + ",";
+                            }
+                        }
+                    }
+
+                    encabezado = campos;
+
+                    pos = pos.Trim(',');
+
+                    string[] subr = registros.Split(';');
+
+                    registros = "";
+
+                    int[] posiciones = Array.ConvertAll(pos.Split(','), int.Parse);
+
+                    for(int x = 0; x < subr.Length-1; x++)
+                    {
+                        string[] subsubr = subr[x].Split(',');
+
+                        for (int y = 0; y < posiciones.Length; y++)
+                        {
+                            
+                            registros += subsubr[posiciones[y]] + ",";
+                        }
+
+                        registros = registros.Trim(',');
+                        registros += ";";
+                    }
+
+                }
+            }
+
+
+            return encabezado+";;"+registros;
+        }
+
+        string getRegistrosTabla(string Tabla)
+        {
+            string respuesta="";
+
+            maestro.bases.aux.tablas.existe(Tabla);
+
+            Tabla aux = maestro.bases.aux.tablas.aux;
+
+            if (aux.cabeza == null)
+            {
+                string campos = aux.campos;
+                string[] campo = campos.Split(',');
+
+                for (int x = 0; x < campo.Length; x++)
+                {
+                    respuesta += "null,";
+                }
+
+                respuesta = respuesta.Trim(',');
+
+            }
+            else if (aux.ultimo == null)
+            {
+                respuesta = aux.cabeza.valor;
+            }
+            else
+            {
+                aux.aux = aux.cabeza;
+                bool seguir = true;
+
+                while (seguir)
+                {
+                    respuesta += aux.aux.valor + ";";
+
+                    if (aux.aux.siguiente != null)
+                    {
+                        aux.aux = aux.aux.siguiente;
+                    }
+                    else
+                    {
+                        seguir = false;
+                    }
+                }
+                
+            }
+
+            return respuesta;
+        }
+
+        string getcamposTabla(string Tabla)
+        {
+
+            maestro.bases.aux.tablas.existe(Tabla);
+
+            return maestro.bases.aux.tablas.aux.campos;
         }
     }
     

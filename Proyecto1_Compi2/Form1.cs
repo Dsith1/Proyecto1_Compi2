@@ -465,9 +465,8 @@ namespace Proyecto1_Compi2
 
                             string campos = ActuarSQL(nodo.ChildNodes[3]);
 
-                            manejo.Crear_Tabla(TablaAux, BaseActual, campos);
+                            resultado = "\r\n"+manejo.Crear_Tabla(TablaAux, BaseActual, campos);
 
-                            resultado = "\r\nSe Ha Creado la Tabla " + TablaAux;
                         }
                         else
                         {
@@ -555,11 +554,11 @@ namespace Proyecto1_Compi2
 
                             if (resultado.Equals("NO") && aux.Equals("NULO"))
                             {
-                                resultado += " " + aux;
+                                resultado = " " + aux;
                             }
                             else if (resultado.Equals("NO"))
                             {
-                                resultado = ActuarSQL(nodo.ChildNodes[1]);
+                                resultado += ActuarSQL(nodo.ChildNodes[1]);
                             }
                             else
                             {
@@ -577,11 +576,10 @@ namespace Proyecto1_Compi2
                 case "complemento":
                     {
 
-
                         if (nodo.ChildNodes.Count == 2)
                         {
                             resultado = nodo.ChildNodes[0].Token.Text + " ";
-                            resultado += ActuarSQL(nodo.ChildNodes[1]);
+                            resultado += nodo.ChildNodes[1].Token.Text;
                         }
                         else
                         {
@@ -1104,12 +1102,12 @@ namespace Proyecto1_Compi2
 
                         if (nodo.ChildNodes.Count == 3)
                         {
-                            resultado = nodo.ChildNodes[0].Token.Text + ",";
+                            resultado = ActuarSQL(nodo.ChildNodes[0]) + ",";
                             resultado += ActuarSQL(nodo.ChildNodes[2]);
                         }
                         else
                         {
-                            resultado = nodo.ChildNodes[0].Token.Text;
+                            resultado = ActuarSQL(nodo.ChildNodes[0]);
                         }
 
                         break;
@@ -2754,6 +2752,50 @@ namespace Proyecto1_Compi2
 
 
                             break;
+                    }
+
+                case "seleccionar":
+                    {
+
+                        bool todo;
+                        string campos = "";
+
+                        if (nodo.ChildNodes[1].Term.Name.ToString().Equals("MULTI"))
+                        {
+                            todo = true;
+                        }
+                        else
+                        {
+                            todo = false;
+                            campos= ActuarSQL(nodo.ChildNodes[1]);
+
+                        }
+
+                        string tablas = ActuarSQL(nodo.ChildNodes[3]);
+
+                        if (nodo.ChildNodes.Count == 7)
+                        {
+
+                        }
+                        else if (nodo.ChildNodes.Count == 6)
+                        {
+
+                        }
+                        else {
+
+                            if (todo)
+                            {
+                                resultado = "\r\n"+manejo.Select(BaseActual, tablas, "*", "", "");
+                            }
+                            else
+                            {
+                                resultado = "\r\n" + manejo.Select(BaseActual, tablas, campos, "", "");
+                            }
+
+                        }
+
+
+                        break;
                     }
             }
 
