@@ -56,7 +56,7 @@ namespace Proyecto1_Compi2.Analizadores
             RegexBasedTerminal RAGREGAR = new RegexBasedTerminal("RAGREGAR", "AGREGAR");
             RegexBasedTerminal RQUITAR = new RegexBasedTerminal("RQUITAR", "QUITAR");
             RegexBasedTerminal RCAMBIAR = new RegexBasedTerminal("RCAMBIAR", "CAMBIAR");
-            RegexBasedTerminal RELIMINAR = new RegexBasedTerminal("RELIMINAR", "ELIMINAR");
+            RegexBasedTerminal RELIMINAR = new RegexBasedTerminal("RELIMINAR", "ELIMINAR ");
             RegexBasedTerminal RDECLARAR = new RegexBasedTerminal("RDECLARAR", "DECLARAR ");
             RegexBasedTerminal RSI = new RegexBasedTerminal("RSI", "SI ");
             RegexBasedTerminal RSINO = new RegexBasedTerminal("RSINO", "SINO ");

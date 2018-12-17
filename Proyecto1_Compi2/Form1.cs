@@ -1061,7 +1061,7 @@ namespace Proyecto1_Compi2
 
                         if (tipoin == 0)
                         {
-                           resultado= manejo.Insertar_Tabla(Datos, BaseActual, TablaAux);
+                           resultado="\r\n"+ manejo.Insertar_Tabla(Datos, BaseActual, TablaAux);
                         }
                         else
                         {
@@ -1070,7 +1070,7 @@ namespace Proyecto1_Compi2
                             string valor = aux[0];
                             string datos = aux[1];
 
-                            resultado = manejo.Insertar_Tabla_v(datos,valor, BaseActual, TablaAux);
+                            resultado = "\r\n" + manejo.Insertar_Tabla_v(datos,valor, BaseActual, TablaAux);
                         }
 
                         
@@ -2733,6 +2733,8 @@ namespace Proyecto1_Compi2
 
                 case "eliminar":
                     {
+                        string nombre = nodo.ChildNodes[2].Token.Text;
+
                         if (nodo.ChildNodes[1].Term.Name.ToString().Equals("RTABLA"))
                         {
 
@@ -2747,7 +2749,7 @@ namespace Proyecto1_Compi2
                         }
                         else
                         {
-
+                            resultado = manejo.Eliminar_Usuario(nombre);
                         }
 
 

@@ -104,6 +104,25 @@ namespace Proyecto1_Compi2.Elementos
             return respuesta;
         }
 
+        public string Eliminar_Usuario(string nombre)
+        {
+            string respuesta = "";
+
+            if (maestro.usuarios.existe(nombre))
+            {
+                
+                
+
+                respuesta = "\r\nUsuario: " + nombre + " Eliminado";
+            }
+            else
+            {
+                respuesta = "\r\nNo existe el Usuario: " + nombre;
+            }
+
+            return respuesta;
+        }
+
         public string Crear_Base(string nombre)
         {
 
@@ -201,6 +220,39 @@ namespace Proyecto1_Compi2.Elementos
 
         }
 
+        public string Eliminar_Tabla(string nombre, string Base)
+        {
+
+            maestro.bases.existe(Base);
+
+            if (GetPermiso(usuario, Base))
+            {
+
+                if (maestro.bases.aux.tablas.existe(nombre))
+                {
+
+                    
+
+                    return "La Tabla " + nombre + " Se ha Eliminado de la Base " + Base;
+                }
+                else
+                {
+
+                   
+
+                    return "No Existe la tabla " + nombre + " En la Base de Datos " + Base;
+                }
+            }
+            else
+            {
+                return "Usted no tiene Permisos sobre la Base:" + Base;
+            }
+
+
+
+
+        }
+
         public string Insertar_Tabla(string valores,string Base, string Tabla)
         {
             maestro.bases.existe(Base);
@@ -266,11 +318,20 @@ namespace Proyecto1_Compi2.Elementos
 
                     subv = subv.Trim(',');
 
-                    Registro nuevo = new Registro(subv);
+                    if (subv.Split(',').Length ==subt.Length)
+                    {
+                        Registro nuevo = new Registro(subv);
 
-                    maestro.bases.aux.tablas.aux.Insertar(nuevo);
+                        maestro.bases.aux.tablas.aux.Insertar(nuevo);
 
-                    return "1 Fila Insertada";
+                        return "1 Fila Insertada";
+                    }
+                    else
+                    {
+                        return "Faltan Argumentos";
+                    }
+
+                   
                 }
                 else
                 {
@@ -328,6 +389,8 @@ namespace Proyecto1_Compi2.Elementos
 
                     string tipos = maestro.bases.aux.tablas.aux.tipos;
 
+                    string atributos = maestro.bases.aux.tablas.aux.atributos;
+
                     string[] tipo = tipos.Split(',');
 
                     string subval = "";
@@ -343,6 +406,10 @@ namespace Proyecto1_Compi2.Elementos
 
                                 auxF = y+1;
                                 break;
+                            }
+                            else
+                            {
+                                subval +=  "null;null,";
                             }
                         }
                     }
@@ -394,6 +461,37 @@ namespace Proyecto1_Compi2.Elementos
 
                     if (tipos.Equals(subt))
                     {
+                        Registro nuevo = new Registro(subv);
+
+                        maestro.bases.aux.tablas.aux.Insertar(nuevo);
+
+                        return "1 Fila Insertada";
+                    }
+                    else if (atributos.Contains("Autoincrementable"))
+                    {
+
+                        int pos = possIncrementable(atributos);
+
+                        int r = getSiguiente(maestro.bases.aux.tablas.aux, pos);
+
+                        string[] vals = subv.Split(',');
+
+                        subv = "";
+
+                        for (int x = 0; x < pos; x++)
+                        {
+                            subv += vals[x] + ",";
+                        }
+
+                        subv += r + ",";
+
+                        for (int x = pos+1; x < vals.Length; x++)
+                        {
+                            subv += vals[x] + ",";
+                        }
+
+                        subv = subv.Trim(',');
+
                         Registro nuevo = new Registro(subv);
 
                         maestro.bases.aux.tablas.aux.Insertar(nuevo);

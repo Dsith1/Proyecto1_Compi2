@@ -74,6 +74,7 @@ Public Class Form1
                 Cadena = Replace(Cadena, "ALTERAR", "ALTERAR ")
                 Cadena = Replace(Cadena, "USUARIO", "USUARIO ")
                 Cadena = Replace(Cadena, "VALORES", "VALORES ")
+                Cadena = Replace(Cadena, "ELIMINAR", "ELIMINAR ")
                 Cadena = Replace(Cadena, ">", "> ")
                 Cadena = Replace(Cadena, "> >", ">>")
                 Cadena = Replace(Cadena, "<", "< ")
