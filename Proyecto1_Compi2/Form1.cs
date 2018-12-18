@@ -2813,6 +2813,7 @@ namespace Proyecto1_Compi2
                                 string instrucciones = codigo.Substring(inicio +5, nodo.ChildNodes[4].Span.Length-5);
 
                                 instrucciones = instrucciones.Trim(';');
+                                instrucciones = instrucciones.Trim();
 
                                 string[] instruccion = instrucciones.Split(new string[] { "||", "&&" }, StringSplitOptions.None);
 

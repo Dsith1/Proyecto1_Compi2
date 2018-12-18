@@ -2671,6 +2671,7 @@ namespace Proyecto1_Compi2.Elementos
                         }
                     }
 
+                    datos[pc2] = datos[pc2].Trim();
 
                     if (encabezado.Contains(datos[pc2]))
                     {
