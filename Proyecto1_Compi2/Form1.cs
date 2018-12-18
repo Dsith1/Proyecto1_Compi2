@@ -8,6 +8,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 
@@ -1043,7 +1044,14 @@ namespace Proyecto1_Compi2
                         }
                         else
                         {
-                            resultado += nodo.ChildNodes[0].Token.Text;
+
+                            
+                            resultado = nodo.ChildNodes[0].Token.Text;
+
+                            if (resultado.Contains("@"))
+                            {
+                                resultado = Get_VariableV(resultado);
+                            }
                         }
 
 
@@ -2615,13 +2623,15 @@ namespace Proyecto1_Compi2
                                 tipo = nodo.ChildNodes[5].Token.Text;
                             }
 
+                            string campos = ActuarSQL(nodo.ChildNodes[3]);
+
                             string p = nodo.ChildNodes[7].Span.Location.ToString();
 
                             int inicio = Convert.ToInt32(p.Split(':')[1].Trim(')'));
 
                             string instrucciones = codigo.Substring(inicio - 1, nodo.ChildNodes[7].Span.Length + 1);
 
-                            manejo.Crear_funcion(nombre, BaseActual, "", instrucciones, tipo);
+                            manejo.Crear_funcion(nombre, BaseActual, campos, instrucciones, tipo);
 
                         }
                         else
@@ -2779,7 +2789,53 @@ namespace Proyecto1_Compi2
                         }
                         else if (nodo.ChildNodes.Count == 6)
                         {
+                            if (nodo.ChildNodes[4].Term.Name.ToString().Equals("orden"))
+                            {
+                                string orden = ActuarSQL(nodo.ChildNodes[4]);
 
+                                if (todo)
+                                {
+                                    resultado = "\r\n" + manejo.Select(BaseActual, tablas, "*",orden, "");
+                                }
+                                else
+                                {
+                                    resultado = "\r\n" + manejo.Select(BaseActual, tablas, campos, orden, "");
+                                }
+
+
+                            }
+                            else
+                            {
+                                string p = nodo.ChildNodes[4].Span.Location.ToString();
+
+                                int inicio = Convert.ToInt32(p.Split(':')[1].Trim(')'));
+
+                                string instrucciones = codigo.Substring(inicio +5, nodo.ChildNodes[4].Span.Length-5);
+
+                                instrucciones = instrucciones.Trim(';');
+
+                                string[] instruccion = instrucciones.Split(new string[] { "||", "&&" }, StringSplitOptions.None);
+
+                                for(int x = 0; x < instruccion.Length; x++)
+                                {
+                                    string temporal = instruccion[x];
+                                    instruccion[x] = CambiarVariablesVal(instruccion[x]);
+
+                                    instrucciones = instrucciones.Replace(temporal, instruccion[x]);
+                                }
+
+                                
+
+                                if (todo)
+                                {
+                                    resultado = "\r\n" + manejo.Select(BaseActual, tablas, "*", "",instrucciones);
+                                }
+                                else
+                                {
+                                    resultado = "\r\n" + manejo.Select(BaseActual, tablas, campos, "", instrucciones);
+                                }
+
+                            }
                         }
                         else {
 
@@ -2796,6 +2852,26 @@ namespace Proyecto1_Compi2
 
 
                         break;
+                    }
+
+                case "orden":
+                    {
+                        if (nodo.ChildNodes.Count == 3)
+                        {
+                            string campo = nodo.ChildNodes[1].Token.Text;
+                            string orden= nodo.ChildNodes[2].Token.Text;
+
+                            resultado = campo + " " + orden;
+
+                        }
+                        else
+                        {
+                            string campo= nodo.ChildNodes[1].Token.Text;
+
+                            resultado = campo + " ASC";
+                        }
+
+                            break;
                     }
             }
 
@@ -2968,6 +3044,27 @@ namespace Proyecto1_Compi2
                 aux.detener = true;
                 aux = aux.Padre;
             }
+        }
+
+        string CambiarVariablesVal(string entrada)
+        {
+
+            var Match = Regex.Match(entrada, "@[a-zA-Z]+([a-zA-Z0-9_])*");
+
+            for (int x = 0; x < Match.Groups.Count; x++)
+            {
+                string a=Match.Groups[x].Value;
+
+                if (a != "")
+                {
+                    string b = Get_VariableV(a);
+
+                    entrada = entrada.Replace(a, b);
+                }
+
+            }
+
+            return entrada;
         }
     }
 }

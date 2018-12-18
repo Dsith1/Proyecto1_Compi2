@@ -852,18 +852,49 @@ namespace Proyecto1_Compi2.Elementos
                     else
                     {
 
-                        nombre += "_";
-
-                        if (maestro.bases.aux.procedimientos.existe(nombre))
+                        if (campos.Equals(""))
                         {
-                            return "\r\nYa Existe el Procedimiento:" + nombre;
+                            Procedimiento nuevo = new Procedimiento(nombre, instrucciones);
+                            nuevo.funcion = true;
+                            nuevo.tipo = tipo;
+
+
+                            maestro.bases.aux.procedimientos.Insertar(nuevo);
+
+
+                            return "\r\nSe ha Creado el Procedimiento:" + nombre.Trim('_');
+
                         }
                         else
                         {
-                            Procedimiento nuevo = new Procedimiento(nombre, instrucciones);
+
+                            string[] campo = campos.Split(';');
+
+                            string tipos = "";
+                            string parametros = "";
+
+                            for (int x = 0; x < campo.Length; x++)
+                            {
+                                string[] val = campo[x].Split(',');
+                                tipos += val[0] + ",";
+                                parametros += val[1] + ",";
+
+                            }
+
+                            tipos = tipos.Trim(',');
+                            parametros = parametros.Trim(',');
+                        
+                            string subnombre = nombre +"_"+ tipos;
+
+                            subnombre = subnombre.Replace(',', '_');
+
+
+                            Procedimiento nuevo = new Procedimiento(subnombre, instrucciones);
+
+                            nuevo.tipos = tipos;
+                            nuevo.campos = parametros;
 
                             nuevo.funcion = true;
-
                             nuevo.tipo = tipo;
 
                             maestro.bases.aux.procedimientos.Insertar(nuevo);
@@ -1095,16 +1126,1006 @@ namespace Proyecto1_Compi2.Elementos
 
                 }
 
+
+                for (int x = 0; x < subT.Length; x++)
+                {
+                    encabezado += getcamposTabla(subT[x]) + ",";
+                }
+
+                encabezado = encabezado.Trim(',');
+
+
             }
             else
             {
+
+                encabezado = getcamposTabla(Tablas);
                 registros = getRegistrosTabla(Tablas);
+                
             }
 
             //condicion
+            if(condicion.Contains("||") || condicion.Contains("&&"))
+            {
+                if (condicion.Contains("||") && condicion.Contains("&&")==false){
+
+                    string[] condiciones = condicion.Split(new string[] { "||" }, StringSplitOptions.None);
+
+                    string subregistros;
+
+                    string resultado = "";
+
+
+                    for(int y = 0; y < condiciones.Length; y++)
+                    {
+                        subregistros = registros;
+
+                        if (condiciones[y].Contains("=="))
+                        {
+                            string[] datos = condiciones[y].Split(new string[] { "==" }, StringSplitOptions.None);
+
+                            int pc = 0;
+
+                            
+
+                            for (int x = 0; x < datos.Length; x++)
+                            {
+                                if (encabezado.Contains(datos[x]))
+                                {
+                                    pc = x;
+                                    break;
+                                }
+                            }
+
+                            datos[pc] = datos[pc].Trim();
+
+                            int pc2 = datos.Length - 1 - pc;
+
+                            string[] ordenE = encabezado.Split(',');
+
+                            int po = 0;
+
+                            for (int x = 0; x < ordenE.Length; x++)
+                            {
+                                if (ordenE[x].Equals(datos[pc]))
+                                {
+                                    po = x;
+                                    break;
+                                }
+                            }
+
+
+                            subregistros = filtro(datos[pc], po, subregistros, 1, datos[pc2]);
+
+
+                        }
+                        else if (condiciones[y].Contains("!="))
+                        {
+                            string[] datos = condiciones[y].Split(new string[] { "!=" }, StringSplitOptions.None);
+
+                            int pc = 0;
+
+                            for (int x = 0; x < datos.Length; x++)
+                            {
+                                if (encabezado.Contains(datos[x]))
+                                {
+                                    pc = x;
+                                    break;
+                                }
+                            }
+
+                            datos[pc] = datos[pc].Trim();
+
+                            int pc2 = datos.Length - 1 - pc;
+
+                            string[] ordenE = encabezado.Split(',');
+
+                            int po = 0;
+
+                            for (int x = 0; x < ordenE.Length; x++)
+                            {
+                                if (ordenE[x].Equals(datos[pc]))
+                                {
+                                    po = x;
+                                    break;
+                                }
+                            }
+
+
+                            subregistros = filtro(datos[pc], po, subregistros, 2, datos[pc2]);
+                        }
+                        else if (condiciones[y].Contains("<="))
+                        {
+                            string[] datos = condiciones[y].Split(new string[] { "<=" }, StringSplitOptions.None);
+
+                            int pc = 0;
+
+                            for (int x = 0; x < datos.Length; x++)
+                            {
+                                if (encabezado.Contains(datos[x]))
+                                {
+                                    pc = x;
+                                    break;
+                                }
+                            }
+
+                            datos[pc] = datos[pc].Trim();
+
+                            int pc2 = datos.Length - 1 - pc;
+
+                            string[] ordenE = encabezado.Split(',');
+
+                            int po = 0;
+
+                            for (int x = 0; x < ordenE.Length; x++)
+                            {
+                                if (ordenE[x].Equals(datos[pc]))
+                                {
+                                    po = x;
+                                    break;
+                                }
+                            }
+
+
+                            subregistros = filtro(datos[pc], po, subregistros, 3, datos[pc2]);
+                        }
+                        else if (condiciones[y].Contains(">="))
+                        {
+                            string[] datos = condiciones[y].Split(new string[] { ">=" }, StringSplitOptions.None);
+
+                            int pc = 0;
+
+                            for (int x = 0; x < datos.Length; x++)
+                            {
+                                if (encabezado.Contains(datos[x]))
+                                {
+                                    pc = x;
+                                    break;
+                                }
+                            }
+
+                            datos[pc] = datos[pc].Trim();
+
+                            int pc2 = datos.Length - 1 - pc;
+
+                            string[] ordenE = encabezado.Split(',');
+
+                            int po = 0;
+
+                            for (int x = 0; x < ordenE.Length; x++)
+                            {
+                                if (ordenE[x].Equals(datos[pc]))
+                                {
+                                    po = x;
+                                    break;
+                                }
+                            }
+
+
+                            subregistros = filtro(datos[pc], po, subregistros, 4, datos[pc2]);
+                        }
+                        else if (condiciones[y].Contains(">"))
+                        {
+                            string[] datos = condiciones[y].Split('>');
+
+                            int pc = 0;
+
+                            for (int x = 0; x < datos.Length; x++)
+                            {
+                                if (encabezado.Contains(datos[x]))
+                                {
+                                    pc = x;
+                                    break;
+                                }
+                            }
+
+                            datos[pc] = datos[pc].Trim();
+
+                            int pc2 = datos.Length - 1 - pc;
+
+                            string[] ordenE = encabezado.Split(',');
+
+                            int po = 0;
+
+                            for (int x = 0; x < ordenE.Length; x++)
+                            {
+                                if (ordenE[x].Equals(datos[pc]))
+                                {
+                                    po = x;
+                                    break;
+                                }
+                            }
+
+
+                            subregistros = filtro(datos[pc], po, subregistros, 5, datos[pc2]);
+                        }
+                        else if (condiciones[y].Contains("<"))
+                        {
+                            string[] datos = condiciones[y].Split('<');
+
+                            int pc = 0;
+
+                            for (int x = 0; x < datos.Length; x++)
+                            {
+                                if (encabezado.Contains(datos[x]))
+                                {
+                                    pc = x;
+                                    break;
+                                }
+                            }
+
+                            datos[pc] = datos[pc].Trim();
+
+                            int pc2 = datos.Length - 1 - pc;
+
+                            string[] ordenE = encabezado.Split(',');
+
+                            int po = 0;
+
+                            for (int x = 0; x < ordenE.Length; x++)
+                            {
+                                if (ordenE[x].Equals(datos[pc]))
+                                {
+                                    po = x;
+                                    break;
+                                }
+                            }
+
+
+                            subregistros = filtro(datos[pc], po, subregistros, 6, datos[pc2]);
+                        }
+
+                        resultado += subregistros;
+                    }
+
+                    registros = resultado;
+
+                    string[] registro = registros.Split(';');
+
+                    registros = "";
+
+                    for(int x = 0; x < registro.Length; x++)
+                    {
+                        if (registros.Contains(registro[x]))
+                        {
+
+                        }
+                        else
+                        {
+                            registros += registro[x]+";";
+                        }
+                    }
+
+
+                }
+                else if (condicion.Contains("||") == false && condicion.Contains("&&"))
+                {
+                    string[] condiciones = condicion.Split(new string[] { "&&" }, StringSplitOptions.None);
+
+
+                    for (int y = 0; y < condiciones.Length; y++)
+                    {
+
+                        if (condiciones[y].Contains("=="))
+                        {
+                            string[] datos = condiciones[y].Split(new string[] { "==" }, StringSplitOptions.None);
+
+                            int pc = 0;
+
+
+
+                            for (int x = 0; x < datos.Length; x++)
+                            {
+                                if (encabezado.Contains(datos[x]))
+                                {
+                                    pc = x;
+                                    break;
+                                }
+                            }
+
+                            datos[pc] = datos[pc].Trim();
+
+                            int pc2 = datos.Length - 1 - pc;
+
+                            string[] ordenE = encabezado.Split(',');
+
+                            int po = 0;
+
+                            for (int x = 0; x < ordenE.Length; x++)
+                            {
+                                if (ordenE[x].Equals(datos[pc]))
+                                {
+                                    po = x;
+                                    break;
+                                }
+                            }
+
+
+                            registros = filtro(datos[pc], po, registros, 1, datos[pc2]);
+
+
+                        }
+                        else if (condiciones[y].Contains("!="))
+                        {
+                            string[] datos = condiciones[y].Split(new string[] { "!=" }, StringSplitOptions.None);
+
+                            int pc = 0;
+
+                            for (int x = 0; x < datos.Length; x++)
+                            {
+                                if (encabezado.Contains(datos[x]))
+                                {
+                                    pc = x;
+                                    break;
+                                }
+                            }
+
+                            datos[pc] = datos[pc].Trim();
+
+                            int pc2 = datos.Length - 1 - pc;
+
+                            string[] ordenE = encabezado.Split(',');
+
+                            int po = 0;
+
+                            for (int x = 0; x < ordenE.Length; x++)
+                            {
+                                if (ordenE[x].Equals(datos[pc]))
+                                {
+                                    po = x;
+                                    break;
+                                }
+                            }
+
+
+                            registros = filtro(datos[pc], po, registros, 2, datos[pc2]);
+                        }
+                        else if (condiciones[y].Contains("<="))
+                        {
+                            string[] datos = condiciones[y].Split(new string[] { "<=" }, StringSplitOptions.None);
+
+                            int pc = 0;
+
+                            for (int x = 0; x < datos.Length; x++)
+                            {
+                                if (encabezado.Contains(datos[x]))
+                                {
+                                    pc = x;
+                                    break;
+                                }
+                            }
+
+                            datos[pc] = datos[pc].Trim();
+
+                            int pc2 = datos.Length - 1 - pc;
+
+                            string[] ordenE = encabezado.Split(',');
+
+                            int po = 0;
+
+                            for (int x = 0; x < ordenE.Length; x++)
+                            {
+                                if (ordenE[x].Equals(datos[pc]))
+                                {
+                                    po = x;
+                                    break;
+                                }
+                            }
+
+
+                            registros = filtro(datos[pc], po, registros, 3, datos[pc2]);
+                        }
+                        else if (condiciones[y].Contains(">="))
+                        {
+                            string[] datos = condiciones[y].Split(new string[] { ">=" }, StringSplitOptions.None);
+
+                            int pc = 0;
+
+                            for (int x = 0; x < datos.Length; x++)
+                            {
+                                if (encabezado.Contains(datos[x]))
+                                {
+                                    pc = x;
+                                    break;
+                                }
+                            }
+
+                            datos[pc] = datos[pc].Trim();
+
+                            int pc2 = datos.Length - 1 - pc;
+
+                            string[] ordenE = encabezado.Split(',');
+
+                            int po = 0;
+
+                            for (int x = 0; x < ordenE.Length; x++)
+                            {
+                                if (ordenE[x].Equals(datos[pc]))
+                                {
+                                    po = x;
+                                    break;
+                                }
+                            }
+
+
+                            registros = filtro(datos[pc], po, registros, 4, datos[pc2]);
+                        }
+                        else if (condiciones[y].Contains(">"))
+                        {
+                            string[] datos = condiciones[y].Split('>');
+
+                            int pc = 0;
+
+                            for (int x = 0; x < datos.Length; x++)
+                            {
+                                if (encabezado.Contains(datos[x]))
+                                {
+                                    pc = x;
+                                    break;
+                                }
+                            }
+
+                            datos[pc] = datos[pc].Trim();
+
+                            int pc2 = datos.Length - 1 - pc;
+
+                            string[] ordenE = encabezado.Split(',');
+
+                            int po = 0;
+
+                            for (int x = 0; x < ordenE.Length; x++)
+                            {
+                                if (ordenE[x].Equals(datos[pc]))
+                                {
+                                    po = x;
+                                    break;
+                                }
+                            }
+
+
+                            registros = filtro(datos[pc], po, registros, 5, datos[pc2]);
+                        }
+                        else if (condiciones[y].Contains("<"))
+                        {
+                            string[] datos = condiciones[y].Split('<');
+
+                            int pc = 0;
+
+                            for (int x = 0; x < datos.Length; x++)
+                            {
+                                if (encabezado.Contains(datos[x]))
+                                {
+                                    pc = x;
+                                    break;
+                                }
+                            }
+
+                            datos[pc] = datos[pc].Trim();
+
+                            int pc2 = datos.Length - 1 - pc;
+
+                            string[] ordenE = encabezado.Split(',');
+
+                            int po = 0;
+
+                            for (int x = 0; x < ordenE.Length; x++)
+                            {
+                                if (ordenE[x].Equals(datos[pc]))
+                                {
+                                    po = x;
+                                    break;
+                                }
+                            }
+
+
+                            registros = filtro(datos[pc], po, registros, 6, datos[pc2]);
+                        }
+
+                        
+                    }
+                }
+                else
+                {
+                    string[] datos = condicion.Split(new string[] { "||" }, StringSplitOptions.None);
+
+                    string subregistros = registros;
+
+                    for(int j = 0; j < datos.Length; j++)
+                    {
+                        if (datos[j].Contains("&&"))
+                        {
+
+                            string[] subdatos = datos[j].Split(new string[] { "&&" }, StringSplitOptions.None);
+
+                            for (int y = 0; y < subdatos.Length; y++)
+                            {
+
+                                if (subdatos[y].Contains("=="))
+                                {
+                                    string[] Odatos = subdatos[y].Split(new string[] { "==" }, StringSplitOptions.None);
+
+                                    int pc = 0;
+
+
+
+                                    for (int x = 0; x < datos.Length; x++)
+                                    {
+                                        if (encabezado.Contains(datos[x]))
+                                        {
+                                            pc = x;
+                                            break;
+                                        }
+                                    }
+
+                                    datos[pc] = datos[pc].Trim();
+
+                                    int pc2 = datos.Length - 1 - pc;
+
+                                    string[] ordenE = encabezado.Split(',');
+
+                                    int po = 0;
+
+                                    for (int x = 0; x < ordenE.Length; x++)
+                                    {
+                                        if (ordenE[x].Equals(datos[pc]))
+                                        {
+                                            po = x;
+                                            break;
+                                        }
+                                    }
+
+
+                                    subregistros = filtro(datos[pc], po, subregistros, 1, datos[pc2]);
+
+
+                                }
+                                else if (subdatos[y].Contains("!="))
+                                {
+                                    string[] Odatos = subdatos[y].Split(new string[] { "!=" }, StringSplitOptions.None);
+
+                                    int pc = 0;
+
+                                    for (int x = 0; x < datos.Length; x++)
+                                    {
+                                        if (encabezado.Contains(datos[x]))
+                                        {
+                                            pc = x;
+                                            break;
+                                        }
+                                    }
+
+                                    datos[pc] = datos[pc].Trim();
+
+                                    int pc2 = datos.Length - 1 - pc;
+
+                                    string[] ordenE = encabezado.Split(',');
+
+                                    int po = 0;
+
+                                    for (int x = 0; x < ordenE.Length; x++)
+                                    {
+                                        if (ordenE[x].Equals(datos[pc]))
+                                        {
+                                            po = x;
+                                            break;
+                                        }
+                                    }
+
+
+                                    subregistros = filtro(datos[pc], po, subregistros, 2, datos[pc2]);
+                                }
+                                else if (subdatos[y].Contains("<="))
+                                {
+                                    string[] Odatos = subdatos[y].Split(new string[] { "<=" }, StringSplitOptions.None);
+
+                                    int pc = 0;
+
+                                    for (int x = 0; x < datos.Length; x++)
+                                    {
+                                        if (encabezado.Contains(datos[x]))
+                                        {
+                                            pc = x;
+                                            break;
+                                        }
+                                    }
+
+                                    datos[pc] = datos[pc].Trim();
+
+                                    int pc2 = datos.Length - 1 - pc;
+
+                                    string[] ordenE = encabezado.Split(',');
+
+                                    int po = 0;
+
+                                    for (int x = 0; x < ordenE.Length; x++)
+                                    {
+                                        if (ordenE[x].Equals(datos[pc]))
+                                        {
+                                            po = x;
+                                            break;
+                                        }
+                                    }
+
+
+                                    subregistros = filtro(datos[pc], po, subregistros, 3, datos[pc2]);
+                                }
+                                else if (subdatos[y].Contains(">="))
+                                {
+                                    string[] Odatos = subdatos[y].Split(new string[] { ">=" }, StringSplitOptions.None);
+
+                                    int pc = 0;
+
+                                    for (int x = 0; x < datos.Length; x++)
+                                    {
+                                        if (encabezado.Contains(datos[x]))
+                                        {
+                                            pc = x;
+                                            break;
+                                        }
+                                    }
+
+                                    datos[pc] = datos[pc].Trim();
+
+                                    int pc2 = datos.Length - 1 - pc;
+
+                                    string[] ordenE = encabezado.Split(',');
+
+                                    int po = 0;
+
+                                    for (int x = 0; x < ordenE.Length; x++)
+                                    {
+                                        if (ordenE[x].Equals(datos[pc]))
+                                        {
+                                            po = x;
+                                            break;
+                                        }
+                                    }
+
+
+                                    subregistros = filtro(datos[pc], po, subregistros, 4, datos[pc2]);
+                                }
+                                else if (subdatos[y].Contains(">"))
+                                {
+                                    string[] Odatos = subdatos[y].Split('>');
+
+                                    int pc = 0;
+
+                                    for (int x = 0; x < datos.Length; x++)
+                                    {
+                                        if (encabezado.Contains(datos[x]))
+                                        {
+                                            pc = x;
+                                            break;
+                                        }
+                                    }
+
+                                    datos[pc] = datos[pc].Trim();
+
+                                    int pc2 = datos.Length - 1 - pc;
+
+                                    string[] ordenE = encabezado.Split(',');
+
+                                    int po = 0;
+
+                                    for (int x = 0; x < ordenE.Length; x++)
+                                    {
+                                        if (ordenE[x].Equals(datos[pc]))
+                                        {
+                                            po = x;
+                                            break;
+                                        }
+                                    }
+
+
+                                    subregistros = filtro(datos[pc], po, subregistros, 5, datos[pc2]);
+                                }
+                                else if (subdatos[y].Contains("<"))
+                                {
+                                    string[] Odatos = subdatos[y].Split('<');
+
+                                    int pc = 0;
+
+                                    for (int x = 0; x < datos.Length; x++)
+                                    {
+                                        if (encabezado.Contains(datos[x]))
+                                        {
+                                            pc = x;
+                                            break;
+                                        }
+                                    }
+
+                                    datos[pc] = datos[pc].Trim();
+
+                                    int pc2 = datos.Length - 1 - pc;
+
+                                    string[] ordenE = encabezado.Split(',');
+
+                                    int po = 0;
+
+                                    for (int x = 0; x < ordenE.Length; x++)
+                                    {
+                                        if (ordenE[x].Equals(datos[pc]))
+                                        {
+                                            po = x;
+                                            break;
+                                        }
+                                    }
+
+
+                                    subregistros = filtro(datos[pc], po, subregistros, 6, datos[pc2]);
+                                }
+
+
+                            }
+
+
+                        }
+                        else
+                        {
+
+                        }
+                    }
+
+                    
+                    //string[] datos = condicion.Split(new string[] { "==" }, StringSplitOptions.None);
+                }
+            }
+            else
+            {
+                if (condicion.Contains("=="))
+                {
+                    string[] datos = condicion.Split(new string[] { "==" }, StringSplitOptions.None);
+
+                    int pc=0;
+
+                    for(int x = 0; x < datos.Length; x++)
+                    {
+                        if (encabezado.Contains(datos[x]))
+                        {
+                            pc = x;
+                            break;
+                        }
+                    }
+
+                    int pc2 = datos.Length - 1 - pc;
+
+                    string[] ordenE = encabezado.Split(',');
+
+                    int po = 0;
+
+                    for (int x = 0; x < ordenE.Length; x++)
+                    {
+                        if (ordenE[x].Equals(datos[pc]))
+                        {
+                            po = x;
+                            break;
+                        }
+                    }
+
+
+                    registros = filtro(datos[pc], po, registros,1, datos[pc2]);
+
+
+                }
+                else if (condicion.Contains("!="))
+                {
+                    string[] datos = condicion.Split(new string[] { "!=" }, StringSplitOptions.None);
+
+                    int pc = 0;
+
+                    for (int x = 0; x < datos.Length; x++)
+                    {
+                        if (encabezado.Contains(datos[x]))
+                        {
+                            pc = x;
+                            break;
+                        }
+                    }
+
+                    int pc2 = datos.Length - 1 - pc;
+
+                    string[] ordenE = encabezado.Split(',');
+
+                    int po = 0;
+
+                    for (int x = 0; x < ordenE.Length; x++)
+                    {
+                        if (ordenE[x].Equals(datos[pc]))
+                        {
+                            po = x;
+                            break;
+                        }
+                    }
+
+
+                    registros = filtro(datos[pc], po, registros, 2, datos[pc2]);
+                }
+                else if (condicion.Contains("<="))
+                {
+                    string[] datos = condicion.Split(new string[] { "<=" }, StringSplitOptions.None);
+
+                    int pc = 0;
+
+                    for (int x = 0; x < datos.Length; x++)
+                    {
+                        if (encabezado.Contains(datos[x]))
+                        {
+                            pc = x;
+                            break;
+                        }
+                    }
+
+                    int pc2 = datos.Length - 1 - pc;
+
+                    string[] ordenE = encabezado.Split(',');
+
+                    int po = 0;
+
+                    for (int x = 0; x < ordenE.Length; x++)
+                    {
+                        if (ordenE[x].Equals(datos[pc]))
+                        {
+                            po = x;
+                            break;
+                        }
+                    }
+
+
+                    registros = filtro(datos[pc], po, registros, 3, datos[pc2]);
+                }
+                else if (condicion.Contains(">="))
+                {
+                    string[] datos = condicion.Split(new string[] { ">=" }, StringSplitOptions.None);
+
+                    int pc = 0;
+
+                    for (int x = 0; x < datos.Length; x++)
+                    {
+                        if (encabezado.Contains(datos[x]))
+                        {
+                            pc = x;
+                            break;
+                        }
+                    }
+
+                    int pc2 = datos.Length - 1 - pc;
+
+                    string[] ordenE = encabezado.Split(',');
+
+                    int po = 0;
+
+                    for (int x = 0; x < ordenE.Length; x++)
+                    {
+                        if (ordenE[x].Equals(datos[pc]))
+                        {
+                            po = x;
+                            break;
+                        }
+                    }
+
+
+                    registros = filtro(datos[pc], po, registros, 4, datos[pc2]);
+                }
+                else if (condicion.Contains(">"))
+                {
+                    string[] datos = condicion.Split('>');
+
+                    int pc = 0;
+
+                    for (int x = 0; x < datos.Length; x++)
+                    {
+                        if (encabezado.Contains(datos[x]))
+                        {
+                            pc = x;
+                            break;
+                        }
+                    }
+
+                    int pc2 = datos.Length - 1 - pc;
+
+                    string[] ordenE = encabezado.Split(',');
+
+                    int po = 0;
+
+                    for (int x = 0; x < ordenE.Length; x++)
+                    {
+                        if (ordenE[x].Equals(datos[pc]))
+                        {
+                            po = x;
+                            break;
+                        }
+                    }
+
+
+                    registros = filtro(datos[pc], po, registros, 5, datos[pc2]);
+                }
+                else if (condicion.Contains("<"))
+                {
+                    string[] datos = condicion.Split('<');
+
+                    int pc = 0;
+
+                    for (int x = 0; x < datos.Length; x++)
+                    {
+                        if (encabezado.Contains(datos[x]))
+                        {
+                            pc = x;
+                            break;
+                        }
+                    }
+
+                    int pc2 = datos.Length - 1 - pc;
+
+                    string[] ordenE = encabezado.Split(',');
+
+                    int po = 0;
+
+                    for (int x = 0; x < ordenE.Length; x++)
+                    {
+                        if (ordenE[x].Equals(datos[pc]))
+                        {
+                            po = x;
+                            break;
+                        }
+                    }
+
+
+                    registros = filtro(datos[pc], po, registros, 6, datos[pc2]);
+                }
+            }
 
             //orden
 
+            if (orden.Equals(""))
+            {
+
+            }
+            else
+            {
+
+            
+            string[] Porden = orden.Split(' ');
+
+            if (Porden[1].Equals("ASC"))
+            {
+
+                string[] ordenE = encabezado.Split(',');
+
+                int po = 0;
+
+                for(int x = 0; x < ordenE.Length; x++)
+                {
+                    if (ordenE[x].Equals(Porden[0]))
+                    {
+                        po = x;
+                        break;
+                    }
+                }
+
+                registros = ordenar_Asc(Porden[0],po,registros);
+
+            }
+            else
+            {
+
+                string[] ordenE = encabezado.Split(',');
+
+                int po = 0;
+
+                for (int x = 0; x < ordenE.Length; x++)
+                {
+                    if (ordenE[x].Equals(Porden[0]))
+                    {
+                        po = x;
+                        break;
+                    }
+                }
+
+                registros = ordenar_Desc(Porden[0], po, registros);
+            }
+            }
+
+            //filtro
             if (campos.Equals("*"))
             {
                 if (Tablas.Contains(','))
@@ -1284,6 +2305,164 @@ namespace Proyecto1_Compi2.Elementos
             maestro.bases.aux.tablas.existe(Tabla);
 
             return maestro.bases.aux.tablas.aux.campos;
+        }
+
+        string ordenar_Asc(string campo, int pos, string registros)
+        {
+            string[] campos = registros.Split(';');
+
+            string ordenar = "";
+
+            for(int x = 0; x < campos.Length-1; x++)
+            {
+                ordenar += campos[x].Split(',')[pos] + ";";
+            }
+
+
+            string[] orden = ordenar.Split(';');
+
+            string t;
+            for (int a = 1; a < orden.Length-1; a++)
+                for (int b = orden.Length -2; b >= a; b--)
+                {
+                    if (String.Compare(orden[b - 1], orden[b])==1)
+                    {
+                        t = orden[b - 1];
+                        orden[b - 1] = orden[b];
+                        orden[b] = t;
+
+                        t = campos[b - 1];
+                        campos[b - 1] = campos[b];
+                        campos[b] = t;
+                    }
+                }
+
+            string respuesta = "";
+
+            for (int x = 0; x < campos.Length - 1; x++)
+            {
+                respuesta += campos[x] + ";";
+            }
+
+            //Compare(A, B): -1
+            //Compare(B, A):  1
+
+            //Compare(A, A):  0
+            //Compare(B, B):  0
+
+            return respuesta;
+        }
+
+        string ordenar_Desc(string campo, int pos, string registros)
+        {
+            string[] campos = registros.Split(';');
+
+            string ordenar = "";
+
+            for (int x = 0; x < campos.Length - 1; x++)
+            {
+                ordenar += campos[x].Split(',')[pos] + ";";
+            }
+
+
+            string[] orden = ordenar.Split(';');
+
+            string t;
+            for (int a = 1; a < orden.Length - 1; a++)
+                for (int b = orden.Length - 2; b >= a; b--)
+                {
+                    if (String.Compare(orden[b - 1], orden[b]) == -1)
+                    {
+                        t = orden[b - 1];
+                        orden[b - 1] = orden[b];
+                        orden[b] = t;
+
+                        t = campos[b - 1];
+                        campos[b - 1] = campos[b];
+                        campos[b] = t;
+                    }
+                }
+
+            string respuesta = "";
+
+            for (int x = 0; x < campos.Length - 1; x++)
+            {
+                respuesta += campos[x] + ";";
+            }
+
+          
+
+            return respuesta;
+        }
+
+        string filtro(string campo, int pos, string registros,int tipo,string condicion)
+        {
+            string[] campos = registros.Split(';');
+
+            string ordenar = "";
+
+            string respuesta="";
+
+            condicion = condicion.Trim();
+
+            condicion = condicion.Trim(new char[] { '"' ,'\\',});
+
+            condicion = condicion.Trim();
+
+            for (int x = 0; x < campos.Length - 1; x++)
+            {
+                ordenar = campos[x].Split(',')[pos];
+
+                if (tipo == 1)
+                {
+                    if (ordenar.Equals(condicion))
+                    {
+                        respuesta += campos[x] + ";";
+                    }
+                }
+                else if (tipo == 2)
+                {
+                    if (ordenar.Equals(condicion))
+                    {
+                        
+                    }
+                    else
+                    {
+                        respuesta += campos[x] + ";";
+                    }
+                }
+                else if (tipo == 3) //<=
+                {
+                    if(String.Compare(ordenar, condicion) == -1|| String.Compare(ordenar, condicion) == 0) 
+                    {
+                        respuesta += campos[x] + ";";
+                    }
+                }
+                else if (tipo == 4) //>=
+                {
+                    if (String.Compare(ordenar, condicion) == 1 || String.Compare(ordenar, condicion) == 0)
+                    {
+                        respuesta += campos[x] + ";";
+                    }
+                }
+                else if (tipo == 5) //>
+                {
+                    if (String.Compare(ordenar, condicion) == 1)
+                    {
+                        respuesta += campos[x] + ";";
+                    }
+                }
+                else if (tipo == 6) //<
+                {
+                    if (String.Compare(ordenar, condicion) == -1 )
+                    {
+                        respuesta += campos[x] + ";";
+                    }
+                }
+
+            }
+
+            return respuesta;
         }
     }
     
