@@ -1191,13 +1191,30 @@ namespace Proyecto1_Compi2
 
                         if (nodo.ChildNodes.Count == 6)
                         {
-                            string condicion = ActuarSQL(nodo.ChildNodes[10]);
+                            string p = nodo.ChildNodes[4].Span.Location.ToString();
 
-                            //Borrar con condicion
+                            int inicio = Convert.ToInt32(p.Split(':')[1].Trim(')'));
+
+                            string instrucciones = codigo.Substring(inicio + 5, nodo.ChildNodes[4].Span.Length - 5);
+
+                            instrucciones = instrucciones.Trim(';');
+                            instrucciones = instrucciones.Trim();
+
+                            string[] instruccion = instrucciones.Split(new string[] { "||", "&&" }, StringSplitOptions.None);
+
+                            for (int x = 0; x < instruccion.Length; x++)
+                            {
+                                string temporal = instruccion[x];
+                                instruccion[x] = CambiarVariablesVal(instruccion[x]);
+
+                                instrucciones = instrucciones.Replace(temporal, instruccion[x]);
+                            }
+
+                            resultado = manejo.Borrar_Tabla(BaseActual, TablaAux, instrucciones);
                         }
                         else
                         {
-                            //Borrar completo
+                            resultado = manejo.Borrar_Tabla(BaseActual, TablaAux, "");
                         }
 
                         break;

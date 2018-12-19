@@ -744,6 +744,85 @@ namespace Proyecto1_Compi2.Elementos
             return "Se Modificaron "+ contador+" filas";
         }
 
+        public string Borrar_Tabla(string Base, string Tabla,  string condicion)
+        {
+
+            int contador = 0;
+
+            maestro.bases.existe(Base);
+            maestro.bases.aux.tablas.existe(Tabla);
+            
+            if (condicion.Equals(""))
+            {
+                bool seguir = true;
+
+                maestro.bases.aux.tablas.aux.aux = maestro.bases.aux.tablas.aux.cabeza;
+
+
+                while (seguir)
+                {
+                    
+                    contador++;
+
+                    if (maestro.bases.aux.tablas.aux.aux.siguiente != null)
+                    {
+                        maestro.bases.aux.tablas.aux.aux = maestro.bases.aux.tablas.aux.aux.siguiente;
+                    }
+                    else
+                    {
+                        seguir = false;
+                    }
+
+
+                }
+
+                maestro.bases.aux.tablas.aux.cabeza = null;
+                maestro.bases.aux.tablas.aux.ultimo = null;
+                maestro.bases.aux.tablas.aux.aux = null;
+
+            }
+            else
+            {
+                string evaluarcond = Select(Base, Tabla, "*", "", condicion);
+
+                string[] beta = evaluarcond.Split(new string[] { ";;" }, StringSplitOptions.None);
+
+                string[] filas = beta[1].Split(';');
+
+
+
+                maestro.bases.aux.tablas.aux.aux = maestro.bases.aux.tablas.aux.cabeza;
+                bool seguir = true;
+
+                while (seguir)
+                {
+
+                    for (int x = 0; x < filas.Length - 1; x++)
+                    {
+                        if (maestro.bases.aux.tablas.aux.aux.valor.Contains(filas[x]))
+                        {
+                            maestro.bases.aux.tablas.aux.aux.anterior.siguiente = maestro.bases.aux.tablas.aux.aux.siguiente;
+                            maestro.bases.aux.tablas.aux.aux.siguiente.anterior = maestro.bases.aux.tablas.aux.aux.anterior;
+                            contador++;
+                        }
+
+                    }
+
+
+                    if (maestro.bases.aux.tablas.aux.aux.siguiente != null)
+                    {
+                        maestro.bases.aux.tablas.aux.aux = maestro.bases.aux.tablas.aux.aux.siguiente;
+                    }
+                    else
+                    {
+                        seguir = false;
+                    }
+                }
+            }
+
+            return "Se Eliminaron " + contador + " filas";
+        }
+
         public string Crear_Objeto(string nombre, string Base, string campos)
         {
             maestro.bases.existe(Base);
