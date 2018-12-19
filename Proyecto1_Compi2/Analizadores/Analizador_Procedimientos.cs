@@ -37,7 +37,7 @@ namespace Proyecto1_Compi2.Analizadores
             RegexBasedTerminal RIMPRIMIR = new RegexBasedTerminal("RIMPRIMIR", "IMPRIMIR ");
             RegexBasedTerminal RINSERTAR = new RegexBasedTerminal("RINSERTAR", "INSERTAR ");
             RegexBasedTerminal REN = new RegexBasedTerminal("REN", "EN");
-            RegexBasedTerminal RVALORES = new RegexBasedTerminal("RVALORES", "VALORES");
+            RegexBasedTerminal RVALORES = new RegexBasedTerminal("RVALORES", "VALORES "); 
             RegexBasedTerminal RACTUALIZAR = new RegexBasedTerminal("RACTUALIZAR", "ACTUALIZAR");
             RegexBasedTerminal RDONDE = new RegexBasedTerminal("RDONDE", "DONDE");
             RegexBasedTerminal RBORRAR = new RegexBasedTerminal("RBORRAR", "BORRAR");
@@ -57,7 +57,7 @@ namespace Proyecto1_Compi2.Analizadores
             RegexBasedTerminal RAGREGAR = new RegexBasedTerminal("RAGREGAR", "AGREGAR");
             RegexBasedTerminal RQUITAR = new RegexBasedTerminal("RQUITAR", "QUITAR");
             RegexBasedTerminal RCAMBIAR = new RegexBasedTerminal("RCAMBIAR", "CAMBIAR");
-            RegexBasedTerminal RELIMINAR = new RegexBasedTerminal("RELIMINAR", "ELIMINAR");
+            RegexBasedTerminal RELIMINAR = new RegexBasedTerminal("RELIMINAR", "ELIMINAR ");
             RegexBasedTerminal RDECLARAR = new RegexBasedTerminal("RDECLARAR", "DECLARAR ");
             RegexBasedTerminal RSI = new RegexBasedTerminal("RSI", "SI ");
             RegexBasedTerminal RSINO = new RegexBasedTerminal("RSINO", "SINO ");
@@ -69,7 +69,7 @@ namespace Proyecto1_Compi2.Analizadores
             RegexBasedTerminal RDETENER = new RegexBasedTerminal("RDETENER", "DETENER ");
             RegexBasedTerminal RFECHA = new RegexBasedTerminal("RFECHA", "FECHA");
             RegexBasedTerminal RFECHA_HORA = new RegexBasedTerminal("RFECHA_HORA", "FECHA_HORA");
-            RegexBasedTerminal RCONTAR = new RegexBasedTerminal("RCONTAR", "CONTAR");
+            RegexBasedTerminal RCONTAR = new RegexBasedTerminal("RCONTAR", "CONTAR ");
 
             //tipos
             IdentifierTerminal ID = new IdentifierTerminal("ID");

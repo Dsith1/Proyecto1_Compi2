@@ -37,7 +37,7 @@ namespace Proyecto1_Compi2.Analizadores
             RegexBasedTerminal RINSERTAR = new RegexBasedTerminal("RINSERTAR", "INSERTAR ");
             RegexBasedTerminal REN = new RegexBasedTerminal("REN", "EN");
             RegexBasedTerminal RVALORES = new RegexBasedTerminal("RVALORES", "VALORES ");
-            RegexBasedTerminal RACTUALIZAR = new RegexBasedTerminal("RACTUALIZAR", "ACTUALIZAR");
+            RegexBasedTerminal RACTUALIZAR = new RegexBasedTerminal("RACTUALIZAR", "ACTUALIZAR ");
             RegexBasedTerminal RDONDE = new RegexBasedTerminal("RDONDE", "DONDE");
             RegexBasedTerminal RBORRAR = new RegexBasedTerminal("RBORRAR", "BORRAR");
             RegexBasedTerminal RSELECCIONAR = new RegexBasedTerminal("RSELECCIONAR", "SELECCIONAR");
@@ -68,7 +68,7 @@ namespace Proyecto1_Compi2.Analizadores
             RegexBasedTerminal RDETENER = new RegexBasedTerminal("RDETENER", "DETENER ");
             RegexBasedTerminal RFECHA = new RegexBasedTerminal("RFECHA", "FECHA");
             RegexBasedTerminal RFECHA_HORA = new RegexBasedTerminal("RFECHA_HORA", "FECHA_HORA");
-            RegexBasedTerminal RCONTAR = new RegexBasedTerminal("RCONTAR", "CONTAR");
+            RegexBasedTerminal RCONTAR = new RegexBasedTerminal("RCONTAR", "CONTAR ");
 
             //tipos
             IdentifierTerminal ID = new IdentifierTerminal("ID");
@@ -339,14 +339,14 @@ namespace Proyecto1_Compi2.Analizadores
                              | RSELECCIONAR + campos + RDE + campos + PUNTOCOMA//5
                              | RSELECCIONAR + MULTI  + RDE + campos + PUNTOCOMA;//5
 
-            seleccionarf.Rule = RSELECCIONAR + campos + RDE + campos + condicion + orden 
-                             | RSELECCIONAR + MULTI + RDE + campos + condicion + orden 
-                             | RSELECCIONAR + campos + RDE + campos + condicion 
-                             | RSELECCIONAR + MULTI + RDE + campos + condicion 
-                             | RSELECCIONAR + campos + RDE + campos + orden 
-                             | RSELECCIONAR + MULTI + RDE + campos + orden 
-                             | RSELECCIONAR + campos + RDE + campos 
-                             | RSELECCIONAR + MULTI + RDE + campos;
+            seleccionarf.Rule = RSELECCIONAR + campos + RDE + campos + condicion + orden //6
+                             | RSELECCIONAR + MULTI  + RDE + campos + condicion + orden //6
+                             | RSELECCIONAR + campos + RDE + campos + condicion //5
+                             | RSELECCIONAR + MULTI  + RDE + campos + condicion //5
+                             | RSELECCIONAR + campos + RDE + campos + orden //5
+                             | RSELECCIONAR + MULTI  + RDE + campos + orden //5
+                             | RSELECCIONAR + campos + RDE + campos //4
+                             | RSELECCIONAR + MULTI  + RDE + campos;//4
 
             orden.Rule = RORDENAR + ID + RASC
                     | RORDENAR + ID + RDESC

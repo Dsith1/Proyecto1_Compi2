@@ -595,6 +595,155 @@ namespace Proyecto1_Compi2.Elementos
 
         }
 
+        public string Actualizar_Tabla(string Base,string Tabla,string campos,string valores,string condicion)
+        {
+
+            int contador = 0;
+
+            maestro.bases.existe(Base);
+            maestro.bases.aux.tablas.existe(Tabla);
+
+            string encabezados = getcamposTabla(Tabla);
+            string posiciones = "";
+
+            string[] campo = campos.Split(',');
+
+            string[] encabezado = encabezados.Split(',');
+
+            for(int x = 0; x < encabezado.Length; x++)
+            {
+                for(int y = 0; y < campo.Length; y++)
+                {
+                    if (encabezado[x].Equals(campo[y])){
+                        posiciones += x+",";
+                    }
+                }
+            }
+
+            posiciones = posiciones.Trim(',');
+
+            string[] posicion = posiciones.Split(',');
+
+            int[] pos = Array.ConvertAll(posicion, int.Parse);
+
+            string[] nuevov = valores.Split(',');
+
+            if (condicion.Equals(""))
+            {
+                bool seguir = true;
+
+                maestro.bases.aux.tablas.aux.aux = maestro.bases.aux.tablas.aux.cabeza;
+
+
+                while (seguir)
+                {
+
+                    string registro = maestro.bases.aux.tablas.aux.aux.valor;
+
+                    string[] valor = registro.Split(',');
+
+                    string insercion = "";
+
+                    for(int x = 0; x < valor.Length; x++)
+                    {
+                        if (pos.Contains(x))
+                        {
+                            int lugar = Array.IndexOf(pos, x);
+
+                            insercion += nuevov[lugar].Split(';')[1] + ",";
+                        }
+                        else
+                        {
+                            insercion += valor[x] + ",";
+                        }
+
+                        maestro.bases.aux.tablas.aux.aux.valor = insercion.Trim(',');
+                        
+                    }
+                    contador++;
+
+                    if (maestro.bases.aux.tablas.aux.aux.siguiente != null)
+                    {
+                        maestro.bases.aux.tablas.aux.aux = maestro.bases.aux.tablas.aux.aux.siguiente;
+                    }
+                    else
+                    {
+                        seguir = false;
+                    }
+                    
+
+                }
+
+            }
+            else
+            {
+                string evaluarcond = Select(Base, Tabla, "*", "", condicion);
+
+                string[] beta = evaluarcond.Split(new string[] { ";;" }, StringSplitOptions.None);
+
+                string[] filas = beta[1].Split(';');
+
+                string[] bakcup = beta[1].Split(';');
+
+                for(int y = 0; y < filas.Length-1; y++)
+                {
+                    string registro = filas[y];
+
+                    string[] valor = registro.Split(',');
+
+                    string insercion = "";
+
+                    for (int x = 0; x < valor.Length; x++)
+                    {
+                        if (pos.Contains(x))
+                        {
+                            int lugar = Array.IndexOf(pos, x);
+
+                            insercion += nuevov[lugar].Split(';')[1] + ",";
+                        }
+                        else
+                        {
+                            insercion += valor[x] + ",";
+                        }
+
+                        
+
+                    }
+                    filas[y] = insercion.Trim(',');
+                    contador++;
+                }
+
+
+                maestro.bases.aux.tablas.aux.aux = maestro.bases.aux.tablas.aux.cabeza;
+                bool seguir = true;
+
+                while (seguir)
+                {
+
+                    for (int x = 0; x < filas.Length - 1; x++)
+                    {
+                        if (maestro.bases.aux.tablas.aux.aux.valor.Contains(bakcup[x]))
+                        {
+                            maestro.bases.aux.tablas.aux.aux.valor = filas[x];
+                        }
+
+                    }
+
+
+                    if (maestro.bases.aux.tablas.aux.aux.siguiente != null)
+                    {
+                        maestro.bases.aux.tablas.aux.aux = maestro.bases.aux.tablas.aux.aux.siguiente;
+                    }
+                    else
+                    {
+                        seguir = false;
+                    }
+                }
+            }
+
+            return "Se Modificaron "+ contador+" filas";
+        }
+
         public string Crear_Objeto(string nombre, string Base, string campos)
         {
             maestro.bases.existe(Base);
@@ -2670,6 +2819,8 @@ namespace Proyecto1_Compi2.Elementos
                             break;
                         }
                     }
+
+                    datos[pc2] = datos[pc2].Replace("\"", "");
 
                     datos[pc2] = datos[pc2].Trim();
 

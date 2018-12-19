@@ -1149,26 +1149,39 @@ namespace Proyecto1_Compi2
 
                         if (nodo.ChildNodes.Count == 12)
                         {
-                            string condicion = ActuarSQL(nodo.ChildNodes[10]);
 
-                            //Actualiza con condicion
+                            string p = nodo.ChildNodes[10].Span.Location.ToString();
+
+                            int inicio = Convert.ToInt32(p.Split(':')[1].Trim(')'));
+
+                            string instrucciones = codigo.Substring(inicio + 5, nodo.ChildNodes[10].Span.Length - 5);
+
+                            instrucciones = instrucciones.Trim(';');
+                            instrucciones = instrucciones.Trim();
+
+                            string[] instruccion = instrucciones.Split(new string[] { "||", "&&" }, StringSplitOptions.None);
+
+                            for (int x = 0; x < instruccion.Length; x++)
+                            {
+                                string temporal = instruccion[x];
+                                instruccion[x] = CambiarVariablesVal(instruccion[x]);
+
+                                instrucciones = instrucciones.Replace(temporal, instruccion[x]);
+                            }
+
+
+
+                            resultado = manejo.Actualizar_Tabla(BaseActual, TablaAux, camposA, valorA, instrucciones);
                         }
                         else
                         {
-                            //Actualiza completo
+                            resultado = manejo.Actualizar_Tabla(BaseActual, TablaAux, camposA, valorA, "");
                         }
 
 
                         break;
                     }
 
-                case "condicion":
-                    {
-
-
-
-                        break;
-                    }
 
                 case "borrar":
                     {
@@ -2785,7 +2798,37 @@ namespace Proyecto1_Compi2
 
                         if (nodo.ChildNodes.Count == 7)
                         {
+                            string p = nodo.ChildNodes[4].Span.Location.ToString();
 
+                            int inicio = Convert.ToInt32(p.Split(':')[1].Trim(')'));
+
+                            string instrucciones = codigo.Substring(inicio + 5, nodo.ChildNodes[4].Span.Length - 5);
+
+                            instrucciones = instrucciones.Trim(';');
+                            instrucciones = instrucciones.Trim();
+
+                            string[] instruccion = instrucciones.Split(new string[] { "||", "&&" }, StringSplitOptions.None);
+
+                            for (int x = 0; x < instruccion.Length; x++)
+                            {
+                                string temporal = instruccion[x];
+                                instruccion[x] = CambiarVariablesVal(instruccion[x]);
+
+                                instrucciones = instrucciones.Replace(temporal, instruccion[x]);
+                            }
+
+
+
+                            string orden = ActuarSQL(nodo.ChildNodes[5]);
+
+                            if (todo)
+                            {
+                                resultado = "\r\n" + manejo.Select(BaseActual, tablas, "*", orden, instrucciones);
+                            }
+                            else
+                            {
+                                resultado = "\r\n" + manejo.Select(BaseActual, tablas, campos, orden, instrucciones);
+                            }
                         }
                         else if (nodo.ChildNodes.Count == 6)
                         {
@@ -2873,6 +2916,154 @@ namespace Proyecto1_Compi2
                         }
 
                             break;
+                    }
+
+                case "contar":
+                    {
+
+                        string seleccion = ActuarSQL(nodo.ChildNodes[3]);
+
+                        string[] pre= seleccion.Split(new string[] { ";;" }, StringSplitOptions.None);
+
+                        int conteo = pre[1].Split(';').Length;
+
+                        resultado = "entero;" + conteo;
+
+                        break;
+                    }
+
+                case "contarAsig":
+                    {
+
+                        string seleccion = ActuarSQL(nodo.ChildNodes[3]);
+                        string[] pre = seleccion.Split(new string[] { ";;" }, StringSplitOptions.None);
+
+                        int conteo = pre[1].Split(';').Length;
+
+                        resultado = "entero;" + conteo;
+                        break;
+                    }
+
+                case "seleccionarf":
+                    {
+
+                        bool todo;
+                        string campos = "";
+
+                        if (nodo.ChildNodes[1].Term.Name.ToString().Equals("MULTI"))
+                        {
+                            todo = true;
+                        }
+                        else
+                        {
+                            todo = false;
+                            campos = ActuarSQL(nodo.ChildNodes[1]);
+
+                        }
+
+                        string tablas = ActuarSQL(nodo.ChildNodes[3]);
+
+                        if (nodo.ChildNodes.Count == 6)
+                        {
+                            string p = nodo.ChildNodes[4].Span.Location.ToString();
+
+                            int inicio = Convert.ToInt32(p.Split(':')[1].Trim(')'));
+
+                            string instrucciones = codigo.Substring(inicio + 5, nodo.ChildNodes[4].Span.Length - 5);
+
+                            instrucciones = instrucciones.Trim(';');
+                            instrucciones = instrucciones.Trim();
+
+                            string[] instruccion = instrucciones.Split(new string[] { "||", "&&" }, StringSplitOptions.None);
+
+                            for (int x = 0; x < instruccion.Length; x++)
+                            {
+                                string temporal = instruccion[x];
+                                instruccion[x] = CambiarVariablesVal(instruccion[x]);
+
+                                instrucciones = instrucciones.Replace(temporal, instruccion[x]);
+                            }
+
+
+
+                            string orden = ActuarSQL(nodo.ChildNodes[5]);
+
+                            if (todo)
+                            {
+                                resultado = "\r\n" + manejo.Select(BaseActual, tablas, "*", orden, instrucciones);
+                            }
+                            else
+                            {
+                                resultado = "\r\n" + manejo.Select(BaseActual, tablas, campos, orden, instrucciones);
+                            }
+                        }
+                        else if (nodo.ChildNodes.Count == 5)
+                        {
+                            if (nodo.ChildNodes[4].Term.Name.ToString().Equals("orden"))
+                            {
+                                string orden = ActuarSQL(nodo.ChildNodes[4]);
+
+                                if (todo)
+                                {
+                                    resultado = "\r\n" + manejo.Select(BaseActual, tablas, "*", orden, "");
+                                }
+                                else
+                                {
+                                    resultado = "\r\n" + manejo.Select(BaseActual, tablas, campos, orden, "");
+                                }
+
+
+                            }
+                            else
+                            {
+                                string p = nodo.ChildNodes[4].Span.Location.ToString();
+
+                                int inicio = Convert.ToInt32(p.Split(':')[1].Trim(')'));
+
+                                string instrucciones = codigo.Substring(inicio + 5, nodo.ChildNodes[4].Span.Length - 5);
+
+                                instrucciones = instrucciones.Trim(';');
+                                instrucciones = instrucciones.Trim();
+
+                                string[] instruccion = instrucciones.Split(new string[] { "||", "&&" }, StringSplitOptions.None);
+
+                                for (int x = 0; x < instruccion.Length; x++)
+                                {
+                                    string temporal = instruccion[x];
+                                    instruccion[x] = CambiarVariablesVal(instruccion[x]);
+
+                                    instrucciones = instrucciones.Replace(temporal, instruccion[x]);
+                                }
+
+
+
+                                if (todo)
+                                {
+                                    resultado = "\r\n" + manejo.Select(BaseActual, tablas, "*", "", instrucciones);
+                                }
+                                else
+                                {
+                                    resultado = "\r\n" + manejo.Select(BaseActual, tablas, campos, "", instrucciones);
+                                }
+
+                            }
+                        }
+                        else
+                        {
+
+                            if (todo)
+                            {
+                                resultado = "\r\n" + manejo.Select(BaseActual, tablas, "*", "", "");
+                            }
+                            else
+                            {
+                                resultado = "\r\n" + manejo.Select(BaseActual, tablas, campos, "", "");
+                            }
+
+                        }
+
+
+                        break;
                     }
             }
 
