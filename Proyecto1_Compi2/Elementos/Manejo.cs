@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Irony.Parsing;
-using System.Xml;
-using System.Xml.Linq;
+using Proyecto1_Compi2.Analizadores;
+
 
 namespace Proyecto1_Compi2.Elementos
 {
@@ -14,7 +11,11 @@ namespace Proyecto1_Compi2.Elementos
     {
         Maestro maestro;
 
+        int lectura=0;
+
         public string usuario;
+        public string BaseL;
+        public string TablaL;
 
         public Manejo()
         {
@@ -31,30 +32,14 @@ namespace Proyecto1_Compi2.Elementos
         public string Crear_Maestro()
         {
             maestro = new Maestro();
-            
 
+            if (lectura == 0)
+            {
+                commit();
+            }
             return "Archivo Maestro Creado";
 
-            //string activeDir = @"c:\DBMS";
-
-            //string newPath = System.IO.Path.Combine(activeDir, "Maestro.usac");
-
-            //if (File.Exists(newPath) == false)
-            //{
-            //    System.IO.FileStream fs = System.IO.File.Create(newPath);
-
-            //    fs.Close();
-            //    return "Archivo Maestro Creado" ;
-
-            //    //Crear_Base("BMaestra") + "\r\n" + Crear_Tabla("Usuario", "BMaestra")
-
-
-            //}
-            //else
-            //{
-            //    return "";
-            //}
-
+           
 
         }
         
@@ -72,6 +57,10 @@ namespace Proyecto1_Compi2.Elementos
                     Usuario nuevo = new Usuario(nombre, contra);
 
                     maestro.usuarios.Insertar(nuevo);
+                    if (lectura == 0)
+                    {
+                        commit();
+                    }
 
                     return "Se Ha Creado el Usuario " + nombre;
                 }
@@ -93,7 +82,10 @@ namespace Proyecto1_Compi2.Elementos
             if (maestro.usuarios.existe(nombre))
             {
                 maestro.usuarios.aux.Contraseña = contra;
-
+                if (lectura == 0)
+                {
+                    commit();
+                }
                 respuesta = "\r\nUsuario: " + nombre+" Actualizado";
             }
             else
@@ -111,7 +103,10 @@ namespace Proyecto1_Compi2.Elementos
             if (maestro.usuarios.existe(nombre))
             {
                 maestro.usuarios.Eliminar(nombre);
-                
+                if (lectura == 0)
+                {
+                    commit();
+                }
 
                 respuesta = "\r\nUsuario: " + nombre + " Eliminado";
             }
@@ -121,6 +116,13 @@ namespace Proyecto1_Compi2.Elementos
             }
 
             return respuesta;
+        }
+
+        public void SetPermisos(string usuario,string permiso)
+        {
+            maestro.usuarios.existe(usuario);
+
+            maestro.usuarios.aux.permiso = permiso;
         }
 
         public string Crear_Base(string nombre)
@@ -138,9 +140,12 @@ namespace Proyecto1_Compi2.Elementos
 
                 if (usuario.Equals("Admin"))
                 {
-                    maestro.usuarios.existe(usuario);
+                    if (maestro.usuarios.existe(usuario))
+                    {
+                        maestro.usuarios.aux.permiso += nombre;
+                    }
 
-                    maestro.usuarios.aux.permiso += nombre;
+                    
                 }
                 else
                 {
@@ -153,6 +158,12 @@ namespace Proyecto1_Compi2.Elementos
                     maestro.usuarios.aux.permiso += nombre;
                 }
 
+                if (lectura == 0)
+                {
+                    commit();
+                }
+
+                
                 return "Se Ha Creado La Base de Datos " + nombre;
             
             }
@@ -255,6 +266,10 @@ namespace Proyecto1_Compi2.Elementos
                                 nuevo.SetRuta(System.IO.Path.Combine(@"c:\DBMS", Base + "_" + nombre + ".usac"));
 
                                 maestro.bases.aux.tablas.Insertar(nuevo);
+                                if (lectura == 0)
+                                {
+                                    commit();
+                                }
 
                                 return "Se Ha Creado La Tabla " + nombre + " En la Base de Datos " + Base;
                             }
@@ -282,6 +297,11 @@ namespace Proyecto1_Compi2.Elementos
 
                         maestro.bases.aux.tablas.Insertar(nuevo);
 
+                        if (lectura == 0)
+                        {
+                            commit();
+                        }
+
                         return "Se Ha Creado La Tabla " + nombre + " En la Base de Datos " + Base;
                     }
 
@@ -307,7 +327,10 @@ namespace Proyecto1_Compi2.Elementos
             {
                 maestro.bases.aux.tablas.Eliminar(nombre);
 
-
+                if (lectura == 0)
+                {
+                    commit();
+                }
                 respuesta = "\r\nUsuario: " + nombre + " Eliminado";
             }
             else
@@ -355,7 +378,10 @@ namespace Proyecto1_Compi2.Elementos
                     Registro nuevo = new Registro(subv);
 
                     maestro.bases.aux.tablas.aux.Insertar(nuevo);
-
+                    if (lectura == 0)
+                    {
+                        commit();
+                    }
                     return "1 Fila Insertada";
                 }
                 else if (atrib.Contains("Autoincrementable"))
@@ -395,6 +421,10 @@ namespace Proyecto1_Compi2.Elementos
 
                         maestro.bases.aux.tablas.aux.Insertar(nuevo);
 
+                        if (lectura == 0)
+                        {
+                            commit();
+                        }
                         return "1 Fila Insertada";
                     }
                     else
@@ -422,6 +452,34 @@ namespace Proyecto1_Compi2.Elementos
             }
 
             
+        }
+
+        public string Insertar_TablaL(string valores, string Base, string Tabla)
+        {
+            maestro.bases.existe(Base);
+
+            if (maestro.bases.aux.tablas.existe(Tabla))
+            {
+
+                Registro nuevo = new Registro(valores);
+
+                maestro.bases.aux.tablas.aux.Insertar(nuevo);
+
+                if (lectura == 0)
+                {
+                    commit();
+                }
+                return "1 Fila Insertada";
+
+
+            }
+            else
+            {
+
+                return "No Existe la Tabla " + Tabla + " en La Base " + Base;
+            }
+
+
         }
 
         public string Insertar_Tabla_v(string valores,string parametros, string Base, string Tabla)
@@ -535,7 +593,10 @@ namespace Proyecto1_Compi2.Elementos
                         Registro nuevo = new Registro(subv);
 
                         maestro.bases.aux.tablas.aux.Insertar(nuevo);
-
+                        if (lectura == 0)
+                        {
+                            commit();
+                        }
                         return "1 Fila Insertada";
                     }
                     else if (atributos.Contains("Autoincrementable"))
@@ -566,7 +627,10 @@ namespace Proyecto1_Compi2.Elementos
                         Registro nuevo = new Registro(subv);
 
                         maestro.bases.aux.tablas.aux.Insertar(nuevo);
-
+                        if (lectura == 0)
+                        {
+                            commit();
+                        }
                         return "1 Fila Insertada";
                     }
                     else
@@ -578,12 +642,6 @@ namespace Proyecto1_Compi2.Elementos
                 {
                     return "Error Campos inexistentes en la Tabla " + Tabla;
                 }
-
-
-                
-
-
-
 
             }
             else
@@ -779,7 +837,7 @@ namespace Proyecto1_Compi2.Elementos
                 maestro.bases.aux.tablas.aux.cabeza = null;
                 maestro.bases.aux.tablas.aux.ultimo = null;
                 maestro.bases.aux.tablas.aux.aux = null;
-
+                
             }
             else
             {
@@ -819,6 +877,10 @@ namespace Proyecto1_Compi2.Elementos
                     }
                 }
             }
+            if (lectura == 0)
+            {
+                commit();
+            }
 
             return "Se Eliminaron " + contador + " filas";
         }
@@ -856,6 +918,10 @@ namespace Proyecto1_Compi2.Elementos
                     Objeto nuevo = new Objeto(nombre, tipos, fields);
 
                     maestro.bases.aux.objetos.Insertar(nuevo);
+                    if (lectura == 0)
+                    {
+                        commit();
+                    }
 
                     return "Se Ha Creado La Tabla " + nombre + " En la Base de Datos " + Base;
                 }
@@ -864,6 +930,163 @@ namespace Proyecto1_Compi2.Elementos
             {
                 return "Usted no tiene Permisos sobre la Base:" + Base;
             }
+
+        }
+
+        public string Agregar_Tabla(string Base,string Tabla,string campo)
+        {
+            maestro.bases.existe(Base);
+
+            if (maestro.bases.aux.tablas.existe(Tabla))
+            {
+                string campos = maestro.bases.aux.tablas.aux.campos;
+                string tipos = maestro.bases.aux.tablas.aux.tipos;
+
+                string[] ncampos = campo.Split(';');
+
+                for (int x = 0; x < ncampos.Length; x++)
+                {
+                    string[] valor = ncampos[x].Split(',');
+
+                    campos += "," + valor[1];
+                    tipos += "," + valor[0];
+                }
+
+                campos = campos.Trim(',');
+                tipos = tipos.Trim(',');
+
+                maestro.bases.aux.tablas.aux.campos = campos;
+                maestro.bases.aux.tablas.aux.tipos = tipos;
+
+                if (maestro.bases.aux.tablas.aux.cabeza != null)
+                {
+                    bool seguir = true;
+
+                    maestro.bases.aux.tablas.aux.aux = maestro.bases.aux.tablas.aux.cabeza;
+
+                    while (seguir)
+                    {
+
+                        for(int y = 0; y < ncampos.Length; y++)
+                        {
+                            maestro.bases.aux.tablas.aux.aux.valor += ",null";
+                        }
+
+                        if (maestro.bases.aux.tablas.aux.aux.siguiente != null)
+                        {
+                            maestro.bases.aux.tablas.aux.aux = maestro.bases.aux.tablas.aux.aux.siguiente;
+                        }
+                        else
+                        {
+                            seguir = false;
+                        }
+                    }
+                }
+
+                if (lectura == 0)
+                {
+                    commit();
+                }
+                return "Objeto:" + Tabla + " modificado";
+            }
+            else
+            {
+                return "NO Existe el Objeto:" + Tabla;
+
+            }
+        }
+
+        public string Quitar_Tabla(string Tabla, string Base, string campo)
+        {
+            maestro.bases.existe(Base);
+
+            if (maestro.bases.aux.tablas.existe(Tabla))
+            {
+                string campos = maestro.bases.aux.tablas.aux.campos;
+                string tipos = maestro.bases.aux.tablas.aux.tipos;
+
+                string[] subcampo = campos.Split(',');
+                string[] subtipos = tipos.Split(',');
+
+                string ncampos = "";
+                string ntipos = "";
+                string posiciones = "";
+
+
+
+
+                for (int x = 0; x < subcampo.Length; x++)
+                {
+                    if (subcampo[x].Equals(campo))
+                    {
+                        posiciones += x + ",";
+                    }
+                    else
+                    {
+                        ncampos += subcampo[x] + ",";
+                        ntipos += subtipos[x] + ",";
+                    }
+                }
+
+
+                ncampos = ncampos.Trim(',');
+                ntipos = ntipos.Trim(',');
+
+                maestro.bases.aux.tablas.aux.campos = ncampos;
+                maestro.bases.aux.tablas.aux.tipos = ntipos;
+
+                if (maestro.bases.aux.tablas.aux.cabeza != null)
+                {
+
+                    string[] posicion = posiciones.Split(',');
+
+                    int[] pos = Array.ConvertAll(posicion, int.Parse);
+
+                    maestro.bases.aux.tablas.aux.aux = maestro.bases.aux.tablas.aux.cabeza;
+
+                    bool seguir = true;
+                    
+
+                    while (seguir)
+                    {
+                        string insercion = "";
+                        string[] data = maestro.bases.aux.tablas.aux.aux.valor.Split(',');
+
+                        for(int x = 0; x < data.Length; x++)
+                        {
+                            if (pos.Contains(x))
+                            {
+
+                            }
+                            else
+                            {
+                                insercion += data[x] + ",";
+                            }
+                        }
+
+                        maestro.bases.aux.tablas.aux.aux.valor = insercion.Trim(',');
+
+
+                        if (maestro.bases.aux.tablas.aux.aux.siguiente != null)
+                        {
+                            maestro.bases.aux.tablas.aux.aux = maestro.bases.aux.tablas.aux.aux.siguiente;
+                        }
+                        else
+                        {
+                            seguir = false;
+                        }
+
+                    }
+                }
+
+
+                return "Tabla:" + Tabla + " modificado";
+            }
+            else
+            {
+                return "NO Existe la Tabla:" + Tabla;
+            }
+
 
         }
 
@@ -1006,7 +1229,10 @@ namespace Proyecto1_Compi2.Elementos
 
                             maestro.bases.aux.procedimientos.Insertar(nuevo);
 
-
+                            if (lectura == 0)
+                            {
+                                commit();
+                            }
                             return "\r\nSe ha Creado el Procedimiento:" + nombre.Trim('_');
 
                         }
@@ -1029,19 +1255,17 @@ namespace Proyecto1_Compi2.Elementos
                             tipos = tipos.Trim(',');
                             parametros = parametros.Trim(',');
 
-                            string subnombre = nombre + tipos;
-
-                            subnombre = subnombre.Replace(',', '_');
-
-
-                            Procedimiento nuevo = new Procedimiento(subnombre, instrucciones);
+                            Procedimiento nuevo = new Procedimiento(nombre, instrucciones);
 
                             nuevo.tipos = tipos;
                             nuevo.campos = parametros;
 
                             maestro.bases.aux.procedimientos.Insertar(nuevo);
 
-
+                            if (lectura == 0)
+                            {
+                                commit();
+                            }
                             return "\r\nSe ha Creado el Procedimiento:" + nombre.Trim('_');
                         }
 
@@ -1089,7 +1313,10 @@ namespace Proyecto1_Compi2.Elementos
 
                             maestro.bases.aux.procedimientos.Insertar(nuevo);
 
-
+                            if (lectura == 0)
+                            {
+                                commit();
+                            }
                             return "\r\nSe ha Creado el Procedimiento:" + nombre.Trim('_');
 
                         }
@@ -1111,13 +1338,8 @@ namespace Proyecto1_Compi2.Elementos
 
                             tipos = tipos.Trim(',');
                             parametros = parametros.Trim(',');
-                        
-                            string subnombre = nombre +"_"+ tipos;
 
-                            subnombre = subnombre.Replace(',', '_');
-
-
-                            Procedimiento nuevo = new Procedimiento(subnombre, instrucciones);
+                            Procedimiento nuevo = new Procedimiento(nombre, instrucciones);
 
                             nuevo.tipos = tipos;
                             nuevo.campos = parametros;
@@ -1127,7 +1349,10 @@ namespace Proyecto1_Compi2.Elementos
 
                             maestro.bases.aux.procedimientos.Insertar(nuevo);
 
-
+                            if (lectura == 0)
+                            {
+                                commit();
+                            }
                             return "\r\nSe ha Creado el Procedimiento:" + nombre.Trim('_');
                         }
 
@@ -1224,14 +1449,23 @@ namespace Proyecto1_Compi2.Elementos
 
             maestro.usuarios.existe(usuario);
 
-            if (maestro.usuarios.aux.permiso.Contains(objeto))
+            if (lectura == 0)
             {
-                return true;
+                if (maestro.usuarios.aux.permiso.Contains(objeto))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             else
             {
-                return false;
+                return true;
             }
+
+            
 
             
         }
@@ -3660,6 +3894,790 @@ namespace Proyecto1_Compi2.Elementos
 
             return respuesta;
         }
+
+        public void commit()
+        {
+           string activeDir = @"c:\DBMS";
+
+           string newPath = System.IO.Path.Combine(activeDir, "Maestro.usac");
+
+            if (File.Exists(newPath) == false)
+            {
+
+                System.IO.FileStream fs = System.IO.File.Create(newPath);
+                fs.Close();
+
+            }
+
+            string texto = "";
+
+            texto += LeerBases();
+            texto += LeerUsuarios();
+
+            
+
+
+            using (StreamWriter file = new StreamWriter(newPath, false))
+            {
+                file.WriteLine(texto); //se agrega información al documento
+
+                file.Close();
+            }
+        }
+
+        public string LeerBases()
+        {
+            string resultado="";
+
+            Bases aux = maestro.bases;
+
+            if (aux.cabeza != null)
+            {
+
+                aux.aux = aux.cabeza;
+                bool seguir = true;
+
+                while (seguir)
+                {
+                    resultado += "<DB>\n";
+
+                    string activeDir = @"c:\DBMS";
+
+                    string newPath = System.IO.Path.Combine(activeDir, aux.aux.Nombre+".usac");
+
+                    System.IO.FileStream fs = System.IO.File.Create(newPath);
+                    fs.Close();
+
+                    Leer_elementos(aux.aux.Nombre);
+
+                    resultado += "  <nombre>"+aux.aux.Nombre+ "</nombre>\n";
+                    resultado += "  <path>@@" + newPath + "@@</path>\n";
+
+                    resultado += "</DB>\n";
+
+
+
+
+                    if (aux.aux.siguiente != null)
+                    {
+                        aux.aux = aux.aux.siguiente;
+                    }
+                    else
+                    {
+                        seguir = false;
+                    }
+                }
+            }
+
+            return resultado;
+        }
+
+        public string LeerUsuarios()
+        {
+            string resultado = "";
+
+            Usuarios aux = maestro.usuarios;
+
+            if (aux.cabeza != null)
+            {
+
+                aux.aux = aux.cabeza;
+                bool seguir = true;
+
+                while (seguir)
+                {
+                    resultado += "<User>\n";
+
+                    resultado += "  <nombre>" + aux.aux.Nombre + "</nombre>\n";
+                    resultado += "  <contra>@@" + aux.aux.Contraseña + "@@</contra>\n";
+                    resultado += "  <permisos>@@" + aux.aux.permiso + "@@</permisos>\n";
+
+                    resultado += "</User>\n";
+
+                    if (aux.aux.siguiente != null)
+                    {
+                        aux.aux = aux.aux.siguiente;
+                    }
+                    else
+                    {
+                        seguir = false;
+                    }
+                }
+            }
+
+            return resultado;
+        }
+
+        public void Leer_elementos(string Base)
+        {
+            maestro.bases.existe(Base);
+
+            Base aux = maestro.bases.aux;
+
+            string activeDir = @"c:\DBMS";
+
+            string Rbase = System.IO.Path.Combine(activeDir, Base + ".usac");
+
+            string Texto = "";
+
+            if (aux.procedimientos.cabeza != null)
+            {
+                string newPath = System.IO.Path.Combine(activeDir, Base + "_procedimientos.usac");
+
+                System.IO.FileStream fs = System.IO.File.Create(newPath);
+                fs.Close();
+
+                Texto += "<Procedure>\n";
+
+                Texto += "  <path>@@"+newPath+ "@@</path>\n";
+                
+                Texto += "</Procedure>\n";
+
+                Leer_Procedimientos(aux.procedimientos.cabeza, Base);
+            }
+
+            if (aux.objetos.cabeza != null)
+            {
+                string newPath = System.IO.Path.Combine(activeDir, Base + "_objetos.usac");
+
+                System.IO.FileStream fs = System.IO.File.Create(newPath);
+                fs.Close();
+
+                Texto += "<Object>\n";
+
+                Texto += "  <path>@@" + newPath + "@@</path>\n";
+
+                Texto += "</Object>\n";
+
+                Leer_Objetos(aux.objetos.cabeza, Base);
+
+            }
+
+            if (aux.tablas.cabeza != null)
+            {
+
+                Tabla tabla = aux.tablas.cabeza;
+
+                bool seguir = true;
+
+                while (seguir)
+                {
+                    string newPath = System.IO.Path.Combine(activeDir, Base + "_" +tabla.Nombre+ ".usac");
+
+                    System.IO.FileStream fs = System.IO.File.Create(newPath);
+                    fs.Close();
+
+                    Texto += "<Tabla>\n";
+
+                    Texto += "  <nombre>" + tabla.Nombre + "</nombre>\n";
+                    Texto += "  <path>@@" + newPath + "@@</path>\n";
+
+                    Texto += "  <rows>\n";
+
+                    string[] tipos = tabla.tipos.Split(',');
+                    string[] campos = tabla.campos.Split(',');
+                    string[] atributos= tabla.atributos.Split(',');
+
+                    for (int x = 0; x < tipos.Length; x++)
+                    {
+                        if (atributos[x].Equals(""))
+                        {
+                            Texto += "      <" + tipos[x] + ">@@" + campos[x] + "@@</" + tipos[x] + ">\n";
+                        }
+                        else
+                        {
+                            Texto += "      <" + tipos[x] + " Atributos:\"" + atributos[x] + "\">@@" + campos[x] + "@@</" + tipos[x] + ">\n";
+                        }
+
+                        
+                    }
+
+                    Texto += "  </rows>\n";
+
+                    Texto += "</Tabla>\n";
+
+                    if (tabla.cabeza != null)
+                    {
+                        leer_Registros(tabla, Base);
+                    }
+
+                    if (tabla.siguiente != null)
+                    {
+                        tabla = tabla.siguiente;
+                    }
+                    else
+                    {
+                        seguir = false;
+                    }
+                }
+
+            }
+
+
+            using (StreamWriter file = new StreamWriter(Rbase, false))
+            {
+                file.WriteLine(Texto); //se agrega información al documento
+
+                file.Close();
+            }
+            //string newPath = System.IO.Path.Combine(activeDir, aux.aux.Nombre + ".usac");
+
+
+            
+        }
+
+        public void leer_Registros(Tabla tabla,string Base)
+        {
+            string activeDir = @"c:\DBMS";
+            string newPath = System.IO.Path.Combine(activeDir, Base + "_" + tabla.Nombre + ".usac");
+
+            Registro aux = tabla.cabeza;
+
+            string Texto = "";
+            bool seguir = true;
+
+            string[] campos = tabla.campos.Split(',');
+
+            while (seguir)
+            {
+                Texto += "<Row>\n";
+                string[] datos = aux.valor.Split(',');
+
+                for(int x = 0; x < campos.Length; x++)
+                {
+                    Texto += "  <"+campos[x]+ ">@@" + datos[x]+ "@@</" + campos[x]+">\n";
+
+                }
+
+                Texto += "</Row>\n";
+
+                if (aux.siguiente != null)
+                {
+                    aux = aux.siguiente;
+                }
+                else
+                {
+                    seguir = false;
+                }
+
+            }
+
+            using (StreamWriter file = new StreamWriter(newPath, false))
+            {
+                file.WriteLine(Texto); //se agrega información al documento
+
+                file.Close();
+            }
+        }
+
+        public void Leer_Procedimientos(Procedimiento procedimiento,string Base)
+        {
+            string activeDir = @"c:\DBMS";
+            string newPath = System.IO.Path.Combine(activeDir, Base + "_procedimientos.usac");
+
+
+            bool seguir = true;
+
+            string Texto = "";
+
+            while (seguir)
+            {
+                Texto += "<Proc>\n";
+
+                Texto += "  <nombre>" + procedimiento.nombre.Trim('_') + "</nombre>\n";
+
+                if (procedimiento.funcion)
+                {
+                    Texto += "  <tipo>" + procedimiento.tipo + "</tipo>\n";
+                }
+
+                
+                if (procedimiento.campos != null)
+                {
+                    Texto += "  <params>\n";
+                    string[] tipos = procedimiento.tipos.Split(',');
+                    string[] campos = procedimiento.campos.Split(',');
+
+                    for(int x = 0; x < tipos.Length; x++)
+                    {
+                        Texto += "      <"+tipos[x]+ ">@@" + campos[x] + "@@</" + tipos[x] + ">\n";
+                    }
+
+                    Texto += "  </params>\n";
+                }
+
+                Texto += "  <src>@@" + procedimiento.instrucciones + "@@</src>\n";
+
+                Texto += "</Proc>\n";
+
+
+                if (procedimiento.siguiente != null)
+                {
+                    procedimiento = procedimiento.siguiente;
+                }
+                else
+                {
+                    seguir = false;
+                }
+            }
+
+            using (StreamWriter file = new StreamWriter(newPath, false))
+            {
+                file.WriteLine(Texto); //se agrega información al documento
+
+                file.Close();
+            }
+
+        }
+
+        public void Leer_Objetos(Objeto objeto, string Base)
+        {
+            string activeDir = @"c:\DBMS";
+            string newPath = System.IO.Path.Combine(activeDir, Base + "_objetos.usac");
+
+
+            bool seguir = true;
+
+            string Texto = "";
+
+            while (seguir)
+            {
+                Texto += "<Obj>\n";
+
+                Texto += "  <nombre>" + objeto.nombre.Trim('_') + "</nombre>\n";
+
+
+                if (objeto.campos != null)
+                {
+                    Texto += "  <attr>\n";
+                    string[] tipos = objeto.tipos.Split(',');
+                    string[] campos = objeto.campos.Split(',');
+
+                    for (int x = 0; x < tipos.Length; x++)
+                    {
+                        Texto += "      <" + tipos[x] + ">@@" + campos[x] + "@@</" + tipos[x] + ">\n";
+                    }
+                    Texto += "  </attr>\n";
+                }
+
+                Texto += "</Obj>\n";
+
+
+                if (objeto.siguiente != null)
+                {
+                    objeto = objeto.siguiente;
+                }
+                else
+                {
+                    seguir = false;
+                }
+            }
+
+            using (StreamWriter file = new StreamWriter(newPath, false))
+            {
+                file.WriteLine(Texto); //se agrega información al documento
+
+                file.Close();
+            }
+
+        }
+
+        public void LeerInfoTxt(string ruta)
+        {
+
+            if (lectura == 0)
+            {
+                maestro = new Maestro();
+                usuario = "Admin";
+            }
+            
+            string line = "";
+            string Archivo = "";
+            using (StreamReader file = new StreamReader(ruta))
+            {
+                while ((line = file.ReadLine()) != null)                //Leer linea por linea
+                {
+                    Archivo += line + "\n";
+                }
+            }
+
+            if (Archivo != "")
+            {
+                AnalizadorXML gramatica = new AnalizadorXML();
+
+                LanguageData lenguaje = new LanguageData(gramatica);
+                Parser p = new Parser(lenguaje);
+                ParseTree arbol = p.Parse(Archivo);
+
+
+                ActuarXML(arbol.Root);
+                Console.WriteLine("a");
+            }
+
+            
+
+            
+        }
+
+        string ActuarXML(ParseTreeNode nodo)
+        {
+            string resultado = "";
+
+            switch (nodo.Term.Name.ToString())
+            {
+                case "S":
+                    {
+                        resultado = ActuarXML(nodo.ChildNodes[0]);
+                        
+                        break;
+                    }
+
+                case "inicio":
+
+                    resultado = ActuarXML(nodo.ChildNodes[0]);
+                    break;
+
+                case "bases":
+
+                    lectura = 1;
+                    resultado = ActuarXML(nodo.ChildNodes[1]);
+                    break;
+
+                case "Maestro":
+
+                    if (nodo.ChildNodes.Count == 2)
+                    {
+                        resultado = ActuarXML(nodo.ChildNodes[0]);
+                        resultado = ActuarXML(nodo.ChildNodes[1]);
+
+                    }
+                    else
+                    {
+                        resultado = ActuarXML(nodo.ChildNodes[0]);
+                    }
+
+                    lectura = 0;
+                    break;
+
+                case "nombre":
+
+                    if (lectura == 1)//base
+                    {
+                        BaseL = nodo.ChildNodes[1].Token.Text;
+                        Crear_Base(BaseL);
+                    }
+                    else if (lectura !=1)//Procedimiento || objeto
+                    {
+                        resultado=nodo.ChildNodes[1].Token.Text;
+                    }
+
+
+                    break;
+
+                case "cuerpobase":
+
+                    resultado = ActuarXML(nodo.ChildNodes[0]);
+                    resultado = ActuarXML(nodo.ChildNodes[1]);
+                    break;
+
+                case "ruta":
+
+                    string ruta = nodo.ChildNodes[1].Token.Text;
+                    LeerInfoTxt(ruta.Trim('@'));
+                    
+                    break;
+
+                case "detallesbase":
+
+                    if (nodo.ChildNodes.Count == 3)
+                    {
+                        resultado = ActuarXML(nodo.ChildNodes[0]);
+                        resultado = ActuarXML(nodo.ChildNodes[1]);
+                        resultado = ActuarXML(nodo.ChildNodes[2]);
+                    }
+                    else if (nodo.ChildNodes.Count == 2)
+                    {
+                        resultado = ActuarXML(nodo.ChildNodes[0]);
+                        resultado = ActuarXML(nodo.ChildNodes[1]);
+
+                    }
+                    else
+                    {
+                        resultado = ActuarXML(nodo.ChildNodes[0]);
+                    }
+
+                   break;
+
+                case "Dprocedimientos":
+
+                    lectura = 3;
+                    resultado = ActuarXML(nodo.ChildNodes[1]);
+
+                    break;
+
+                case "Dobjetos":
+
+                    lectura = 4;
+                    resultado = ActuarXML(nodo.ChildNodes[1]);
+
+                    break;
+
+                case "Dtablas":
+
+                    resultado = ActuarXML(nodo.ChildNodes[1]);
+
+                    break;
+
+                case "cuerpotabla":
+
+                    lectura = 5;
+                    TablaL = ActuarXML(nodo.ChildNodes[0]);
+                    string campost= ActuarXML(nodo.ChildNodes[2]);
+
+                    
+                    Crear_Tabla(TablaL, BaseL, campost);
+
+                    resultado = ActuarXML(nodo.ChildNodes[1]);
+
+                    break;
+
+                case "procedimientos":
+
+                    if (nodo.ChildNodes.Count == 4)
+                    {
+                        resultado = ActuarXML(nodo.ChildNodes[1]);
+                        resultado = ActuarXML(nodo.ChildNodes[3]);
+                    }
+                    else
+                    {
+                        resultado = ActuarXML(nodo.ChildNodes[1]);
+                    }
+
+                    break;
+
+                case "procedimiento":
+
+
+                    if (nodo.ChildNodes.Count == 4)
+                    {
+                        string nombrep = ActuarXML(nodo.ChildNodes[0]);
+                        string tipo = ActuarXML(nodo.ChildNodes[1]);
+                        string codigo = ActuarXML(nodo.ChildNodes[3]).Trim('@');
+
+                        string parametros = ActuarXML(nodo.ChildNodes[2]);
+                        parametros = parametros.Replace(",", ",@");
+
+                        Crear_funcion(nombrep, BaseL, parametros, codigo, tipo);
+                    }
+                    else if (nodo.ChildNodes.Count == 3)
+                    {
+                        if (nodo.ChildNodes[1].Term.Name.ToString().Equals("parametros"))
+                        {
+                            string nombrep = ActuarXML(nodo.ChildNodes[0]);
+                            string parametros = ActuarXML(nodo.ChildNodes[1]);
+
+                            parametros = parametros.Replace(",", ",@");
+                            
+                            string codigo = ActuarXML(nodo.ChildNodes[2]).Trim('@');
+
+                            Crear_Procedimiento(nombrep, BaseL, parametros, codigo);
+
+                        }
+                        else
+                        {
+                            string nombrep = ActuarXML(nodo.ChildNodes[0]);
+                            string tipo = ActuarXML(nodo.ChildNodes[1]);
+                            string codigo = ActuarXML(nodo.ChildNodes[2]).Trim('@');
+
+                            Crear_funcion(nombrep, BaseL, "", codigo, tipo);
+                        }
+
+                        
+
+                    }
+                    else
+                    {
+                        string nombrep = ActuarXML(nodo.ChildNodes[0]);
+
+                        string codigo = ActuarXML(nodo.ChildNodes[1]).Trim('@');
+
+                        Crear_Procedimiento(nombrep+"_", BaseL, "", codigo);
+                    }
+
+                    
+                    break;
+
+                case "instruccion":
+
+                    resultado = nodo.ChildNodes[1].Token.Text;
+
+                    break;
+
+                case "Objetos":
+
+                    if (nodo.ChildNodes.Count == 4)
+                    {
+                        resultado = ActuarXML(nodo.ChildNodes[1]);
+                        resultado = ActuarXML(nodo.ChildNodes[3]);
+                    }
+                    else
+                    {
+                        resultado = ActuarXML(nodo.ChildNodes[1]);
+                    }
+
+                    break;
+
+                case "Objeto":
+
+                    string nombre = ActuarXML(nodo.ChildNodes[0]);
+                    string campos = ActuarXML(nodo.ChildNodes[1]);
+
+                    Crear_Objeto(nombre, BaseL, campos);
+
+                    break;
+
+                case "atrrib":
+
+                    resultado = ActuarXML(nodo.ChildNodes[1]);
+                    break;
+
+                case "row":
+
+                    resultado = ActuarXML(nodo.ChildNodes[1]);
+                    break;
+
+                case "campos":
+
+                    if (nodo.ChildNodes.Count == 10)
+                    {
+                        string tipo = nodo.ChildNodes[1].Token.Text;
+                        string valor = nodo.ChildNodes[5].Token.Text.Trim('@');
+                        string atributos = nodo.ChildNodes[3].Token.Text.Trim('"');
+
+                        atributos = atributos.Replace(';', ',');
+
+                        resultado= tipo + "," + valor + ","+ atributos+";" + ActuarXML(nodo.ChildNodes[9]);
+
+                    }
+                    else if (nodo.ChildNodes.Count == 9)
+                    {
+                        string tipo = nodo.ChildNodes[1].Token.Text;
+                        string valor = nodo.ChildNodes[5].Token.Text.Trim('@');
+                        string atributos= nodo.ChildNodes[3].Token.Text.Trim('"');
+                        resultado = tipo + "," + valor + "," + atributos;
+
+                    }
+                    else if (nodo.ChildNodes.Count == 8)
+                    {
+                        string tipo= nodo.ChildNodes[1].Token.Text;
+                        string valor= nodo.ChildNodes[3].Token.Text.Trim('@');
+
+                        resultado=tipo+","+valor+";"+ ActuarXML(nodo.ChildNodes[7]);
+
+                    }
+                    else
+                    {
+                        string tipo = nodo.ChildNodes[1].Token.Text;
+                        string valor = nodo.ChildNodes[3].Token.Text.Trim('@');
+                        resultado = tipo + "," + valor;
+                    }
+
+
+
+                    break;
+
+                case "Tablas":
+
+                    if (nodo.ChildNodes.Count == 2)
+                    {
+                        resultado = ActuarXML(nodo.ChildNodes[0]);
+                        resultado = ActuarXML(nodo.ChildNodes[1]);
+
+                    }
+                    else
+                    {
+                        resultado = ActuarXML(nodo.ChildNodes[0]);
+                    }
+
+                    break;
+
+                case "rows":
+
+                    string datos = ActuarXML(nodo.ChildNodes[1]);
+
+                    string[] dato = datos.Split(';');
+
+                    string insercion = "";
+
+                    for(int x = 0; x < dato.Length; x++)
+                    {
+                        insercion += dato[x].Split(',')[1] + ",";
+                    }
+
+                    insercion = insercion.Trim(',');
+
+                    Insertar_TablaL(insercion, BaseL, TablaL);
+                    
+                    break;
+
+                case "usuario":
+
+                    if (nodo.ChildNodes.Count == 4)
+                    {
+                        resultado = ActuarXML(nodo.ChildNodes[1]);
+                        resultado = ActuarXML(nodo.ChildNodes[3]);
+                    }
+                    else
+                    {
+                        resultado = ActuarXML(nodo.ChildNodes[1]);
+                    }
+
+                    break;
+
+                case "cuerpousuario":
+
+                    lectura = 6;
+                    string User = ActuarXML(nodo.ChildNodes[0]);
+                    string contra = ActuarXML(nodo.ChildNodes[1]);
+                    string permiso = ActuarXML(nodo.ChildNodes[2]);
+
+                    Crear_Usuario(User, contra);
+
+                    SetPermisos(User, permiso);
+
+                    
+
+                    break;
+
+
+                case "contra":
+
+                    resultado = nodo.ChildNodes[1].Token.Text.Trim('@');
+
+                    break;
+
+                case "permiso":
+
+                    resultado = nodo.ChildNodes[1].Token.Text.Trim('@');
+
+                    break;
+
+                case "parametros":
+
+                    resultado = ActuarXML(nodo.ChildNodes[1]);
+                    break;
+
+                case "tipof":
+
+                    resultado = nodo.ChildNodes[1].Token.Text;
+
+                    break;
+
+            }
+
+            return resultado;
+        }
+
     }
     
 }

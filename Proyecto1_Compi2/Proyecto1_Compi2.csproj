@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Analizadores\AnalizadorPaquete.cs" />
+    <Compile Include="Analizadores\AnalizadorXML.cs" />
     <Compile Include="Analizadores\Analizador_Procedimientos.cs" />
     <Compile Include="Analizadores\Analizador_USQL.cs" />
     <Compile Include="Ejecucion\Entorno.cs" />

@@ -61,6 +61,10 @@ namespace Proyecto1_Compi2
                 txtConsola.Text = Consola;
 
             }
+            else
+            {
+                manejo.LeerInfoTxt(newPath);
+            }
 
 
 
@@ -686,6 +690,15 @@ namespace Proyecto1_Compi2
 
                                 string campos = ActuarSQL(nodo.ChildNodes[3]);
 
+                                string[] campo = campos.Split(';');
+
+                                for(int x = 0; x < campo.Length; x++)
+                                {
+                                    TablaAux += campo[x].Split(',')[0] + "_";
+                                }
+
+                                TablaAux = TablaAux.Trim('_');
+
                                 string p = nodo.ChildNodes[6].Span.Location.ToString();
 
                                 int inicio = Convert.ToInt32(p.Split(':')[1].Trim(')'));
@@ -1181,7 +1194,6 @@ namespace Proyecto1_Compi2
 
                         break;
                     }
-
 
                 case "borrar":
                     {
@@ -2636,6 +2648,30 @@ namespace Proyecto1_Compi2
                         break;
                     }
 
+                case "alterartabla":
+                    {
+                        if (nodo.ChildNodes.Count == 4)
+                        {
+                            string campos = ActuarSQL(nodo.ChildNodes[2]);
+
+                            resultado = manejo.Agregar_Tabla(alteraraux, BaseActual, campos);
+                        }
+                        else
+                        {
+                            string campos = ActuarSQL(nodo.ChildNodes[1]);
+
+                            string[] campo = campos.Split(',');
+
+                            for (int x = 0; x < campo.Length; x++)
+                            {
+                                resultado = "\r\n" + manejo.Quitar_Tabla(alteraraux, BaseActual, campo[x]);
+                            }
+
+                        }
+
+                        break;
+                    }
+
                 case "c_funcion":
                     {
                         if (nodo.ChildNodes.Count == 9)
@@ -2654,6 +2690,15 @@ namespace Proyecto1_Compi2
                             }
 
                             string campos = ActuarSQL(nodo.ChildNodes[3]);
+
+                            string[] campo = campos.Split(';');
+
+                            for (int x = 0; x < campo.Length; x++)
+                            {
+                                TablaAux += campo[x].Split(',')[0] + "_";
+                            }
+
+                            TablaAux = TablaAux.Trim('_');
 
                             string p = nodo.ChildNodes[7].Span.Location.ToString();
 
@@ -3275,6 +3320,8 @@ namespace Proyecto1_Compi2
 
             return entrada;
         }
+
+       
     }
 }
 
