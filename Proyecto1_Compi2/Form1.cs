@@ -400,6 +400,7 @@ namespace Proyecto1_Compi2
                 case "inicio":
                     {
                         resultado = ActuarSQL(nodo.ChildNodes[0]);
+
                         break;
                     }
 
@@ -430,6 +431,22 @@ namespace Proyecto1_Compi2
                         {
                             resultado = ActuarSQL(nodo.ChildNodes[0]);
                         }
+
+                        string p = nodo.ChildNodes[0].Span.Location.ToString();
+
+                        int inicio = Convert.ToInt32(p.Split(':')[1].Trim(')'));
+
+                        string instrucciones =codigo.Substring(inicio - 1, nodo.ChildNodes[0].Span.Length);
+
+                        if (instrucciones.Contains("BACKUP")|| instrucciones.Contains("RESTAURAR"))
+                        {
+
+                        }
+                        else
+                        {
+                            manejo.Add_historial(instrucciones, BaseActual);
+                        }
+                        
                         break;
                     }
 
@@ -444,6 +461,7 @@ namespace Proyecto1_Compi2
                 case "crear":
                     {
                         resultado = ActuarSQL(nodo.ChildNodes[1]);
+
                         break;
                     }
 
@@ -3125,6 +3143,96 @@ namespace Proyecto1_Compi2
                         }
 
 
+                        break;
+                    }
+
+                case "back":
+                    {
+
+                        string auxbase= nodo.ChildNodes[2].Token.Text;
+                        string archivof = ActuarSQL(nodo.ChildNodes[3]);
+
+                        
+
+                        if (nodo.ChildNodes[1].Term.Name.ToString().Equals("RUSQLDUMP"))
+                        {
+                            if (archivof.Contains(".USQLDUMP") == false)
+                            {
+                                archivof += ".USQLDUMP";
+                            }
+
+
+                            manejo.imprimir_historial(auxbase, archivof);
+                        }
+                        else
+                        {
+                            if (archivof.Contains(".zip") == false)
+                            {
+                                archivof += ".zip";
+                            }
+
+                            manejo.Comprimir(auxbase, archivof);
+                        }
+
+                        break;
+                    }
+
+                case "restaurar":
+                    {
+                        string archivof = nodo.ChildNodes[2].Token.Text;
+
+
+
+                        if (nodo.ChildNodes[1].Term.Name.ToString().Equals("RUSQLDUMP"))
+                        {
+                            if (archivof.Contains(".USQLDUMP") == false)
+                            {
+                                resultado = "Error en archivo";
+                            }
+                            else
+                            {
+                                string codigoR = manejo.LeerUsql(archivof.Trim('"'));                                
+
+                                Analizar(codigoR);
+
+                                resultado = "\r\nLA Base "+BaseActual+" ha sido Restaurada";
+                            }
+                        }
+                        else
+                        {
+                            if (archivof.Contains(".zip") == false)
+                            {
+                                resultado = "Error en archivo";
+                            }
+                            else
+                            {
+                                manejo.Descomprimir(archivof.Trim('"'));
+
+                                string[] files = Directory.GetFiles(@"C:\DBMS","*_objetos*");
+
+                                string[] filtro1 = files[0].Split('_');
+
+                                string[] filtro2 = filtro1[0].Split('\\');
+
+                                string Nbase = filtro2[2];
+
+                                manejo.lectura = 1;
+                                manejo.Crear_Base(Nbase);
+
+                                manejo.LeerInfoTxt(@"C:\DBMS\"+Nbase+".usac");
+                                manejo.lectura = 0;
+
+                                manejo.commit();
+
+                                resultado = "\r\nLA Base " + Nbase + " ha sido Restaurada";
+
+
+
+
+                            }
+
+                            
+                        }
                         break;
                     }
             }

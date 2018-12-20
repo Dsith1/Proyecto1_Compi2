@@ -52,6 +52,8 @@ namespace Proyecto1_Compi2.Analizadores
             RegexBasedTerminal Cparams = new RegexBasedTerminal("Cparams", "</params>");
             RegexBasedTerminal Atipo = new RegexBasedTerminal("Atipo", "<tipo>");
             RegexBasedTerminal Ctipo = new RegexBasedTerminal("Ctipo", "</tipo>");
+            RegexBasedTerminal AHistoria = new RegexBasedTerminal("AHistoria", "<Historia>");
+            RegexBasedTerminal CHistoria = new RegexBasedTerminal("CHistoria", "</Historia>");
             RegexBasedTerminal Ratributos = new RegexBasedTerminal("Ratributos", "Atributos:");
 
             NonTerminal S = new NonTerminal("S"),
@@ -79,7 +81,8 @@ namespace Proyecto1_Compi2.Analizadores
                 Objeto = new NonTerminal("Objeto"),
                 Tablas = new NonTerminal("Tablas"),
                 instruccion = new NonTerminal("instruccion"),
-                tipof= new NonTerminal("tipof"),
+                historia = new NonTerminal("historia"),
+                tipof = new NonTerminal("tipof"),
                 parametros = new NonTerminal("parametros"),
                 atrrib = new NonTerminal("atrrib"); ;
 
@@ -98,13 +101,13 @@ namespace Proyecto1_Compi2.Analizadores
                      | bases
                      | usuario;
 
-            detallesbase.Rule = Dprocedimientos + Dobjetos + Dtablas
-                        | Dprocedimientos + Dobjetos
-                        | Dprocedimientos + Dtablas
-                        | Dobjetos + Dtablas
-                        | Dprocedimientos
-                        | Dobjetos
-                        | Dtablas;
+            detallesbase.Rule = historia + Dprocedimientos + Dobjetos + Dtablas
+                              | historia + Dprocedimientos + Dobjetos
+                              | historia + Dprocedimientos + Dtablas
+                              | historia + Dobjetos + Dtablas
+                              | historia + Dprocedimientos
+                              | historia + Dobjetos
+                              | historia + Dtablas;
 
 
 
@@ -167,6 +170,8 @@ namespace Proyecto1_Compi2.Analizadores
 
             Tablas.Rule = rows + Tablas
                         | rows;
+
+            historia.Rule = AHistoria + Cadena + CHistoria;
 
             this.Root = S;
 

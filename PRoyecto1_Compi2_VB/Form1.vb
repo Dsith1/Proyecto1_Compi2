@@ -77,6 +77,8 @@ Public Class Form1
                 Cadena = Replace(Cadena, "ELIMINAR", "ELIMINAR ")
                 Cadena = Replace(Cadena, "CONTAR", "CONTAR ")
                 Cadena = Replace(Cadena, "ACTUALIZAR", "ACTUALIZAR ")
+                Cadena = Replace(Cadena, "USQLDUMP", "USQLDUMP ")
+                Cadena = Replace(Cadena, "BACKUP", "BACKUP ")
                 Cadena = Replace(Cadena, "=", "= ")
                 Cadena = Replace(Cadena, "= =", "== ")
                 Cadena = Replace(Cadena, ">", "> ")

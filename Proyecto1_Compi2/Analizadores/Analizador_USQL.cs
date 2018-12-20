@@ -48,10 +48,10 @@ namespace Proyecto1_Compi2.Analizadores
             RegexBasedTerminal ROTORGAR = new RegexBasedTerminal("ROTORGAR", "OTORGAR");
             RegexBasedTerminal RPERMISOS = new RegexBasedTerminal("RPERMISOS", "PERMISOS");
             RegexBasedTerminal RDENEGAR = new RegexBasedTerminal("RDENEGAR", "DENEGAR");
-            RegexBasedTerminal RBACKUP = new RegexBasedTerminal("RBACKUP", "BACKUP");
-            RegexBasedTerminal RUSQLDUMP = new RegexBasedTerminal("RUSQLDUMP", "USQLDUMP");
-            RegexBasedTerminal RCOMPLETO = new RegexBasedTerminal("RCOMPLETO", "COMPLETO");
-            RegexBasedTerminal RRESTAURAR = new RegexBasedTerminal("RRESTAURAR", "RESTAURAR");
+            RegexBasedTerminal RBACKUP = new RegexBasedTerminal("RBACKUP", "BACKUP ");
+            RegexBasedTerminal RUSQLDUMP = new RegexBasedTerminal("RUSQLDUMP", "USQLDUMP ");
+            RegexBasedTerminal RCOMPLETO = new RegexBasedTerminal("RCOMPLETO", "COMPLETO ");
+            RegexBasedTerminal RRESTAURAR = new RegexBasedTerminal("RRESTAURAR", "RESTAURAR ");
             RegexBasedTerminal RALTERAR = new RegexBasedTerminal("RALTERAR", "ALTERAR ");
             RegexBasedTerminal RAGREGAR = new RegexBasedTerminal("RAGREGAR", "AGREGAR");
             RegexBasedTerminal RQUITAR = new RegexBasedTerminal("RQUITAR", "QUITAR");
@@ -361,11 +361,11 @@ namespace Proyecto1_Compi2.Analizadores
 
             denegar.Rule= RDENEGAR + RPERMISOS + ID + COMA + rutaB + PUNTOCOMA;
 
-            back.Rule = RBACKUP + RUSQLDUMP + ID + ID + PUNTOCOMA
-                    | RBACKUP + RCOMPLETO + ID + ID + PUNTOCOMA;
+            back.Rule = RBACKUP + RUSQLDUMP + ID + rutaB + PUNTOCOMA
+                    | RBACKUP + RCOMPLETO + ID + rutaB + PUNTOCOMA;
 
             restaurar.Rule = RRESTAURAR + RUSQLDUMP + Cadena + PUNTOCOMA
-                    | RRESTAURAR + RCOMPLETO + Cadena + PUNTOCOMA;
+                           | RRESTAURAR + RCOMPLETO + Cadena + PUNTOCOMA;
 
 
             alterar.Rule = RALTERAR + RTABLA + ID + alterartabla + PUNTOCOMA

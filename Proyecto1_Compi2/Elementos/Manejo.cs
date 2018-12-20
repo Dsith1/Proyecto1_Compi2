@@ -3,6 +3,8 @@ using System.IO;
 using System.Linq;
 using Irony.Parsing;
 using Proyecto1_Compi2.Analizadores;
+using ICSharpCode.SharpZipLib.Core;
+using ICSharpCode.SharpZipLib.Zip;
 
 
 namespace Proyecto1_Compi2.Elementos
@@ -11,7 +13,7 @@ namespace Proyecto1_Compi2.Elementos
     {
         Maestro maestro;
 
-        int lectura=0;
+        public int lectura=0;
 
         public string usuario;
         public string BaseL;
@@ -3895,6 +3897,19 @@ namespace Proyecto1_Compi2.Elementos
             return respuesta;
         }
 
+        public void Add_historial(string codigo,string Base)
+        {
+            maestro.bases.existe(Base);
+
+            maestro.bases.aux.historial += codigo;
+
+            if (lectura == 0)
+            {
+                commit();
+            }
+            
+        }
+
         public void commit()
         {
            string activeDir = @"c:\DBMS";
@@ -4020,6 +4035,10 @@ namespace Proyecto1_Compi2.Elementos
 
             string Texto = "";
 
+            Texto += "<Historia>";
+            Texto += "@@"+ aux.historial+"@@";
+            Texto += "</Historia>\n";
+
             if (aux.procedimientos.cabeza != null)
             {
                 string newPath = System.IO.Path.Combine(activeDir, Base + "_procedimientos.usac");
@@ -4124,6 +4143,186 @@ namespace Proyecto1_Compi2.Elementos
 
 
             
+        }
+
+        public void imprimir_historial(string Base,string archivo)
+        {
+            if (maestro.bases.existe(Base))
+            {
+                string activeDir = @"c:\Backup";
+
+                string Texto = maestro.bases.aux.historial.Replace(";",";\n");
+
+                Texto = Texto.Replace("}", "}\n");
+
+
+                string Rbase = System.IO.Path.Combine(activeDir, archivo);
+
+                using (StreamWriter file = new StreamWriter(Rbase, false))
+                {
+                    file.WriteLine(Texto); //se agrega información al documento
+
+                    file.Close();
+                }
+
+            }
+        }
+
+        public void Comprimir(string Base,string archivo)
+        {
+            if (maestro.bases.existe(Base))
+            {
+                string activeDir = @"c:\DBMS";
+
+                string Backup = @"c:\Backup";
+
+                string Texto = maestro.bases.aux.historial.Replace(";", ";\n");
+
+                Texto = Texto.Replace("}", "}\n");
+
+
+                string Rbase = System.IO.Path.Combine(Backup, archivo);
+
+                if (Directory.Exists(Backup) == false) { }
+                {
+                    System.IO.Directory.CreateDirectory(Backup);
+                }
+
+                FileStream fsOut = File.Create(Rbase);
+                ZipOutputStream zipStream = new ZipOutputStream(fsOut);
+
+                int folderOffset = activeDir.Length + (activeDir.EndsWith("\\") ? 0 : 1);
+
+                CompressFolder(activeDir, zipStream, folderOffset,Base);
+
+                zipStream.IsStreamOwner = true; // Makes the Close also Close the underlying stream
+                zipStream.Close();
+
+            }
+
+            
+
+        }
+
+        private void CompressFolder(string path, ZipOutputStream zipStream, int folderOffset,string Base)
+        {
+
+            string[] files = Directory.GetFiles(path, Base+"*");
+
+            foreach (string filename in files)
+            {
+
+                FileInfo fi = new FileInfo(filename);
+
+                string entryName = filename.Substring(folderOffset); // Makes the name in zip based on the folder
+                entryName = ZipEntry.CleanName(entryName); // Removes drive from name and fixes slash direction
+
+                ZipEntry newEntry = new ZipEntry(entryName);
+                newEntry.DateTime = fi.LastWriteTime; // Note the zip format stores 2 second granularity
+
+                // Specifying the AESKeySize triggers AES encryption. Allowable values are 0 (off), 128 or 256.
+                // A password on the ZipOutputStream is required if using AES.
+                //   newEntry.AESKeySize = 256;
+
+                // To permit the zip to be unpacked by built-in extractor in WinXP and Server2003, WinZip 8, Java, and other older code,
+                // you need to do one of the following: Specify UseZip64.Off, or set the Size.
+                // If the file may be bigger than 4GB, or you do not need WinXP built-in compatibility, you do not need either,
+                // but the zip will be in Zip64 format which not all utilities can understand.
+                //   zipStream.UseZip64 = UseZip64.Off;
+                newEntry.Size = fi.Length;
+
+                zipStream.PutNextEntry(newEntry);
+
+                // Zip the file in buffered chunks
+                // the "using" will close the stream even if an exception occurs
+                byte[] buffer = new byte[4096];
+                using (FileStream streamReader = File.OpenRead(filename))
+                {
+                    StreamUtils.Copy(streamReader, zipStream, buffer);
+                }
+                zipStream.CloseEntry();
+            }
+            string[] folders = Directory.GetDirectories(path);
+            foreach (string folder in folders)
+            {
+                CompressFolder(folder, zipStream, folderOffset, Base);
+            }
+        }
+
+        public string LeerUsql(string ruta)
+        {
+
+            string line = "";
+            string Archivo = "";
+            using (StreamReader file = new StreamReader(ruta))
+            {
+                while ((line = file.ReadLine()) != null)                //Leer linea por linea
+                {
+                    Archivo += line + "\n";
+                }
+            }
+
+            if (Archivo != "")
+            {
+                return Archivo;
+            }
+            else
+            {
+                return "Error";
+            }
+
+        }
+
+        public void Descomprimir(string ruta)
+        {
+            string activeDir = @"c:\DBMS";
+
+            ZipFile zf = null;
+            try
+            {
+                FileStream fs = File.OpenRead(ruta);
+                zf = new ZipFile(fs);
+                if (!String.IsNullOrEmpty(""))
+                {
+                    zf.Password = "";     // AES encrypted entries are handled automatically
+                }
+                foreach (ZipEntry zipEntry in zf)
+                {
+                    if (!zipEntry.IsFile)
+                    {
+                        continue;           // Ignore directories
+                    }
+                    String entryFileName = zipEntry.Name;
+                    // to remove the folder from the entry:- entryFileName = Path.GetFileName(entryFileName);
+                    // Optionally match entrynames against a selection list here to skip as desired.
+                    // The unpacked length is available in the zipEntry.Size property.
+
+                    byte[] buffer = new byte[4096];     // 4K is optimum
+                    Stream zipStream = zf.GetInputStream(zipEntry);
+
+                    // Manipulate the output filename here as desired.
+                    String fullZipToPath = Path.Combine(activeDir, entryFileName);
+                    string directoryName = Path.GetDirectoryName(fullZipToPath);
+                    if (directoryName.Length > 0)
+                        Directory.CreateDirectory(directoryName);
+
+                    // Unzip file in buffered chunks. This is just as fast as unpacking to a buffer the full size
+                    // of the file, but does not waste memory.
+                    // The "using" will close the stream even if an exception occurs.
+                    using (FileStream streamWriter = File.Create(fullZipToPath))
+                    {
+                        StreamUtils.Copy(zipStream, streamWriter, buffer);
+                    }
+                }
+            }
+            finally
+            {
+                if (zf != null)
+                {
+                    zf.IsStreamOwner = true; // Makes close also shut the underlying stream
+                    zf.Close(); // Ensure we release resources
+                }
+            }
         }
 
         public void leer_Registros(Tabla tabla,string Base)
@@ -4389,21 +4588,24 @@ namespace Proyecto1_Compi2.Elementos
 
                 case "detallesbase":
 
-                    if (nodo.ChildNodes.Count == 3)
+                    if (nodo.ChildNodes.Count == 4)
                     {
                         resultado = ActuarXML(nodo.ChildNodes[0]);
                         resultado = ActuarXML(nodo.ChildNodes[1]);
                         resultado = ActuarXML(nodo.ChildNodes[2]);
+                        resultado = ActuarXML(nodo.ChildNodes[3]);
                     }
-                    else if (nodo.ChildNodes.Count == 2)
+                    else if (nodo.ChildNodes.Count == 3)
                     {
                         resultado = ActuarXML(nodo.ChildNodes[0]);
                         resultado = ActuarXML(nodo.ChildNodes[1]);
+                        resultado = ActuarXML(nodo.ChildNodes[2]);
 
                     }
                     else
                     {
                         resultado = ActuarXML(nodo.ChildNodes[0]);
+                        resultado = ActuarXML(nodo.ChildNodes[1]);
                     }
 
                    break;
@@ -4670,6 +4872,11 @@ namespace Proyecto1_Compi2.Elementos
                 case "tipof":
 
                     resultado = nodo.ChildNodes[1].Token.Text;
+
+                    break;
+
+                case "historia":
+                    Add_historial(nodo.ChildNodes[1].Token.Text.Trim('@'),BaseL);
 
                     break;
 

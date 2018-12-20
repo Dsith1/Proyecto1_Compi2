@@ -11,6 +11,8 @@ namespace Proyecto1_Compi2.Elementos
         public string Nombre;
         public string Ruta;
 
+        public string historial;
+
         public Tablas tablas;
 
         public Objetos objetos;
@@ -29,6 +31,8 @@ namespace Proyecto1_Compi2.Elementos
             anterior = null;
 
             tablas = new Tablas();
+
+            historial = "";
 
             string or= System.IO.Path.Combine(@"c:\DBMS", Nombre + "_objetos.usac");
             objetos = new Objetos(or);
