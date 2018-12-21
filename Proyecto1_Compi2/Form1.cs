@@ -33,6 +33,7 @@ namespace Proyecto1_Compi2
         string codigo;
         Thread hilo;
         string recibo = "";
+        string retorno = "";
 
         public Form1()
         {
@@ -83,6 +84,7 @@ namespace Proyecto1_Compi2
 
 
             string respuesta = esCadenaValidaPaquete(entrada, gramatica);
+            retorno = respuesta;
 
             MessageBox.Show("Grafo Finalizado");
 
@@ -133,6 +135,33 @@ namespace Proyecto1_Compi2
                         string Consola = txtConsola.Text;
                         Consola += "\r\nFin se Sesion";
                         txtConsola.Text = Consola;
+
+                    }
+                    else if (a.Contains("donde usuario"))
+                    {
+                        string[] datos = a.Split('=');
+                        string user = datos[1].Split('&')[0].Trim();
+
+                        user = user.Trim('"');
+
+                        string contra = datos[2].Trim('\'');
+                        contra = contra.Trim();
+                        contra = contra.Trim('"');
+
+                        bool login=manejo.LoginU(user,contra);
+
+                        a= "[\"validar\": 1500,\"login\": [\"usuario\": \""+user+ "\",\"login\":";
+
+                        if (login)
+                        {
+                            a += "true";
+                        }
+                        else
+                        {
+                            a += "false";
+                        }
+
+                        a += "]]";
 
                     }
                     else
@@ -362,7 +391,7 @@ namespace Proyecto1_Compi2
 
                 case "sublogin":
 
-                    resultado = nodo.ChildNodes[6].Token.Text;
+                    resultado = nodo.ChildNodes[5].Token.Text;
                     break;
 
                 case "paquete":
@@ -3458,22 +3487,27 @@ namespace Proyecto1_Compi2
                 Console.WriteLine("Recibido {0}", Encoding.UTF8.GetString(buffer));
                 recibo += Encoding.UTF8.GetString(buffer);
 
-                buffer = Encoding.Default.GetBytes("hola cliente");
-                acc.Send(buffer, 0, buffer.Length, 0);
+                //buffer = Encoding.Default.GetBytes("hola cliente");
+                //acc.Send(buffer, 0, buffer.Length, 0);
 
-                sck.Close();
-                acc.Close();
+                
 
                 if (recibo.Contains("]$"))
                 {
                     recibo = recibo.Replace("]$", "]");
 
                     AnalizarPaquete(recibo);
+
+                    buffer = Encoding.Default.GetBytes(retorno);
+                    acc.Send(buffer, 0, buffer.Length, 0);
                     cadena = recibo;
 
                     recibo = "";
 
                 }
+
+                sck.Close();
+                acc.Close();
 
             }
             

@@ -98,6 +98,18 @@ namespace Proyecto1_Compi2.Elementos
             return respuesta;
         }
 
+        public bool LoginU(string nombre,string contra)
+        {
+            if (maestro.usuarios.existe(nombre))
+            {
+                return maestro.usuarios.aux.Contraseña.Equals(contra);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public string Eliminar_Usuario(string nombre)
         {
             string respuesta = "";
@@ -217,6 +229,11 @@ namespace Proyecto1_Compi2.Elementos
 
                         tipos += dato[0] + ",";
                         fields += dato[1] + ",";
+
+                        if (dato.Length==2)
+                        {
+                            atrib += "-,";
+                        }
 
                         for(int y = 2; y < dato.Length; y++)
                         {
