@@ -57,6 +57,12 @@ Public Class Form1
                 Cadena = Replace(Cadena, "no ", "NO ")
                 Cadena = Replace(Cadena, "nO ", "NO ")
                 Cadena = Replace(Cadena, "No ", "NO ")
+                Cadena = Replace(Cadena, "no m", "nom")
+                Cadena = Replace(Cadena, "nO m", "nOm")
+                Cadena = Replace(Cadena, "No m", "Nom")
+                Cadena = Replace(Cadena, "no M", "noM")
+                Cadena = Replace(Cadena, "nO M", "nOM")
+                Cadena = Replace(Cadena, "No M", "NoM")
                 Cadena = Replace(Cadena, "nulo", "NULO")
                 Cadena = Replace(Cadena, "nulO", "NULO")
                 Cadena = Replace(Cadena, "nuLo", "NULO")
@@ -92,52 +98,115 @@ Public Class Form1
                 Cadena = Replace(Replace(Cadena, Chr(10), " "), Chr(13), " ")
 
 
+
+
                 TextBox1.Text = Cadena
 
 
                 Dim Salida As String
 
-                Salida = "[ ""paquete"":""usql"", ""instrucción"":'" + Cadena + "',]"
+                Salida = "[ ""paquete"":""usql"", ""instrucción"":'" + Cadena + "',]$"
 
 
+                checkNo(Salida)
 
 
-                'Cadena += 
-                'bytes = Nothing
-                'Dim x As Integer
-                'x = Cadena.Length
-                'Dim j As Integer = x / 256
-                'If (x Mod 256 <> 0) Then
-                '    j = j + 1
-                'End If
-                'Dim codigo As String = TextBox1.Text
-                'For cont As Integer = 0 To j - 1
-                '    Dim salida As String
-                '    Dim inicio As String = 256 * cont
-                '    If (cont = j - 1) Then
-                '        Dim final As Integer = x Mod 256
-                '        salida = codigo.Substring(inicio, final)
-                '    Else
-                '        salida = codigo.Substring(inicio, 256)
-                '    End If
-                '    cliente = New TcpClient
-                '    Try
-                '        cliente.Connect(IPAddress.Parse("192.168.0.17"), 6000)
-                '    Catch ex As Exception
-                '        MessageBox.Show("IMPOSIBLE CONECTAR CON SERVIDOR", "ERROR")
-                '    End Try
-                '    If cliente.Connected = True Then
-                '        leer_escribir = cliente.GetStream
-                '        bw = New BinaryWriter(leer_escribir)
-                '        bw.Write(TextBox1.Text)
-                '    End If
-                'Next cont
 
             Else
                 MessageBox.Show("Ha habido un Error" + SError, "Error")
             End If
 
         End If
+    End Sub
+
+    Private Sub checkNo(cadena As String)
+
+
+        Dim caracteres As Integer = cadena.Length
+
+        Dim vueltas As Integer = caracteres / 255
+
+        Dim extra As Integer = caracteres Mod 255
+
+        If (extra <> 0) Then
+            vueltas = vueltas - 1
+
+        End If
+
+        For x As Integer = 0 To vueltas - 1
+
+            Dim multiplo = x * 255
+            If (x <> 0) Then
+                multiplo = multiplo - 1
+            End If
+
+            Dim envio = cadena.Substring(multiplo, 255)
+            Dim bufferEscritura As Byte()
+            Dim Stm As Stream
+            Dim tcpClnt As TcpClient = New TcpClient()
+
+            tcpClnt.Connect("192.168.0.17", 8000)
+            Stm = tcpClnt.GetStream()
+
+            If (Stm.CanWrite) Then
+                bufferEscritura = Encoding.UTF8.GetBytes(envio)
+                If Not Stm Is Nothing Then
+                    Stm.Write(bufferEscritura, 0, bufferEscritura.Length)
+
+                    Dim data(0 To 256 - 1) As Byte
+
+                    ''String to store the response ASCII representation.
+                    Dim responseData As String = String.Empty
+
+                    ''Read the first batch of the TcpServer response bytes.
+                    'Dim bytes As Int32 = Stm.Read(data, 0, data.Length)
+
+                    'responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes)
+                    'Console.WriteLine("Received: {0}", responseData)
+
+
+                End If
+            End If
+
+            tcpClnt.Close()
+            tcpClnt = Nothing
+
+
+        Next x
+
+        Dim envio2 = cadena.Substring(vueltas * 255, extra)
+        Dim bufferEscritura2 As Byte()
+        Dim Stm2 As Stream
+        Dim tcpClnt2 As TcpClient = New TcpClient()
+
+        tcpClnt2.Connect("192.168.0.17", 8000)
+        Stm2 = tcpClnt2.GetStream()
+
+        If (Stm2.CanWrite) Then
+            bufferEscritura2 = Encoding.UTF8.GetBytes(envio2)
+            If Not Stm2 Is Nothing Then
+                Stm2.Write(bufferEscritura2, 0, bufferEscritura2.Length)
+
+                Dim data(0 To 256 - 1) As Byte
+
+                ''String to store the response ASCII representation.
+                Dim responseData As String = String.Empty
+
+                ''Read the first batch of the TcpServer response bytes.
+                'Dim bytes As Int32 = Stm.Read(data, 0, data.Length)
+
+                'responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes)
+                'Console.WriteLine("Received: {0}", responseData)
+
+
+            End If
+        End If
+
+        tcpClnt2.Close()
+        tcpClnt2 = Nothing
+
+
+
     End Sub
 
 

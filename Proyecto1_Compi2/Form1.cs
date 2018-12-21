@@ -10,6 +10,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using System.Threading;
 
 
 namespace Proyecto1_Compi2
@@ -19,7 +20,7 @@ namespace Proyecto1_Compi2
 
         string graph = "";
         string cadena;
-        bool escuchar = false;
+        bool escuchar = true;
         string BaseActual;
         string UserActaul= "Admin";
         string alteraraux;
@@ -29,8 +30,9 @@ namespace Proyecto1_Compi2
         Entorno Global;
         Entorno Eactual;
         int contadorN=0;        
-        bool Cproc = false;
         string codigo;
+        Thread hilo;
+        string recibo = "";
 
         public Form1()
         {
@@ -42,6 +44,7 @@ namespace Proyecto1_Compi2
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            CheckForIllegalCrossThreadCalls = false;
 
             BaseActual = "";
             manejo = new Manejo();
@@ -261,16 +264,20 @@ namespace Proyecto1_Compi2
 
         private void button1_Click(object sender, EventArgs e)
         {
+            escuchar = true;
+            //Creamos el delegado 
+            ThreadStart delegado = new ThreadStart(CorrerProceso);
+            //Creamos la instancia del hilo 
+            hilo = new Thread(delegado);
+            //Iniciamos el hilo 
+            hilo.Start();
+
+
 
             cadena = textBox1.Text;
-            /*
-            while (escuchar)
-            {
-                Conectar();
-            }
-
-            */
-            AnalizarPaquete(cadena);
+          
+            
+            //AnalizarPaquete(cadena);
 
 
         }
@@ -3429,7 +3436,53 @@ namespace Proyecto1_Compi2
             return entrada;
         }
 
-       
+        private void CorrerProceso()
+        {
+            while (escuchar)
+            {
+                Thread.Sleep(100);
+
+                Socket sck = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
+                sck.Bind(new IPEndPoint(IPAddress.Parse("192.168.0.17"), 8000));
+                sck.Listen(0);
+
+                Socket acc = sck.Accept();
+
+
+                byte[] buffer = new byte[255];
+                int rec = acc.Receive(buffer, 0, buffer.Length, 0);
+
+                Array.Resize(ref buffer, rec);
+
+                Console.WriteLine("Recibido {0}", Encoding.UTF8.GetString(buffer));
+                recibo += Encoding.UTF8.GetString(buffer);
+
+                buffer = Encoding.Default.GetBytes("hola cliente");
+                acc.Send(buffer, 0, buffer.Length, 0);
+
+                sck.Close();
+                acc.Close();
+
+                if (recibo.Contains("]$"))
+                {
+                    recibo = recibo.Replace("]$", "]");
+
+                    AnalizarPaquete(recibo);
+                    cadena = recibo;
+
+                    recibo = "";
+
+                }
+
+            }
+            
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            escuchar = false;
+        }
     }
 }
 
