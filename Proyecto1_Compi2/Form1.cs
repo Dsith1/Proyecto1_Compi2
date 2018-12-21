@@ -84,9 +84,14 @@ namespace Proyecto1_Compi2
 
 
             string respuesta = esCadenaValidaPaquete(entrada, gramatica);
-            retorno = respuesta;
 
-            MessageBox.Show("Grafo Finalizado");
+            if (retorno == "")
+            {
+                retorno = respuesta;
+            }
+            
+
+            //MessageBox.Show("Grafo Finalizado");
 
         }
 
@@ -98,11 +103,12 @@ namespace Proyecto1_Compi2
 
             Analizador_USQL gramatica = new Analizador_USQL();
 
-            MessageBox.Show("Arbol de Analisis Sintactico Constuido !!!");
+            //MessageBox.Show("Arbol de Analisis Sintactico Constuido !!!");
 
             string respuesta = esCadenaValidSQL(entrada, gramatica);
+            retorno = "[\"paquete\": \"usql\",\"datos\": ['" + respuesta + "']]$";
 
-            MessageBox.Show("Grafo Finalizado");
+            //MessageBox.Show("Grafo Finalizado");
 
         }
 
@@ -115,7 +121,7 @@ namespace Proyecto1_Compi2
             string a = "";
             if (arbol.HasErrors())
             {
-                MessageBox.Show("Errores en la cadena de entrada");
+                //MessageBox.Show("Errores en la cadena de entrada");
 
 
                 if (arbol.Root != null)
@@ -191,7 +197,7 @@ namespace Proyecto1_Compi2
             string a = "";
             if (arbol.HasErrors())
             {
-                MessageBox.Show("Errores en la cadena de entrada");
+                //MessageBox.Show("Errores en la cadena de entrada");
 
 
                 if (arbol.Root != null)
@@ -3469,7 +3475,7 @@ namespace Proyecto1_Compi2
         {
             while (escuchar)
             {
-                Thread.Sleep(100);
+                //Thread.Sleep(100);
 
                 Socket sck = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
@@ -3498,8 +3504,42 @@ namespace Proyecto1_Compi2
 
                     AnalizarPaquete(recibo);
 
-                    buffer = Encoding.Default.GetBytes(retorno);
-                    acc.Send(buffer, 0, buffer.Length, 0);
+                    if (retorno.Length > 255)
+                    {
+                        for (int x = 0; x < retorno.Length; x += 255)
+                        {
+                            if (x + 255 >= retorno.Length)
+                            {
+                                int y = retorno.Length % 255;
+                                string b = retorno.Substring(x, y);
+                                buffer = Encoding.UTF8.GetBytes(b);
+                                acc.Send(buffer, 0, buffer.Length, 0);
+
+                            }
+                            else
+                            {
+                                string b = retorno.Substring(x, 255);
+                                buffer = Encoding.UTF8.GetBytes(b);
+                                acc.Send(buffer, 0, buffer.Length, 0);
+                            }
+
+                        }
+
+                       
+
+                    }
+                    else
+                    {
+                        if (retorno == "")
+                        {
+                            retorno += "]$";
+                        }
+
+                        buffer = Encoding.UTF8.GetBytes(retorno);
+                        acc.Send(buffer, 0, buffer.Length, 0);
+                    }
+
+                    
                     cadena = recibo;
 
                     recibo = "";

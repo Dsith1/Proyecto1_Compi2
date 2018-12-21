@@ -100,7 +100,7 @@ Public Class Form1
 
 
 
-                TextBox1.Text = Cadena
+
 
 
                 Dim Salida As String
@@ -193,10 +193,26 @@ Public Class Form1
                 Dim responseData As String = String.Empty
 
                 ''Read the first batch of the TcpServer response bytes.
-                'Dim bytes As Int32 = Stm.Read(data, 0, data.Length)
+                Dim seguir As Boolean = True
 
-                'responseData = System.Text.Encoding.ASCII.GetString(data, 0, bytes)
-                'Console.WriteLine("Received: {0}", responseData)
+                Dim entrada As String = ""
+
+                While (seguir)
+                    Dim bytes As Int32 = Stm2.Read(data, 0, data.Length)
+
+                    responseData = System.Text.Encoding.UTF8.GetString(data, 0, bytes)
+                    entrada = entrada + responseData
+                    Console.WriteLine("Received: {0}", responseData)
+
+                    If (entrada.Contains("]$")) Then
+                        seguir = False
+                        TextBox2.AppendText("Recibiendo Paquete" & Environment.NewLine)
+                        TextBox2.AppendText(entrada & Environment.NewLine)
+
+
+                    End If
+
+                End While
 
 
             End If
