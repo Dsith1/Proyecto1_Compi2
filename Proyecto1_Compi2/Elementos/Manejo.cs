@@ -4519,6 +4519,8 @@ namespace Proyecto1_Compi2.Elementos
 
             if (Archivo != "")
             {
+                Archivo = Archivo.Replace('\n', ' ');
+
                 AnalizadorXML gramatica = new AnalizadorXML();
 
                 LanguageData lenguaje = new LanguageData(gramatica);

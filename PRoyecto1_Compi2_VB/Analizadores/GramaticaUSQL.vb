@@ -7,7 +7,7 @@ Imports System.IO
 Imports System.Windows.Forms
 
 
-Module MyParser
+Module MyParserUSQL
     Private Parser As New GOLD.Parser
 
     Private Enum SymbolIndex
@@ -382,7 +382,7 @@ Module MyParser
 
         Parser.LoadTables(Path.Combine(Application.StartupPath, "GramaticaUSQL.egt"))
     End Sub
-    
+
     Public Function Parse(ByVal Reader As TextReader) As Boolean
         'This procedure starts the GOLD Parser Engine and handles each of the
         'messages it returns. Each time a reduction is made, you can create new
@@ -393,7 +393,7 @@ Module MyParser
         'and will be ready to implement.
 
         Dim Response As GOLD.ParseMessage
-        Dim Done as Boolean                  'Controls when we leave the loop
+        Dim Done As Boolean                  'Controls when we leave the loop
         Dim Accepted As Boolean = False      'Was the parse successful?
 
         Accepted = False    'Unless the program is accepted by the parser
@@ -405,7 +405,7 @@ Module MyParser
         Do Until Done
             Response = Parser.Parse()
 
-            Select Case Response              
+            Select Case Response
                 Case GOLD.ParseMessage.LexicalError
                     'Cannot recognize token
                     SError = " Lexico en " + Parser.CurrentToken.Data.ToString
@@ -440,7 +440,7 @@ Module MyParser
                     SError = "Error, FInal insesperado del Archivo"
                     Done = True
 
-                Case GOLD.ParseMessage.GroupError 
+                Case GOLD.ParseMessage.GroupError
                     'COMMENT ERROR! Unexpected end of file
                     Done = True
             End Select
@@ -449,11 +449,11 @@ Module MyParser
         Return Accepted
     End Function
 
-    Private Function CreateNewObject(Reduction as GOLD.Reduction) As Object
+    Private Function CreateNewObject(Reduction As GOLD.Reduction) As Object
         Dim Result As Object = Nothing
 
         With Reduction
-            Select Case .Parent.TableIndex                        
+            Select Case .Parent.TableIndex
                 Case ProductionIndex.S
                     ' <S> ::= <Inicio> 
 
@@ -461,55 +461,55 @@ Module MyParser
                 Case ProductionIndex.Inicio
                     ' <Inicio> ::= <sentencias> 
 
-                Case ProductionIndex.Sentencias                 
+                Case ProductionIndex.Sentencias
                     ' <sentencias> ::= <sentencia> <sentencias> 
 
-                Case ProductionIndex.Sentencias2                 
+                Case ProductionIndex.Sentencias2
                     ' <sentencias> ::= <sentencia> 
 
-                Case ProductionIndex.Sentencia                 
+                Case ProductionIndex.Sentencia
                     ' <sentencia> ::= <usar> 
 
-                Case ProductionIndex.Sentencia2                 
+                Case ProductionIndex.Sentencia2
                     ' <sentencia> ::= <crear> 
 
-                Case ProductionIndex.Sentencia3                 
+                Case ProductionIndex.Sentencia3
                     ' <sentencia> ::= <imprimir> 
 
-                Case ProductionIndex.Sentencia4                 
+                Case ProductionIndex.Sentencia4
                     ' <sentencia> ::= <insertar> 
 
-                Case ProductionIndex.Sentencia5                 
+                Case ProductionIndex.Sentencia5
                     ' <sentencia> ::= <actualizar> 
 
-                Case ProductionIndex.Sentencia6                 
+                Case ProductionIndex.Sentencia6
                     ' <sentencia> ::= <borrar> 
 
-                Case ProductionIndex.Sentencia7                 
+                Case ProductionIndex.Sentencia7
                     ' <sentencia> ::= <seleccionar> 
 
-                Case ProductionIndex.Sentencia8                 
+                Case ProductionIndex.Sentencia8
                     ' <sentencia> ::= <otorgar> 
 
-                Case ProductionIndex.Sentencia9                 
+                Case ProductionIndex.Sentencia9
                     ' <sentencia> ::= <denegar> 
 
-                Case ProductionIndex.Sentencia10                 
+                Case ProductionIndex.Sentencia10
                     ' <sentencia> ::= <back> 
 
-                Case ProductionIndex.Sentencia11                 
+                Case ProductionIndex.Sentencia11
                     ' <sentencia> ::= <restaurar> 
 
-                Case ProductionIndex.Sentencia12                 
+                Case ProductionIndex.Sentencia12
                     ' <sentencia> ::= <alterar> 
 
-                Case ProductionIndex.Sentencia13                 
+                Case ProductionIndex.Sentencia13
                     ' <sentencia> ::= <eliminar> 
 
-                Case ProductionIndex.Sentencia14                 
+                Case ProductionIndex.Sentencia14
                     ' <sentencia> ::= <declarar> 
 
-                Case ProductionIndex.Sentencia_Semi                 
+                Case ProductionIndex.Sentencia_Semi
                     ' <sentencia> ::= <llamada> ';' 
 
                 Case ProductionIndex.Usar_Usar_Semi
@@ -518,515 +518,515 @@ Module MyParser
                 Case ProductionIndex.Crear_Crear
                     ' <crear> ::= CREAR <opciones_c> 
 
-                Case ProductionIndex.Opciones_c                 
+                Case ProductionIndex.Opciones_c
                     ' <opciones_c> ::= <c_base> 
 
-                Case ProductionIndex.Opciones_c2                 
+                Case ProductionIndex.Opciones_c2
                     ' <opciones_c> ::= <c_tabla> 
 
-                Case ProductionIndex.Opciones_c3                 
+                Case ProductionIndex.Opciones_c3
                     ' <opciones_c> ::= <c_objeto> 
 
-                Case ProductionIndex.Opciones_c4                 
+                Case ProductionIndex.Opciones_c4
                     ' <opciones_c> ::= <c_pro> 
 
-                Case ProductionIndex.Opciones_c5                 
+                Case ProductionIndex.Opciones_c5
                     ' <opciones_c> ::= <c_funcion> 
 
-                Case ProductionIndex.Opciones_c6                 
+                Case ProductionIndex.Opciones_c6
                     ' <opciones_c> ::= <c_usuario> 
 
-                Case ProductionIndex.C_base_Base_datos_Semi                 
+                Case ProductionIndex.C_base_Base_datos_Semi
                     ' <c_base> ::= 'BASE_DATOS' <ID> ';' 
 
-                Case ProductionIndex.C_tabla_Tabla_Lparen_Rparen_Semi                 
+                Case ProductionIndex.C_tabla_Tabla_Lparen_Rparen_Semi
                     ' <c_tabla> ::= TABLA <ID> '(' <campos_tabla> ')' ';' 
 
-                Case ProductionIndex.Campos_tabla_Comma                 
+                Case ProductionIndex.Campos_tabla_Comma
                     ' <campos_tabla> ::= <campo_tabla> ',' <campos_tabla> 
 
-                Case ProductionIndex.Campos_tabla                 
+                Case ProductionIndex.Campos_tabla
                     ' <campos_tabla> ::= <campo_tabla> 
 
-                Case ProductionIndex.Campo_tabla                 
+                Case ProductionIndex.Campo_tabla
                     ' <campo_tabla> ::= <tipo_dato> <ID> <complementos> 
 
-                Case ProductionIndex.Campo_tabla2                 
+                Case ProductionIndex.Campo_tabla2
                     ' <campo_tabla> ::= <tipo_dato> <ID> 
 
-                Case ProductionIndex.Campo_tabla3                 
+                Case ProductionIndex.Campo_tabla3
                     ' <campo_tabla> ::= <ID> <ID> <complementos> 
 
-                Case ProductionIndex.Campo_tabla4                 
+                Case ProductionIndex.Campo_tabla4
                     ' <campo_tabla> ::= <ID> <ID> 
 
-                Case ProductionIndex.Complementos                 
+                Case ProductionIndex.Complementos
                     ' <complementos> ::= <complemento> <complementos> 
 
-                Case ProductionIndex.Complementos2                 
+                Case ProductionIndex.Complementos2
                     ' <complementos> ::= <complemento> 
 
-                Case ProductionIndex.Complemento                 
+                Case ProductionIndex.Complemento
                     ' <complemento> ::= <RNO> 
 
-                Case ProductionIndex.Complemento2                 
+                Case ProductionIndex.Complemento2
                     ' <complemento> ::= <RNULO> 
 
-                Case ProductionIndex.Complemento_Autoincrementable                 
+                Case ProductionIndex.Complemento_Autoincrementable
                     ' <complemento> ::= Autoincrementable 
 
-                Case ProductionIndex.Complemento_Llave_primaria                 
+                Case ProductionIndex.Complemento_Llave_primaria
                     ' <complemento> ::= 'Llave_Primaria' 
 
-                Case ProductionIndex.Complemento_Llave_foranea                 
+                Case ProductionIndex.Complemento_Llave_foranea
                     ' <complemento> ::= 'Llave_Foranea' <ID> 
 
-                Case ProductionIndex.Complemento_Unico                 
+                Case ProductionIndex.Complemento_Unico
                     ' <complemento> ::= UNICO 
 
-                Case ProductionIndex.C_objeto_Objeto_Lparen_Rparen_Semi                 
+                Case ProductionIndex.C_objeto_Objeto_Lparen_Rparen_Semi
                     ' <c_objeto> ::= OBJETO <ID> '(' <parametros> ')' ';' 
 
-                Case ProductionIndex.C_objeto_Objeto_Lparen_Rparen_Semi2                 
+                Case ProductionIndex.C_objeto_Objeto_Lparen_Rparen_Semi2
                     ' <c_objeto> ::= OBJETO <ID> '(' ')' ';' 
 
-                Case ProductionIndex.Parametros_Comma                 
+                Case ProductionIndex.Parametros_Comma
                     ' <parametros> ::= <parametros> ',' <parametro> 
 
-                Case ProductionIndex.Parametros                 
+                Case ProductionIndex.Parametros
                     ' <parametros> ::= <parametro> 
 
-                Case ProductionIndex.Parametro                 
+                Case ProductionIndex.Parametro
                     ' <parametro> ::= <tipo_dato> <ID> 
 
-                Case ProductionIndex.Parametro_Variable                 
+                Case ProductionIndex.Parametro_Variable
                     ' <parametro> ::= <tipo_dato> Variable 
 
-                Case ProductionIndex.C_pro_Procedimiento_Lparen_Rparen_Lbrace_Rbrace                 
+                Case ProductionIndex.C_pro_Procedimiento_Lparen_Rparen_Lbrace_Rbrace
                     ' <c_pro> ::= PROCEDIMIENTO <ID> '(' <parametros> ')' '{' <instrucciones> '}' 
 
-                Case ProductionIndex.C_pro_Procedimiento_Lparen_Rparen_Lbrace_Rbrace2                 
+                Case ProductionIndex.C_pro_Procedimiento_Lparen_Rparen_Lbrace_Rbrace2
                     ' <c_pro> ::= PROCEDIMIENTO <ID> '(' ')' '{' <instrucciones> '}' 
 
-                Case ProductionIndex.Instrucciones                 
+                Case ProductionIndex.Instrucciones
                     ' <instrucciones> ::= <instruccion> <instrucciones> 
 
-                Case ProductionIndex.Instrucciones2                 
+                Case ProductionIndex.Instrucciones2
                     ' <instrucciones> ::= <instruccion> 
 
-                Case ProductionIndex.Instruccion                 
+                Case ProductionIndex.Instruccion
                     ' <instruccion> ::= <asignacion> 
 
-                Case ProductionIndex.Instruccion2                 
+                Case ProductionIndex.Instruccion2
                     ' <instruccion> ::= <Tif> 
 
-                Case ProductionIndex.Instruccion3                 
+                Case ProductionIndex.Instruccion3
                     ' <instruccion> ::= <Tswitch> 
 
-                Case ProductionIndex.Instruccion4                 
+                Case ProductionIndex.Instruccion4
                     ' <instruccion> ::= <Tfor> 
 
-                Case ProductionIndex.Instruccion5                 
+                Case ProductionIndex.Instruccion5
                     ' <instruccion> ::= <Twhile> 
 
-                Case ProductionIndex.Instruccion6                 
+                Case ProductionIndex.Instruccion6
                     ' <instruccion> ::= <sentencia> 
 
-                Case ProductionIndex.Instruccion_Detener_Semi                 
+                Case ProductionIndex.Instruccion_Detener_Semi
                     ' <instruccion> ::= DETENER ';' 
 
-                Case ProductionIndex.C_funcion_Funcion_Lparen_Rparen_Lbrace_Rbrace                 
+                Case ProductionIndex.C_funcion_Funcion_Lparen_Rparen_Lbrace_Rbrace
                     ' <c_funcion> ::= FUNCION <ID> '(' <parametros> ')' <tipo_dato> '{' <instruccionesR> '}' 
 
-                Case ProductionIndex.C_funcion_Funcion_Lparen_Rparen_Lbrace_Rbrace2                 
+                Case ProductionIndex.C_funcion_Funcion_Lparen_Rparen_Lbrace_Rbrace2
                     ' <c_funcion> ::= FUNCION <ID> '(' <parametros> ')' <ID> '{' <instruccionesR> '}' 
 
-                Case ProductionIndex.C_funcion_Funcion_Lparen_Rparen_Lbrace_Rbrace3                 
+                Case ProductionIndex.C_funcion_Funcion_Lparen_Rparen_Lbrace_Rbrace3
                     ' <c_funcion> ::= FUNCION <ID> '(' ')' <tipo_dato> '{' <instruccionesR> '}' 
 
-                Case ProductionIndex.C_funcion_Funcion_Lparen_Rparen_Lbrace_Rbrace4                 
+                Case ProductionIndex.C_funcion_Funcion_Lparen_Rparen_Lbrace_Rbrace4
                     ' <c_funcion> ::= FUNCION <ID> '(' ')' <ID> '{' <instruccionesR> '}' 
 
-                Case ProductionIndex.Instruccionesr                 
+                Case ProductionIndex.Instruccionesr
                     ' <instruccionesR> ::= <instrucciones> <retorno> 
 
-                Case ProductionIndex.Retorno_Retorno_Semi                 
+                Case ProductionIndex.Retorno_Retorno_Semi
                     ' <retorno> ::= RETORNO <aritemtica> ';' 
 
-                Case ProductionIndex.C_usuario_Usuario_Colocar_Password_Eq_Cadena_Semi                 
+                Case ProductionIndex.C_usuario_Usuario_Colocar_Password_Eq_Cadena_Semi
                     ' <c_usuario> ::= USUARIO <ID> COLOCAR password '=' Cadena ';' 
 
-                Case ProductionIndex.Imprimir_Imprimir_Lparen_Rparen_Semi                 
+                Case ProductionIndex.Imprimir_Imprimir_Lparen_Rparen_Semi
                     ' <imprimir> ::= IMPRIMIR '(' <expresion> ')' ';' 
 
-                Case ProductionIndex.Insertar_Insertar_En_Tabla                 
+                Case ProductionIndex.Insertar_Insertar_En_Tabla
                     ' <insertar> ::= INSERTAR EN TABLA <ID> <tipoins> 
 
-                Case ProductionIndex.Tipoins_Lparen_Rparen_Valores_Lparen_Rparen_Semi                 
+                Case ProductionIndex.Tipoins_Lparen_Rparen_Valores_Lparen_Rparen_Semi
                     ' <tipoins> ::= '(' <campos> ')' VALORES '(' <valores> ')' ';' 
 
-                Case ProductionIndex.Tipoins_Lparen_Rparen_Semi                 
+                Case ProductionIndex.Tipoins_Lparen_Rparen_Semi
                     ' <tipoins> ::= '(' <valores> ')' ';' 
 
-                Case ProductionIndex.Campos_Comma                 
+                Case ProductionIndex.Campos_Comma
                     ' <campos> ::= <campos> ',' <rutaB> 
 
-                Case ProductionIndex.Campos                 
+                Case ProductionIndex.Campos
                     ' <campos> ::= <rutaB> 
 
-                Case ProductionIndex.Valores_Comma                 
+                Case ProductionIndex.Valores_Comma
                     ' <valores> ::= <aritemtica> ',' <valores> 
 
-                Case ProductionIndex.Valores                 
+                Case ProductionIndex.Valores
                     ' <valores> ::= <aritemtica> 
 
-                Case ProductionIndex.Actualizar_Actualizar_Tabla_Lparen_Rparen_Valores_Lparen_Rparen_Semi                 
+                Case ProductionIndex.Actualizar_Actualizar_Tabla_Lparen_Rparen_Valores_Lparen_Rparen_Semi
                     ' <actualizar> ::= ACTUALIZAR TABLA <ID> '(' <campos> ')' VALORES '(' <valores> ')' <condicion> ';' 
 
-                Case ProductionIndex.Actualizar_Actualizar_Tabla_Lparen_Rparen_Valores_Lparen_Rparen_Semi2                 
+                Case ProductionIndex.Actualizar_Actualizar_Tabla_Lparen_Rparen_Valores_Lparen_Rparen_Semi2
                     ' <actualizar> ::= ACTUALIZAR TABLA <ID> '(' <campos> ')' VALORES '(' <valores> ')' ';' 
 
-                Case ProductionIndex.Condicion_Donde                 
+                Case ProductionIndex.Condicion_Donde
                     ' <condicion> ::= DONDE <logica_consultas> 
 
-                Case ProductionIndex.Borrar_Borrar_En_Tabla_Semi                 
+                Case ProductionIndex.Borrar_Borrar_En_Tabla_Semi
                     ' <borrar> ::= BORRAR EN TABLA <ID> <condicion> ';' 
 
-                Case ProductionIndex.Borrar_Borrar_En_Tabla_Semi2                 
+                Case ProductionIndex.Borrar_Borrar_En_Tabla_Semi2
                     ' <borrar> ::= BORRAR EN TABLA <ID> ';' 
 
-                Case ProductionIndex.Seleccionar_Seleccionar_De_Semi                 
+                Case ProductionIndex.Seleccionar_Seleccionar_De_Semi
                     ' <seleccionar> ::= SELECCIONAR <campos> DE <campos> <condicion> <orden> ';' 
 
-                Case ProductionIndex.Seleccionar_Seleccionar_Times_De_Semi                 
+                Case ProductionIndex.Seleccionar_Seleccionar_Times_De_Semi
                     ' <seleccionar> ::= SELECCIONAR '*' DE <campos> <condicion> <orden> ';' 
 
-                Case ProductionIndex.Seleccionar_Seleccionar_De_Semi2                 
+                Case ProductionIndex.Seleccionar_Seleccionar_De_Semi2
                     ' <seleccionar> ::= SELECCIONAR <campos> DE <campos> <condicion> ';' 
 
-                Case ProductionIndex.Seleccionar_Seleccionar_Times_De_Semi2                 
+                Case ProductionIndex.Seleccionar_Seleccionar_Times_De_Semi2
                     ' <seleccionar> ::= SELECCIONAR '*' DE <campos> <condicion> ';' 
 
-                Case ProductionIndex.Seleccionar_Seleccionar_De_Semi3                 
+                Case ProductionIndex.Seleccionar_Seleccionar_De_Semi3
                     ' <seleccionar> ::= SELECCIONAR <campos> DE <campos> <orden> ';' 
 
-                Case ProductionIndex.Seleccionar_Seleccionar_Times_De_Semi3                 
+                Case ProductionIndex.Seleccionar_Seleccionar_Times_De_Semi3
                     ' <seleccionar> ::= SELECCIONAR '*' DE <campos> <orden> ';' 
 
-                Case ProductionIndex.Seleccionar_Seleccionar_De_Semi4                 
+                Case ProductionIndex.Seleccionar_Seleccionar_De_Semi4
                     ' <seleccionar> ::= SELECCIONAR <campos> DE <campos> ';' 
 
-                Case ProductionIndex.Seleccionar_Seleccionar_Times_De_Semi4                 
+                Case ProductionIndex.Seleccionar_Seleccionar_Times_De_Semi4
                     ' <seleccionar> ::= SELECCIONAR '*' DE <campos> ';' 
 
-                Case ProductionIndex.Seleccionarf_Seleccionar_De                 
+                Case ProductionIndex.Seleccionarf_Seleccionar_De
                     ' <seleccionarf> ::= SELECCIONAR <campos> DE <campos> <condicion> <orden> 
 
-                Case ProductionIndex.Seleccionarf_Seleccionar_Times_De                 
+                Case ProductionIndex.Seleccionarf_Seleccionar_Times_De
                     ' <seleccionarf> ::= SELECCIONAR '*' DE <campos> <condicion> <orden> 
 
-                Case ProductionIndex.Seleccionarf_Seleccionar_De2                 
+                Case ProductionIndex.Seleccionarf_Seleccionar_De2
                     ' <seleccionarf> ::= SELECCIONAR <campos> DE <campos> <condicion> 
 
-                Case ProductionIndex.Seleccionarf_Seleccionar_Times_De2                 
+                Case ProductionIndex.Seleccionarf_Seleccionar_Times_De2
                     ' <seleccionarf> ::= SELECCIONAR '*' DE <campos> <condicion> 
 
-                Case ProductionIndex.Seleccionarf_Seleccionar_De3                 
+                Case ProductionIndex.Seleccionarf_Seleccionar_De3
                     ' <seleccionarf> ::= SELECCIONAR <campos> DE <campos> <orden> 
 
-                Case ProductionIndex.Seleccionarf_Seleccionar_Times_De3                 
+                Case ProductionIndex.Seleccionarf_Seleccionar_Times_De3
                     ' <seleccionarf> ::= SELECCIONAR '*' DE <campos> <orden> 
 
-                Case ProductionIndex.Seleccionarf_Seleccionar_De4                 
+                Case ProductionIndex.Seleccionarf_Seleccionar_De4
                     ' <seleccionarf> ::= SELECCIONAR <campos> DE <campos> 
 
-                Case ProductionIndex.Seleccionarf_Seleccionar_Times_De4                 
+                Case ProductionIndex.Seleccionarf_Seleccionar_Times_De4
                     ' <seleccionarf> ::= SELECCIONAR '*' DE <campos> 
 
-                Case ProductionIndex.Orden_Ordenar_por_Asc                 
+                Case ProductionIndex.Orden_Ordenar_por_Asc
                     ' <orden> ::= 'ORDENAR_POR' <ID> ASC 
 
-                Case ProductionIndex.Orden_Ordenar_por_Desc                 
+                Case ProductionIndex.Orden_Ordenar_por_Desc
                     ' <orden> ::= 'ORDENAR_POR' <ID> DESC 
 
-                Case ProductionIndex.Orden_Ordenar_por                 
+                Case ProductionIndex.Orden_Ordenar_por
                     ' <orden> ::= 'ORDENAR_POR' <ID> 
 
-                Case ProductionIndex.Otorgar_Otorgar_Permisos_Comma_Semi                 
+                Case ProductionIndex.Otorgar_Otorgar_Permisos_Comma_Semi
                     ' <otorgar> ::= OTORGAR PERMISOS <ID> ',' <rutaB> ';' 
 
-                Case ProductionIndex.Rutab_Dot                 
+                Case ProductionIndex.Rutab_Dot
                     ' <rutaB> ::= <ID> '.' <rutaB> 
 
-                Case ProductionIndex.Rutab_Variable_Dot                 
+                Case ProductionIndex.Rutab_Variable_Dot
                     ' <rutaB> ::= Variable '.' <rutaB> 
 
-                Case ProductionIndex.Rutab_Variable                 
+                Case ProductionIndex.Rutab_Variable
                     ' <rutaB> ::= Variable 
 
-                Case ProductionIndex.Rutab                 
+                Case ProductionIndex.Rutab
                     ' <rutaB> ::= <ID> 
 
-                Case ProductionIndex.Rutab_Times                 
+                Case ProductionIndex.Rutab_Times
                     ' <rutaB> ::= '*' 
 
-                Case ProductionIndex.Denegar_Denegar_Permisos_Comma_Semi                 
+                Case ProductionIndex.Denegar_Denegar_Permisos_Comma_Semi
                     ' <denegar> ::= DENEGAR PERMISOS <ID> ',' <rutaB> ';' 
 
-                Case ProductionIndex.Back_Backup_Usqldump_Semi                 
+                Case ProductionIndex.Back_Backup_Usqldump_Semi
                     ' <back> ::= BACKUP USQLDUMP <ID> <ID> ';' 
 
-                Case ProductionIndex.Back_Backup_Completo_Semi                 
+                Case ProductionIndex.Back_Backup_Completo_Semi
                     ' <back> ::= BACKUP COMPLETO <ID> <ID> ';' 
 
-                Case ProductionIndex.Restaurar_Restaurar_Usqldump_Cadena_Semi                 
+                Case ProductionIndex.Restaurar_Restaurar_Usqldump_Cadena_Semi
                     ' <restaurar> ::= RESTAURAR USQLDUMP Cadena ';' 
 
-                Case ProductionIndex.Restaurar_Restaurar_Completo_Cadena_Semi                 
+                Case ProductionIndex.Restaurar_Restaurar_Completo_Cadena_Semi
                     ' <restaurar> ::= RESTAURAR COMPLETO Cadena ';' 
 
-                Case ProductionIndex.Alterar_Alterar_Tabla_Semi                 
+                Case ProductionIndex.Alterar_Alterar_Tabla_Semi
                     ' <alterar> ::= ALTERAR TABLA <ID> <alterartabla> ';' 
 
-                Case ProductionIndex.Alterar_Alterar_Objeto_Semi                 
+                Case ProductionIndex.Alterar_Alterar_Objeto_Semi
                     ' <alterar> ::= ALTERAR OBJETO <ID> <alterarobjeto> ';' 
 
-                Case ProductionIndex.Alterar_Alterar_Usuario_Cambiar_Password_Eq_Cadena                 
+                Case ProductionIndex.Alterar_Alterar_Usuario_Cambiar_Password_Eq_Cadena
                     ' <alterar> ::= ALTERAR USUARIO <ID> CAMBIAR password '=' Cadena 
 
-                Case ProductionIndex.Alterartabla_Agregar_Lparen_Rparen                 
+                Case ProductionIndex.Alterartabla_Agregar_Lparen_Rparen
                     ' <alterartabla> ::= AGREGAR '(' <campos_tabla> ')' 
 
-                Case ProductionIndex.Alterartabla_Quitar                 
+                Case ProductionIndex.Alterartabla_Quitar
                     ' <alterartabla> ::= QUITAR <campos> 
 
-                Case ProductionIndex.Alterarobjeto_Agregar_Lparen_Rparen                 
+                Case ProductionIndex.Alterarobjeto_Agregar_Lparen_Rparen
                     ' <alterarobjeto> ::= AGREGAR '(' <parametros> ')' 
 
-                Case ProductionIndex.Alterarobjeto_Quitar                 
+                Case ProductionIndex.Alterarobjeto_Quitar
                     ' <alterarobjeto> ::= QUITAR <campos> 
 
-                Case ProductionIndex.Eliminar_Eliminar_Tabla_Semi                 
+                Case ProductionIndex.Eliminar_Eliminar_Tabla_Semi
                     ' <eliminar> ::= ELIMINAR TABLA <ID> ';' 
 
-                Case ProductionIndex.Eliminar_Eliminar_Base_datos_Semi                 
+                Case ProductionIndex.Eliminar_Eliminar_Base_datos_Semi
                     ' <eliminar> ::= ELIMINAR 'BASE_DATOS' <ID> ';' 
 
-                Case ProductionIndex.Eliminar_Eliminar_Objeto_Semi                 
+                Case ProductionIndex.Eliminar_Eliminar_Objeto_Semi
                     ' <eliminar> ::= ELIMINAR OBJETO <ID> ';' 
 
-                Case ProductionIndex.Eliminar_Eliminar_Usuario_Semi                 
+                Case ProductionIndex.Eliminar_Eliminar_Usuario_Semi
                     ' <eliminar> ::= ELIMINAR USUARIO <ID> ';' 
 
-                Case ProductionIndex.Declarar_Declarar_Eq_Semi                 
+                Case ProductionIndex.Declarar_Declarar_Eq_Semi
                     ' <declarar> ::= DECLARAR <variables> <tipo_dato> '=' <expresion> ';' 
 
-                Case ProductionIndex.Declarar_Declarar_Semi                 
+                Case ProductionIndex.Declarar_Declarar_Semi
                     ' <declarar> ::= DECLARAR <variables> <ID> ';' 
 
-                Case ProductionIndex.Declarar_Declarar_Semi2                 
+                Case ProductionIndex.Declarar_Declarar_Semi2
                     ' <declarar> ::= DECLARAR <variables> <tipo_dato> ';' 
 
-                Case ProductionIndex.Variables_Variable_Comma                 
+                Case ProductionIndex.Variables_Variable_Comma
                     ' <variables> ::= Variable ',' <variables> 
 
-                Case ProductionIndex.Variables_Variable                 
+                Case ProductionIndex.Variables_Variable
                     ' <variables> ::= Variable 
 
-                Case ProductionIndex.Asignacion_Eq_Semi                 
+                Case ProductionIndex.Asignacion_Eq_Semi
                     ' <asignacion> ::= <rutaB> '=' <aritemtica> ';' 
 
-                Case ProductionIndex.Asignacion_Variable_Eq_Semi                 
+                Case ProductionIndex.Asignacion_Variable_Eq_Semi
                     ' <asignacion> ::= Variable '=' <aritemtica> ';' 
 
-                Case ProductionIndex.Tif_Si_Lparen_Rparen_Lbrace_Rbrace                 
+                Case ProductionIndex.Tif_Si_Lparen_Rparen_Lbrace_Rbrace
                     ' <Tif> ::= SI '(' <logica> ')' '{' <instrucciones> '}' <sino> 
 
-                Case ProductionIndex.Tif_Si_Lparen_Rparen_Lbrace_Rbrace2                 
+                Case ProductionIndex.Tif_Si_Lparen_Rparen_Lbrace_Rbrace2
                     ' <Tif> ::= SI '(' <logica> ')' '{' <instrucciones> '}' 
 
-                Case ProductionIndex.Sino_Sino_Lbrace_Rbrace                 
+                Case ProductionIndex.Sino_Sino_Lbrace_Rbrace
                     ' <sino> ::= SINO '{' <instrucciones> '}' 
 
-                Case ProductionIndex.Sino_Sino                 
+                Case ProductionIndex.Sino_Sino
                     ' <sino> ::= SINO <Tif> 
 
-                Case ProductionIndex.Tswitch_Selecciona_Lparen_Rparen_Lbrace_Rbrace                 
+                Case ProductionIndex.Tswitch_Selecciona_Lparen_Rparen_Lbrace_Rbrace
                     ' <Tswitch> ::= SELECCIONA '(' <expresion> ')' '{' <casos> '}' 
 
-                Case ProductionIndex.Casos                 
+                Case ProductionIndex.Casos
                     ' <casos> ::= <caso> <casos> 
 
-                Case ProductionIndex.Casos2                 
+                Case ProductionIndex.Casos2
                     ' <casos> ::= <caso> 
 
-                Case ProductionIndex.Casos3                 
+                Case ProductionIndex.Casos3
                     ' <casos> ::= <defecto> 
 
-                Case ProductionIndex.Caso_Caso_Colon                 
+                Case ProductionIndex.Caso_Caso_Colon
                     ' <caso> ::= CASO <expresion> ':' <instrucciones> 
 
-                Case ProductionIndex.Defecto_Defecto_Colon                 
+                Case ProductionIndex.Defecto_Defecto_Colon
                     ' <defecto> ::= DEFECTO ':' <instrucciones> 
 
-                Case ProductionIndex.Tfor_Para_Lparen_Declarar_Variable_Integer_Eq_Semi_Semi_Rparen_Lbrace_Rbrace                 
+                Case ProductionIndex.Tfor_Para_Lparen_Declarar_Variable_Integer_Eq_Semi_Semi_Rparen_Lbrace_Rbrace
                     ' <Tfor> ::= PARA '(' DECLARAR Variable INTEGER '=' <expresion> ';' <logica> ';' <opciones_for> ')' '{' <instrucciones> '}' 
 
-                Case ProductionIndex.Opciones_for_Plusplus                 
+                Case ProductionIndex.Opciones_for_Plusplus
                     ' <opciones_for> ::= '++' 
 
-                Case ProductionIndex.Opciones_for_Minusminus                 
+                Case ProductionIndex.Opciones_for_Minusminus
                     ' <opciones_for> ::= '--' 
 
-                Case ProductionIndex.Twhile_Mientras_Lparen_Rparen_Lbrace_Rbrace                 
+                Case ProductionIndex.Twhile_Mientras_Lparen_Rparen_Lbrace_Rbrace
                     ' <Twhile> ::= MIENTRAS '(' <logica> ')' '{' <instrucciones> '}' 
 
-                Case ProductionIndex.Contar_Contar_Lparen_Ltlt_Gtgt_Rparen_Semi                 
+                Case ProductionIndex.Contar_Contar_Lparen_Ltlt_Gtgt_Rparen_Semi
                     ' <contar> ::= CONTAR '(' '<<' <seleccionarf> '>>' ')' ';' 
 
-                Case ProductionIndex.Contarasig_Contar_Lparen_Ltlt_Gtgt_Rparen                 
+                Case ProductionIndex.Contarasig_Contar_Lparen_Ltlt_Gtgt_Rparen
                     ' <contarAsig> ::= CONTAR '(' '<<' <seleccionarf> '>>' ')' 
 
-                Case ProductionIndex.Tipo_dato_Integer                 
+                Case ProductionIndex.Tipo_dato_Integer
                     ' <tipo_dato> ::= INTEGER 
 
-                Case ProductionIndex.Tipo_dato_Text                 
+                Case ProductionIndex.Tipo_dato_Text
                     ' <tipo_dato> ::= TEXT 
 
-                Case ProductionIndex.Tipo_dato_Double                 
+                Case ProductionIndex.Tipo_dato_Double
                     ' <tipo_dato> ::= DOUBLE 
 
-                Case ProductionIndex.Tipo_dato_Bool                 
+                Case ProductionIndex.Tipo_dato_Bool
                     ' <tipo_dato> ::= BOOL 
 
-                Case ProductionIndex.Tipo_dato_Date                 
+                Case ProductionIndex.Tipo_dato_Date
                     ' <tipo_dato> ::= DATE 
 
-                Case ProductionIndex.Tipo_dato_Datetime                 
+                Case ProductionIndex.Tipo_dato_Datetime
                     ' <tipo_dato> ::= DATETIME 
 
-                Case ProductionIndex.Logica_Pipepipe                 
+                Case ProductionIndex.Logica_Pipepipe
                     ' <logica> ::= <logica> '||' <relacional> 
 
-                Case ProductionIndex.Logica_Ampamp                 
+                Case ProductionIndex.Logica_Ampamp
                     ' <logica> ::= <logica> '&&' <relacional> 
 
-                Case ProductionIndex.Logica_Exclam                 
+                Case ProductionIndex.Logica_Exclam
                     ' <logica> ::= '!' <logica> 
 
-                Case ProductionIndex.Logica_Lparen_Rparen                 
+                Case ProductionIndex.Logica_Lparen_Rparen
                     ' <logica> ::= '(' <logica> ')' 
 
-                Case ProductionIndex.Logica                 
+                Case ProductionIndex.Logica
                     ' <logica> ::= <relacional> 
 
-                Case ProductionIndex.Relacional_Eqeq                 
+                Case ProductionIndex.Relacional_Eqeq
                     ' <relacional> ::= <relacional> '==' <aritemtica> 
 
-                Case ProductionIndex.Relacional_Exclameq                 
+                Case ProductionIndex.Relacional_Exclameq
                     ' <relacional> ::= <relacional> '!=' <aritemtica> 
 
-                Case ProductionIndex.Relacional_Lteq                 
+                Case ProductionIndex.Relacional_Lteq
                     ' <relacional> ::= <relacional> '<=' <aritemtica> 
 
-                Case ProductionIndex.Relacional_Gteq                 
+                Case ProductionIndex.Relacional_Gteq
                     ' <relacional> ::= <relacional> '>=' <aritemtica> 
 
-                Case ProductionIndex.Relacional_Lt                 
+                Case ProductionIndex.Relacional_Lt
                     ' <relacional> ::= <relacional> '<' <aritemtica> 
 
-                Case ProductionIndex.Relacional_Gt                 
+                Case ProductionIndex.Relacional_Gt
                     ' <relacional> ::= <relacional> '>' <aritemtica> 
 
-                Case ProductionIndex.Relacional_Lparen_Rparen                 
+                Case ProductionIndex.Relacional_Lparen_Rparen
                     ' <relacional> ::= '(' <relacional> ')' 
 
-                Case ProductionIndex.Relacional                 
+                Case ProductionIndex.Relacional
                     ' <relacional> ::= <aritemtica> 
 
-                Case ProductionIndex.Aritemtica_Plus                 
+                Case ProductionIndex.Aritemtica_Plus
                     ' <aritemtica> ::= <aritemtica> '+' <expresion> 
 
-                Case ProductionIndex.Aritemtica_Minus                 
+                Case ProductionIndex.Aritemtica_Minus
                     ' <aritemtica> ::= <aritemtica> '-' <expresion> 
 
-                Case ProductionIndex.Aritemtica_Times                 
+                Case ProductionIndex.Aritemtica_Times
                     ' <aritemtica> ::= <aritemtica> '*' <expresion> 
 
-                Case ProductionIndex.Aritemtica_Div                 
+                Case ProductionIndex.Aritemtica_Div
                     ' <aritemtica> ::= <aritemtica> '/' <expresion> 
 
-                Case ProductionIndex.Aritemtica_Caret                 
+                Case ProductionIndex.Aritemtica_Caret
                     ' <aritemtica> ::= <aritemtica> '^' <expresion> 
 
-                Case ProductionIndex.Aritemtica_Lparen_Rparen                 
+                Case ProductionIndex.Aritemtica_Lparen_Rparen
                     ' <aritemtica> ::= '(' <aritemtica> ')' 
 
-                Case ProductionIndex.Aritemtica_Minus2                 
+                Case ProductionIndex.Aritemtica_Minus2
                     ' <aritemtica> ::= '-' <expresion> 
 
-                Case ProductionIndex.Aritemtica                 
+                Case ProductionIndex.Aritemtica
                     ' <aritemtica> ::= <expresion> 
 
-                Case ProductionIndex.Expresion_Entero                 
+                Case ProductionIndex.Expresion_Entero
                     ' <expresion> ::= Entero 
 
-                Case ProductionIndex.Expresion_Cadena                 
+                Case ProductionIndex.Expresion_Cadena
                     ' <expresion> ::= Cadena 
 
-                Case ProductionIndex.Expresion_Fecha                 
+                Case ProductionIndex.Expresion_Fecha
                     ' <expresion> ::= Fecha 
 
-                Case ProductionIndex.Expresion_Fechahora                 
+                Case ProductionIndex.Expresion_Fechahora
                     ' <expresion> ::= FechaHora 
 
-                Case ProductionIndex.Expresion_Doble                 
+                Case ProductionIndex.Expresion_Doble
                     ' <expresion> ::= Doble 
 
-                Case ProductionIndex.Expresion                 
+                Case ProductionIndex.Expresion
                     ' <expresion> ::= <llamada> 
 
-                Case ProductionIndex.Expresion2                 
+                Case ProductionIndex.Expresion2
                     ' <expresion> ::= <contarAsig> 
 
-                Case ProductionIndex.Expresion3                 
+                Case ProductionIndex.Expresion3
                     ' <expresion> ::= <campos> 
 
-                Case ProductionIndex.Llamada_Fecha_Lparen_Rparen                 
+                Case ProductionIndex.Llamada_Fecha_Lparen_Rparen
                     ' <llamada> ::= Fecha '(' ')' 
 
-                Case ProductionIndex.Llamada_Fecha_hora_Lparen_Rparen                 
+                Case ProductionIndex.Llamada_Fecha_hora_Lparen_Rparen
                     ' <llamada> ::= 'FECHA_HORA' '(' ')' 
 
-                Case ProductionIndex.Llamada_Lparen_Rparen                 
+                Case ProductionIndex.Llamada_Lparen_Rparen
                     ' <llamada> ::= <rutaB> '(' ')' 
 
-                Case ProductionIndex.Llamada_Lparen_Rparen2                 
+                Case ProductionIndex.Llamada_Lparen_Rparen2
                     ' <llamada> ::= <rutaB> '(' <valores> ')' 
 
-                Case ProductionIndex.Logica_consultas_En                 
+                Case ProductionIndex.Logica_consultas_En
                     ' <logica_consultas> ::= <logica_consulta> EN <logica_consultas> 
 
-                Case ProductionIndex.Logica_consultas                 
+                Case ProductionIndex.Logica_consultas
                     ' <logica_consultas> ::= <logica_consulta> 
 
-                Case ProductionIndex.Logica_consulta_Lparen_Rparen                 
+                Case ProductionIndex.Logica_consulta_Lparen_Rparen
                     ' <logica_consulta> ::= '(' <seleccionar> ')' 
 
-                Case ProductionIndex.Logica_consulta                 
+                Case ProductionIndex.Logica_consulta
                     ' <logica_consulta> ::= <logica> 
 
                 Case ProductionIndex.Id_Identificador
                     ' <ID> ::= identificador 
 
-                Case ProductionIndex.Rno_No                 
+                Case ProductionIndex.Rno_No
                     ' <RNO> ::= NO 
 
-                Case ProductionIndex.Rnulo_Nulo                 
+                Case ProductionIndex.Rnulo_Nulo
                     ' <RNULO> ::= Nulo 
 
             End Select
-        End With     
+        End With
 
         Return Result
     End Function

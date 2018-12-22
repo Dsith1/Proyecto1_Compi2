@@ -34,6 +34,7 @@ namespace Proyecto1_Compi2
         Thread hilo;
         string recibo = "";
         string retorno = "";
+        bool reporte;
 
         public Form1()
         {
@@ -85,7 +86,7 @@ namespace Proyecto1_Compi2
 
             string respuesta = esCadenaValidaPaquete(entrada, gramatica);
 
-            if (retorno == "")
+            if (respuesta.Contains("login"))
             {
                 retorno = respuesta;
             }
@@ -106,7 +107,52 @@ namespace Proyecto1_Compi2
             //MessageBox.Show("Arbol de Analisis Sintactico Constuido !!!");
 
             string respuesta = esCadenaValidSQL(entrada, gramatica);
-            retorno = "[\"paquete\": \"usql\",\"datos\": ['" + respuesta + "']]$";
+
+            if (reporte)
+            {
+                string[] separador = respuesta.Split(new string[] { ";;" }, StringSplitOptions.None);
+
+                string[] datos = separador[1].Split(';');
+                separador[0] = separador[0].Trim();
+                string[] encabezado = separador[0].Split(',');
+
+                respuesta = "<table style=\"width:100%\">\n";
+
+                respuesta += "<tr>\n";
+
+                for(int x = 0; x < encabezado.Length; x++)
+                {
+                    respuesta += "<th>" + encabezado[x] + "</th>\n";
+                }
+
+                respuesta += "</tr>\n";
+
+                for (int x = 0; x < datos.Length-1; x++)
+                {
+                    string[] valor = datos[x].Split(',');
+
+                    respuesta += "<tr>\n";
+
+                    for (int y = 0; y < valor.Length; y++)
+                    {
+                        respuesta += "<td>" + valor[y] + "</td>\n";
+                    }
+
+                    respuesta += "</tr>\n";
+
+                }
+
+                respuesta += "</table>";
+
+                retorno = "[\"paquete\": \"reporte\",\"datos\": [" + respuesta + "]]$";
+
+            }
+            else
+            {
+                retorno = "[\"paquete\": \"usql\",\"datos\": ['" + respuesta + "']]$";
+            }
+
+            
 
             //MessageBox.Show("Grafo Finalizado");
 
@@ -317,52 +363,6 @@ namespace Proyecto1_Compi2
 
         }
 
-        public void Conectar()
-        {
-            Socket miPrimerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            // paso 2 - creamos el socket
-            IPEndPoint miDireccion = new IPEndPoint(IPAddress.Any, 6000);
-            //paso 3 -IPAddress.Any significa que va a escuchar al cliente en toda la red 
-
-            byte[] bytes = new Byte[1024];
-            try
-            {
-                // paso 4
-                miPrimerSocket.Bind(miDireccion); // Asociamos el socket a miDireccion
-                miPrimerSocket.Listen(1); // Lo ponemos a escucha
-
-                Console.WriteLine("Escuchando...");
-
-                Socket Escuchar = miPrimerSocket.Accept();
-                //creamos el nuevo socket, para comenzar a trabajar con él
-                //La aplicación queda en reposo hasta que el socket se conecte a el cliente
-                //Una vez conectado, la aplicación sigue su camino  
-                Console.WriteLine("Conectado con exito");
-
-
-                int bytesRec = Escuchar.Receive(bytes);
-
-
-
-                cadena += Encoding.ASCII.GetString(bytes, 0, bytesRec);
-
-
-
-
-
-                /*Aca ponemos todo lo que queramos hacer con el socket, osea antes de 
-                cerrarlo je*/
-                miPrimerSocket.Close(); //Luego lo cerramos
-
-            }
-            catch (Exception error)
-            {
-                Console.WriteLine("Error: {0}", error.ToString());
-            }
-            Console.WriteLine("Presione cualquier tecla para terminar");
-            Console.ReadLine();
-
-        }
 
         string ActuarPaquete(ParseTreeNode nodo)
         {
@@ -408,6 +408,13 @@ namespace Proyecto1_Compi2
                 case "usql":
 
                     resultado = nodo.ChildNodes[4].Token.Text;
+                    break;
+
+
+                case "reporte":
+
+                    resultado = nodo.ChildNodes[4].Token.Text;
+                    reporte = true;
                     break;
 
                 case "fin":
@@ -3535,7 +3542,7 @@ namespace Proyecto1_Compi2
                             retorno += "]$";
                         }
 
-                        buffer = Encoding.UTF8.GetBytes(retorno);
+                         buffer = Encoding.UTF8.GetBytes(retorno);
                         acc.Send(buffer, 0, buffer.Length, 0);
                     }
 

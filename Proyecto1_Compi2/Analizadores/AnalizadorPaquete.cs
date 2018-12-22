@@ -40,6 +40,7 @@ namespace Proyecto1_Compi2.Analizadores
                         login = new NonTerminal("login"),
                         paquete = new NonTerminal("paquete"),
                         sublogin = new NonTerminal("sublogin"),
+                        reporte = new NonTerminal("reporte"),
                         fin = new NonTerminal("fin"),
                         usql = new NonTerminal("usql");
 
@@ -60,11 +61,14 @@ namespace Proyecto1_Compi2.Analizadores
 
 
             paquete.Rule = PAQUETE + ":" + fin
-                         | PAQUETE + ":" + usql;
+                         | PAQUETE + ":" + usql
+                         | PAQUETE + ":" + reporte;
+
+
+            reporte.Rule=REPORTE + COMA+ INSTRUCCION + ":" + DATOS + COMA;
 
             fin.Rule = FIN;
-
-
+            
 
             usql.Rule = USQL + COMA + INSTRUCCION + ":" + DATOS + COMA;
 

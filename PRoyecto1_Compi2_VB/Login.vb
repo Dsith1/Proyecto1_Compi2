@@ -11,6 +11,7 @@ Public Class Login
 
         salida = "[ ""validar"": 1500, ""login"":[ ""comando"" => 'seleccionar * de usuarios donde usuario = """ + usuario + """"
         salida = salida + " && password = """ + contra + """']]$"
+        UserActual = usuario
 
         checkNo(salida)
 
@@ -52,6 +53,7 @@ Public Class Login
 
                 Else
                     login = False
+                    UserActual = ""
                 End If
             End If
 

@@ -89,6 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Analizadores\GramaticaUSQL.vb" />
+    <Compile Include="Analizadores\HTML.vb" />
     <Compile Include="Form1.vb">
       <SubType>Form</SubType>
     </Compile>

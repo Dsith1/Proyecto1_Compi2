@@ -23,9 +23,11 @@ Partial Class Form1
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.TextBox2 = New System.Windows.Forms.TextBox()
         Me.TextBox1 = New FastColoredTextBoxNS.FastColoredTextBox()
         Me.Button1 = New System.Windows.Forms.Button()
-        Me.TextBox2 = New System.Windows.Forms.TextBox()
+        Me.Button2 = New System.Windows.Forms.Button()
+        Me.TreeView1 = New System.Windows.Forms.TreeView()
         Me.Panel1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -34,30 +36,10 @@ Partial Class Form1
         Me.Panel1.Controls.Add(Me.TextBox2)
         Me.Panel1.Controls.Add(Me.TextBox1)
         Me.Panel1.Dock = System.Windows.Forms.DockStyle.Right
-        Me.Panel1.Location = New System.Drawing.Point(186, 0)
+        Me.Panel1.Location = New System.Drawing.Point(313, 0)
         Me.Panel1.Name = "Panel1"
-        Me.Panel1.Size = New System.Drawing.Size(787, 561)
+        Me.Panel1.Size = New System.Drawing.Size(660, 561)
         Me.Panel1.TabIndex = 0
-        '
-        'TextBox1
-        '
-        Me.TextBox1.AutoScrollMinSize = New System.Drawing.Size(25, 15)
-        Me.TextBox1.Cursor = System.Windows.Forms.Cursors.IBeam
-        Me.TextBox1.Dock = System.Windows.Forms.DockStyle.Top
-        Me.TextBox1.Language = FastColoredTextBoxNS.Language.CSharp
-        Me.TextBox1.Location = New System.Drawing.Point(0, 0)
-        Me.TextBox1.Name = "TextBox1"
-        Me.TextBox1.Size = New System.Drawing.Size(787, 330)
-        Me.TextBox1.TabIndex = 1
-        '
-        'Button1
-        '
-        Me.Button1.Location = New System.Drawing.Point(25, 38)
-        Me.Button1.Name = "Button1"
-        Me.Button1.Size = New System.Drawing.Size(75, 23)
-        Me.Button1.TabIndex = 3
-        Me.Button1.Text = "Analizar"
-        Me.Button1.UseVisualStyleBackColor = True
         '
         'TextBox2
         '
@@ -68,14 +50,52 @@ Partial Class Form1
         Me.TextBox2.Name = "TextBox2"
         Me.TextBox2.ReadOnly = True
         Me.TextBox2.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.TextBox2.Size = New System.Drawing.Size(787, 175)
+        Me.TextBox2.Size = New System.Drawing.Size(660, 175)
         Me.TextBox2.TabIndex = 2
+        '
+        'TextBox1
+        '
+        Me.TextBox1.AutoScrollMinSize = New System.Drawing.Size(25, 15)
+        Me.TextBox1.Cursor = System.Windows.Forms.Cursors.IBeam
+        Me.TextBox1.Dock = System.Windows.Forms.DockStyle.Top
+        Me.TextBox1.Language = FastColoredTextBoxNS.Language.CSharp
+        Me.TextBox1.Location = New System.Drawing.Point(0, 0)
+        Me.TextBox1.Name = "TextBox1"
+        Me.TextBox1.Size = New System.Drawing.Size(660, 330)
+        Me.TextBox1.TabIndex = 1
+        '
+        'Button1
+        '
+        Me.Button1.Location = New System.Drawing.Point(25, 38)
+        Me.Button1.Name = "Button1"
+        Me.Button1.Size = New System.Drawing.Size(190, 23)
+        Me.Button1.TabIndex = 3
+        Me.Button1.Text = "Analizar"
+        Me.Button1.UseVisualStyleBackColor = True
+        '
+        'Button2
+        '
+        Me.Button2.Location = New System.Drawing.Point(25, 89)
+        Me.Button2.Name = "Button2"
+        Me.Button2.Size = New System.Drawing.Size(190, 23)
+        Me.Button2.TabIndex = 4
+        Me.Button2.Text = "Cerrar Sesion"
+        Me.Button2.UseVisualStyleBackColor = True
+        '
+        'TreeView1
+        '
+        Me.TreeView1.Location = New System.Drawing.Point(25, 154)
+        Me.TreeView1.Name = "TreeView1"
+        Me.TreeView1.Size = New System.Drawing.Size(190, 367)
+        Me.TreeView1.TabIndex = 5
         '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(973, 561)
+        Me.Controls.Add(Me.TreeView1)
+        Me.Controls.Add(Me.Button2)
         Me.Controls.Add(Me.Button1)
         Me.Controls.Add(Me.Panel1)
         Me.Name = "Form1"
@@ -90,4 +110,6 @@ Partial Class Form1
     Friend WithEvents TextBox1 As FastColoredTextBoxNS.FastColoredTextBox
     Friend WithEvents Button1 As Button
     Friend WithEvents TextBox2 As TextBox
+    Friend WithEvents Button2 As Button
+    Friend WithEvents TreeView1 As TreeView
 End Class
