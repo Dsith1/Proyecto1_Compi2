@@ -35,6 +35,8 @@ namespace Proyecto1_Compi2
         string recibo = "";
         string retorno = "";
         bool reporte;
+        bool restauracion;
+        bool Ruta;
 
         public Form1()
         {
@@ -349,7 +351,7 @@ namespace Proyecto1_Compi2
             //Creamos el delegado 
             ThreadStart delegado = new ThreadStart(CorrerProceso);
             //Creamos la instancia del hilo 
-            hilo = new Thread(delegado);
+            hilo = new Thread(delegado,500000000);
             //Iniciamos el hilo 
             hilo.Start();
 
@@ -362,7 +364,6 @@ namespace Proyecto1_Compi2
 
 
         }
-
 
         string ActuarPaquete(ParseTreeNode nodo)
         {
@@ -487,12 +488,14 @@ namespace Proyecto1_Compi2
 
                         string instrucciones =codigo.Substring(inicio - 1, nodo.ChildNodes[0].Span.Length);
 
-                        if (instrucciones.Contains("BACKUP")|| instrucciones.Contains("RESTAURAR"))
+                        if (instrucciones.Contains("BACKUP")|| instrucciones.Contains("RESTAURAR") || restauracion)
                         {
 
                         }
                         else
                         {
+
+                            
                             manejo.Add_historial(instrucciones, BaseActual);
                         }
                         
@@ -768,9 +771,23 @@ namespace Proyecto1_Compi2
 
                                 string p = nodo.ChildNodes[6].Span.Location.ToString();
 
-                                int inicio = Convert.ToInt32(p.Split(':')[1].Trim(')'));
+                                int inicio;
+                                string instrucciones;
+                                if (restauracion)
+                                {
 
-                                string instrucciones = codigo.Substring(inicio-1, nodo.ChildNodes[6].Span.Length+1);
+                                    inicio = Convert.ToInt32(p.Split(':')[1].Trim(')'));
+                                    int linea = Convert.ToInt32(p.Split(':')[0].Trim('('));
+
+                                    string[] lineas = codigo.Split('\n');
+
+                                    instrucciones = lineas[linea - 1].Substring(inicio - 1, nodo.ChildNodes[6].Span.Length);
+                                }
+                                else
+                                {
+                                    inicio = Convert.ToInt32(p.Split(':')[1].Trim(')'));
+                                    instrucciones = codigo.Substring(inicio - 1, nodo.ChildNodes[6].Span.Length + 1);
+                                }
 
                                 resultado = manejo.Crear_Procedimiento(TablaAux, BaseActual, campos, instrucciones);
                             }
@@ -780,9 +797,25 @@ namespace Proyecto1_Compi2
 
                                 string p = nodo.ChildNodes[5].Span.Location.ToString();
 
-                                int inicio =Convert.ToInt32( p.Split(':')[1].Trim(')'));
+                                int inicio;
+                                string instrucciones;
+                                if (restauracion)
+                                {
 
-                                string instrucciones = codigo.Substring(inicio-1, nodo.ChildNodes[5].Span.Length+1);
+                                    inicio = Convert.ToInt32(p.Split(':')[1].Trim(')'));
+                                    int linea= Convert.ToInt32(p.Split(':')[0].Trim('('));
+
+                                    string[] lineas = codigo.Split('\n');
+
+                                    instrucciones = lineas[linea-1].Substring(inicio - 1, nodo.ChildNodes[5].Span.Length);
+                                }
+                                else
+                                {
+                                    inicio = Convert.ToInt32(p.Split(':')[1].Trim(')'));
+                                    instrucciones = codigo.Substring(inicio - 1, nodo.ChildNodes[5].Span.Length + 1);
+                                }
+                                
+                                
 
                                 resultado = manejo.Crear_Procedimiento(TablaAux, BaseActual, "", instrucciones);
 
@@ -876,6 +909,32 @@ namespace Proyecto1_Compi2
 
                                 resultado = val[1];
                             }
+                            else if (resultado.Contains("."))
+                            {
+                                string[] var = resultado.Split('.');
+
+                                for (int x = 0; x < var.Length; x++)
+                                {
+                                    if (resultado.Contains("@"))
+                                    {
+
+                                        resultado = Get_VariableV(var[x]);
+                                        string[] val = resultado.Split(';');
+
+
+
+                                        resultado = val[1];
+                                    }
+                                    else
+                                    {
+
+                                    }
+
+                                    
+                                }
+
+                            }
+
                             else if (resultado.Contains("@"))
                             {
                                 resultado=Get_VariableV(resultado);
@@ -1117,8 +1176,9 @@ namespace Proyecto1_Compi2
 
                         if (nodo.ChildNodes.Count == 3)
                         {
-                            resultado = ActuarSQL(nodo.ChildNodes[0]) + ",";
-
+                            Ruta=true;
+                            resultado = ActuarSQL(nodo.ChildNodes[0]) + ".";
+                            Ruta = false;
                             resultado += nodo.ChildNodes[2].Token.Text;
 
                         }
@@ -1128,10 +1188,15 @@ namespace Proyecto1_Compi2
                             
                             resultado = nodo.ChildNodes[0].Token.Text;
 
-                            if (resultado.Contains("@"))
+                            if (Ruta==false)
                             {
-                                resultado = Get_VariableV(resultado);
+                                if (resultado.Contains("@"))
+                                {
+                                    resultado = Get_VariableV(resultado);
+                                }
                             }
+
+                            
                         }
 
 
@@ -2407,7 +2472,115 @@ namespace Proyecto1_Compi2
                     {
                         if (nodo.ChildNodes[0].Term.Name.ToString().Equals("rutaB"))
                         {
-                            resultado = ActuarSQL(nodo.ChildNodes[0]);
+                            string var = ActuarSQL(nodo.ChildNodes[0]);
+
+                            string[] niveles = var.Split('.');
+                            string variable;
+
+                            string valor = ActuarSQL(nodo.ChildNodes[2]);
+
+                            Entorno aux = Eactual;
+                            bool quebrado=false;
+                            string tipo="";
+                            string asignar = "";
+
+                            for (int x = 0; x < niveles.Length; x++)
+                            {
+                                if (niveles[x].Contains("@"))
+                                {
+                                    bool seguirV = true;
+                                    bool EncontradoV = false;
+                                    while (seguirV)
+                                    {
+                                        if (aux.variables.existe(niveles[x]))
+                                        {
+                                            seguirV = false;
+                                            EncontradoV = true;
+                                            variable = niveles[x];
+                                        }
+                                        else
+                                        {
+                                            if (aux.Padre != null)
+                                            {
+                                                aux = aux.Padre;
+                                            }
+                                            else
+                                            {
+                                                seguirV = false;
+                                                break;
+                                            }
+                                        }
+                                    }
+
+                                    if (EncontradoV)
+                                    {
+                                        tipo = aux.variables.aux.tipo;
+                                    }
+                                    else
+                                    {
+                                        quebrado = true;
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    if (manejo.campos_Objeto(tipo, BaseActual).Contains(niveles[x])){
+
+                                        asignar = niveles[x];
+                                        tipo = manejo.tipo_Objeto(tipo, BaseActual, niveles[x]);
+                                    }
+
+                                }
+                                
+                            }
+
+                            if (quebrado)
+                            {
+                                resultado = "Error";
+                            }
+                            else
+                            {
+                                bool compatible;
+
+                                valor = Remplazo_tipos(valor);
+
+                                string[] conaux = valor.Split(';');
+
+                                string ntipo = conaux[0];
+
+                                if (tipo.Equals(ntipo))
+                                {
+                                    compatible = true;
+                                }
+                                else if (tipo.Equals("DOUBLE"))
+                                {
+                                    if (ntipo.Equals("INTEGER"))
+                                    {
+                                        compatible = true;
+                                    }
+                                    else
+                                    {
+                                        compatible = false;
+                                    }
+                                }
+                                else
+                                {
+                                    compatible = false;
+                                }
+
+                                if (compatible)
+                                {
+                                    aux.variables.aux.SetValor(asignar+"-"+conaux[1]);
+                                }
+                                else
+                                {
+                                    resultado = "\r\nError de tipos";
+                                }
+
+                            }
+
+                           
+
                         }
                         else
                         {
@@ -2760,18 +2933,35 @@ namespace Proyecto1_Compi2
 
                             string[] campo = campos.Split(';');
 
+                            nombre += "_";
                             for (int x = 0; x < campo.Length; x++)
                             {
-                                TablaAux += campo[x].Split(',')[0] + "_";
+                                nombre += campo[x].Split(',')[0] + "_";
                             }
 
-                            TablaAux = TablaAux.Trim('_');
+                            nombre = nombre.Trim('_');
 
                             string p = nodo.ChildNodes[7].Span.Location.ToString();
 
-                            int inicio = Convert.ToInt32(p.Split(':')[1].Trim(')'));
+                            int inicio;
 
-                            string instrucciones = codigo.Substring(inicio - 1, nodo.ChildNodes[7].Span.Length + 1);
+                            string instrucciones;
+
+                            if (restauracion)
+                            {
+
+                                inicio = Convert.ToInt32(p.Split(':')[1].Trim(')'));
+                                int linea = Convert.ToInt32(p.Split(':')[0].Trim('('));
+
+                                string[] lineas = codigo.Split('\n');
+
+                                instrucciones = lineas[linea - 1].Substring(inicio - 1, nodo.ChildNodes[7].Span.Length);
+                            }
+                            else
+                            {
+                                inicio = Convert.ToInt32(p.Split(':')[1].Trim(')'));
+                                instrucciones = codigo.Substring(inicio - 1, nodo.ChildNodes[7].Span.Length + 1);
+                            }
 
                             manejo.Crear_funcion(nombre, BaseActual, campos, instrucciones, tipo);
 
@@ -2793,9 +2983,25 @@ namespace Proyecto1_Compi2
 
                             string p = nodo.ChildNodes[6].Span.Location.ToString();
 
-                            int inicio = Convert.ToInt32(p.Split(':')[1].Trim(')'));
+                            int inicio;
 
-                            string instrucciones = codigo.Substring(inicio - 1, nodo.ChildNodes[6].Span.Length + 1);
+                            string instrucciones;
+
+                            if (restauracion)
+                            {
+
+                                inicio = Convert.ToInt32(p.Split(':')[1].Trim(')'));
+                                int linea = Convert.ToInt32(p.Split(':')[0].Trim('('));
+
+                                string[] lineas = codigo.Split('\n');
+
+                                instrucciones = lineas[linea - 1].Substring(inicio - 1, nodo.ChildNodes[6].Span.Length);
+                            }
+                            else
+                            {
+                                inicio = Convert.ToInt32(p.Split(':')[1].Trim(')'));
+                                instrucciones = codigo.Substring(inicio - 1, nodo.ChildNodes[6].Span.Length + 1);
+                            }
 
                             manejo.Crear_funcion(nombre, BaseActual, "", instrucciones, tipo);
 
@@ -3240,9 +3446,14 @@ namespace Proyecto1_Compi2
                             }
                             else
                             {
-                                string codigoR = manejo.LeerUsql(archivof.Trim('"'));                                
+                                string codigoR = manejo.LeerUsql(archivof.Trim('"'));
+
+                                restauracion = true;
 
                                 Analizar(codigoR);
+
+                                manejo.Add_historial(codigoR, BaseActual);
+
 
                                 resultado = "\r\nLA Base "+BaseActual+" ha sido Restaurada";
                             }

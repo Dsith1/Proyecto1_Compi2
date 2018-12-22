@@ -56,6 +56,8 @@ namespace Proyecto1_Compi2.Elementos
                 }
                 else
                 {
+                    contra = contra.Trim('"');
+
                     Usuario nuevo = new Usuario(nombre, contra);
 
                     maestro.usuarios.Insertar(nuevo);
@@ -208,129 +210,131 @@ namespace Proyecto1_Compi2.Elementos
 
             maestro.bases.existe(Base);
 
-            if (GetPermiso(usuario, Base)){
-
-                if (maestro.bases.aux.tablas.existe(nombre))
-                {
-                    return "Ya Existe la Tabla " + nombre + " En la Base " + Base;
-                }
-                else
-                {
-
-                    string tipos = "";
-                    string fields = "";
-                    string atrib = "";
-
-                    string[] campo = campos.Split(';');
-
-                    for (int x = 0; x < campo.Length; x++)
-                    {
-                        string[] dato = campo[x].Split(',');
-
-                        tipos += dato[0] + ",";
-                        fields += dato[1] + ",";
-
-                        if (dato.Length==2)
-                        {
-                            atrib += "-,";
-                        }
-
-                        for(int y = 2; y < dato.Length; y++)
-                        {
-                            atrib += dato[y] + ";";
-                        }
-                        atrib = atrib.Trim(';');
-                        atrib += ",";
-                    }
-
-                    tipos = tipos.Trim(',');
-                    fields = fields.Trim(',');
-                    atrib = atrib.Trim(',');
-
-                    if (atrib.Contains("Llave_Foranea"))
-                    {
-                        string[] atributos = atrib.Split(',');
-
-                        int ba = 0;
-                        bool seguir = true;
-
-                        while (seguir)
-                        {
-                            if (atributos[ba].Contains("Llave_Foranea"))
-                            {
-                                seguir = false;
-                            }
-                            else
-                            {
-                                ba++;
-                            }
-                        }
-
-                        string[] subatrib = atributos[ba].Split(' ');
-
-                        string baseR = subatrib[subatrib.Length - 1];
-
-                        if (maestro.bases.aux.tablas.existe(baseR))
-                        {
-                            int pllave = getPLlave(maestro.bases.aux.tablas.aux);
-
-                            string tipoR = getTipoLlave(maestro.bases.aux.tablas.aux, pllave);
-
-                            if (tipos.Split(',')[ba].Equals(tipoR))
-                            {
-                                Tabla nuevo = new Tabla(nombre, tipos, fields);
-
-                                nuevo.atributos = atrib;
-
-                                nuevo.SetRuta(System.IO.Path.Combine(@"c:\DBMS", Base + "_" + nombre + ".usac"));
-
-                                maestro.bases.aux.tablas.Insertar(nuevo);
-                                if (lectura == 0)
-                                {
-                                    commit();
-                                }
-
-                                return "Se Ha Creado La Tabla " + nombre + " En la Base de Datos " + Base;
-                            }
-                            else
-                            {
-                                return "La Llave foranea es de distinto tipo de dato";
-                            }
-
-                            
-                        }
-                        else
-                        {
-                            return "No Existe la Base "+baseR+" para hacer referencia";
-                        }
-
-                        
-                    }
-                    else
-                    {
-                        Tabla nuevo = new Tabla(nombre, tipos, fields);
-
-                        nuevo.atributos = atrib;
-
-                        nuevo.SetRuta(System.IO.Path.Combine(@"c:\DBMS", Base + "_" + nombre + ".usac"));
-
-                        maestro.bases.aux.tablas.Insertar(nuevo);
-
-                        if (lectura == 0)
-                        {
-                            commit();
-                        }
-
-                        return "Se Ha Creado La Tabla " + nombre + " En la Base de Datos " + Base;
-                    }
-
-                  
-                }
+            if (maestro.bases.aux.tablas.existe(nombre))
+            {
+                return "Ya Existe la Tabla " + nombre + " En la Base " + Base;
             }
             else
             {
-                return "Usted no tiene Permisos sobre la Base:" + Base;
+
+                string tipos = "";
+                string fields = "";
+                string atrib = "";
+
+                string[] campo = campos.Split(';');
+
+                for (int x = 0; x < campo.Length; x++)
+                {
+                    string[] dato = campo[x].Split(',');
+
+                    tipos += dato[0] + ",";
+                    fields += dato[1] + ",";
+
+                    if (dato.Length == 2)
+                    {
+                        atrib += "-,";
+                    }
+
+                    for (int y = 2; y < dato.Length; y++)
+                    {
+                        atrib += dato[y] + ";";
+                    }
+                    atrib = atrib.Trim(';');
+                    atrib += ",";
+                }
+
+                tipos = tipos.Trim(',');
+                fields = fields.Trim(',');
+                atrib = atrib.Trim(',');
+
+                if (atrib.Contains("Llave_Foranea"))
+                {
+                    string[] atributos = atrib.Split(',');
+
+                    int ba = 0;
+                    bool seguir = true;
+
+                    while (seguir)
+                    {
+                        if (atributos[ba].Contains("Llave_Foranea"))
+                        {
+                            seguir = false;
+                        }
+                        else
+                        {
+                            ba++;
+                        }
+                    }
+
+                    string[] subatrib = atributos[ba].Split(' ');
+
+                    string baseR = subatrib[subatrib.Length - 1];
+
+                    if (maestro.bases.aux.tablas.existe(baseR))
+                    {
+                        int pllave = getPLlave(maestro.bases.aux.tablas.aux);
+
+                        string tipoR = getTipoLlave(maestro.bases.aux.tablas.aux, pllave);
+
+                        if (tipos.Split(',')[ba].Equals(tipoR))
+                        {
+                            Tabla nuevo = new Tabla(nombre, tipos, fields);
+
+                            nuevo.atributos = atrib;
+
+                            nuevo.SetRuta(System.IO.Path.Combine(@"c:\DBMS", Base + "_" + nombre + ".usac"));
+
+                            maestro.bases.aux.tablas.Insertar(nuevo);
+                            if (lectura == 0)
+                            {
+                                commit();
+                            }
+
+                            return "Se Ha Creado La Tabla " + nombre + " En la Base de Datos " + Base;
+                        }
+                        else
+                        {
+                            return "La Llave foranea es de distinto tipo de dato";
+                        }
+
+
+                    }
+                    else
+                    {
+                        return "No Existe la Base " + baseR + " para hacer referencia";
+                    }
+
+
+                }
+                else
+                {
+                    Tabla nuevo = new Tabla(nombre, tipos, fields);
+
+                    nuevo.atributos = atrib;
+
+                    nuevo.SetRuta(System.IO.Path.Combine(@"c:\DBMS", Base + "_" + nombre + ".usac"));
+
+                    maestro.bases.aux.tablas.Insertar(nuevo);
+
+                    if (lectura == 0)
+                    {
+                        commit();
+                    }
+
+                    return "Se Ha Creado La Tabla " + nombre + " En la Base de Datos " + Base;
+                }
+
+
             }
+
+            //if (GetPermiso(usuario, Base)){
+
+                
+            //}
+            //else
+            //{
+            //    return "Usted no tiene Permisos sobre la Base:" + Base;
+            //}
 
             
 
@@ -908,47 +912,83 @@ namespace Proyecto1_Compi2.Elementos
         {
             maestro.bases.existe(Base);
 
-            if (GetPermiso(usuario, Base))
+            if (maestro.bases.aux.objetos.existe(nombre))
             {
-
-                if (maestro.bases.aux.objetos.existe(nombre))
-                {
-                    return "Ya Existe el Objeto " + nombre + " En la Base " + Base;
-                }
-                else
-                {
-
-                    string tipos = "";
-                    string fields = "";
-
-                    string[] campo = campos.Split(';');
-
-                    for (int x = 0; x < campo.Length; x++)
-                    {
-                        string[] dato = campo[x].Split(',');
-
-                        tipos += dato[1] + ",";
-                        fields += dato[0] + ",";
-                    }
-
-                    tipos = tipos.Trim(',');
-                    fields = fields.Trim(',');
-
-                    Objeto nuevo = new Objeto(nombre, tipos, fields);
-
-                    maestro.bases.aux.objetos.Insertar(nuevo);
-                    if (lectura == 0)
-                    {
-                        commit();
-                    }
-
-                    return "Se Ha Creado La Tabla " + nombre + " En la Base de Datos " + Base;
-                }
+                return "Ya Existe el Objeto " + nombre + " En la Base " + Base;
             }
             else
             {
-                return "Usted no tiene Permisos sobre la Base:" + Base;
+
+                string tipos = "";
+                string fields = "";
+
+                string[] campo = campos.Split(';');
+
+                for (int x = 0; x < campo.Length; x++)
+                {
+                    string[] dato = campo[x].Split(',');
+
+                    tipos += dato[1] + ",";
+                    fields += dato[0] + ",";
+                }
+
+                tipos = tipos.Trim(',');
+                fields = fields.Trim(',');
+
+                Objeto nuevo = new Objeto(nombre, tipos, fields);
+
+                maestro.bases.aux.objetos.Insertar(nuevo);
+                if (lectura == 0)
+                {
+                    commit();
+                }
+
+                return "Se Ha Creado La Tabla " + nombre + " En la Base de Datos " + Base;
             }
+
+            //if (GetPermiso(usuario, Base))
+            //{
+
+                
+            //}
+            //else
+            //{
+            //    return "Usted no tiene Permisos sobre la Base:" + Base;
+            //}
+
+        }
+
+        public string campos_Objeto(string nombre, string Base)
+        {
+            maestro.bases.existe(Base);
+
+            maestro.bases.aux.objetos.existe(nombre);
+
+            return maestro.bases.aux.objetos.aux.campos;
+
+        }
+
+        public string tipo_Objeto(string nombre, string Base,string campo)
+        {
+            maestro.bases.existe(Base);
+
+            maestro.bases.aux.objetos.existe(nombre);
+
+            string campos= maestro.bases.aux.objetos.aux.campos;
+            string[] camp = campos.Split(',');
+            int lugar=0;
+            string tipos = maestro.bases.aux.objetos.aux.tipos;
+            string[] tipo = tipos.Split(',');
+
+            for (int x = 0; x < camp.Length; x++)
+            {
+                if (camp[x].Equals(campo))
+                {
+                    lugar = x;
+                }
+            }
+
+            return tipo[lugar];
 
         }
 
@@ -1225,77 +1265,79 @@ namespace Proyecto1_Compi2.Elementos
 
             maestro.bases.existe(Base);
 
-            if (GetPermiso(usuario, Base))
+            if (maestro.bases.aux.objetos.existe(nombre))
+            {
+                return "Ya Existe el Objeto " + nombre + " En la Base " + Base;
+            }
+            else
             {
 
-                if (maestro.bases.aux.objetos.existe(nombre))
+                if (maestro.bases.aux.procedimientos.existe(nombre))
                 {
-                    return "Ya Existe el Objeto " + nombre + " En la Base " + Base;
+                    return "\r\nYa Existe el Procedimiento:" + nombre;
                 }
                 else
                 {
 
-                    if (maestro.bases.aux.procedimientos.existe(nombre))
+                    if (campos.Equals(""))
                     {
-                        return "\r\nYa Existe el Procedimiento:" + nombre;
+                        Procedimiento nuevo = new Procedimiento(nombre, instrucciones);
+
+                        maestro.bases.aux.procedimientos.Insertar(nuevo);
+
+                        if (lectura == 0)
+                        {
+                            commit();
+                        }
+                        return "\r\nSe ha Creado el Procedimiento:" + nombre.Trim('_');
+
                     }
                     else
                     {
 
-                        if (campos.Equals(""))
+                        string[] campo = campos.Split(';');
+
+                        string tipos = "";
+                        string parametros = "";
+
+                        for (int x = 0; x < campo.Length; x++)
                         {
-                            Procedimiento nuevo = new Procedimiento(nombre, instrucciones);
-
-                            maestro.bases.aux.procedimientos.Insertar(nuevo);
-
-                            if (lectura == 0)
-                            {
-                                commit();
-                            }
-                            return "\r\nSe ha Creado el Procedimiento:" + nombre.Trim('_');
+                            string[] val = campo[x].Split(',');
+                            tipos += val[0] + ",";
+                            parametros += val[1] + ",";
 
                         }
-                        else
+
+                        tipos = tipos.Trim(',');
+                        parametros = parametros.Trim(',');
+
+                        Procedimiento nuevo = new Procedimiento(nombre, instrucciones);
+
+                        nuevo.tipos = tipos;
+                        nuevo.campos = parametros;
+
+                        maestro.bases.aux.procedimientos.Insertar(nuevo);
+
+                        if (lectura == 0)
                         {
-
-                            string[] campo = campos.Split(';');
-
-                            string tipos = "";
-                            string parametros = "";
-
-                            for (int x = 0; x < campo.Length; x++)
-                            {
-                                string[] val = campo[x].Split(',');
-                                tipos += val[0] + ",";
-                                parametros += val[1] + ",";
-
-                            }
-
-                            tipos = tipos.Trim(',');
-                            parametros = parametros.Trim(',');
-
-                            Procedimiento nuevo = new Procedimiento(nombre, instrucciones);
-
-                            nuevo.tipos = tipos;
-                            nuevo.campos = parametros;
-
-                            maestro.bases.aux.procedimientos.Insertar(nuevo);
-
-                            if (lectura == 0)
-                            {
-                                commit();
-                            }
-                            return "\r\nSe ha Creado el Procedimiento:" + nombre.Trim('_');
+                            commit();
                         }
-
-
+                        return "\r\nSe ha Creado el Procedimiento:" + nombre.Trim('_');
                     }
+
+
                 }
             }
-            else
-            {
-                return "Usted no tiene Permisos sobre la Base:" + Base;
-            }
+
+            //if (GetPermiso(usuario, Base))
+            //{
+
+                
+            //}
+            //else
+            //{
+            //    return "Usted no tiene Permisos sobre la Base:" + Base;
+            //}
 
             
 
@@ -1306,82 +1348,84 @@ namespace Proyecto1_Compi2.Elementos
 
             maestro.bases.existe(Base);
 
-            if (GetPermiso(usuario, Base))
+            if (maestro.bases.aux.objetos.existe(nombre))
+            {
+                return "Ya Existe el Objeto " + nombre + " En la Base " + Base;
+            }
+            else
             {
 
-                if (maestro.bases.aux.objetos.existe(nombre))
+                if (maestro.bases.aux.procedimientos.existe(nombre))
                 {
-                    return "Ya Existe el Objeto " + nombre + " En la Base " + Base;
+                    return "\r\nYa Existe el Procedimiento:" + nombre;
                 }
                 else
                 {
 
-                    if (maestro.bases.aux.procedimientos.existe(nombre))
+                    if (campos.Equals(""))
                     {
-                        return "\r\nYa Existe el Procedimiento:" + nombre;
+                        Procedimiento nuevo = new Procedimiento(nombre, instrucciones);
+                        nuevo.funcion = true;
+                        nuevo.tipo = tipo;
+
+
+                        maestro.bases.aux.procedimientos.Insertar(nuevo);
+
+                        if (lectura == 0)
+                        {
+                            commit();
+                        }
+                        return "\r\nSe ha Creado el Procedimiento:" + nombre.Trim('_');
+
                     }
                     else
                     {
 
-                        if (campos.Equals(""))
+                        string[] campo = campos.Split(';');
+
+                        string tipos = "";
+                        string parametros = "";
+
+                        for (int x = 0; x < campo.Length; x++)
                         {
-                            Procedimiento nuevo = new Procedimiento(nombre, instrucciones);
-                            nuevo.funcion = true;
-                            nuevo.tipo = tipo;
-
-
-                            maestro.bases.aux.procedimientos.Insertar(nuevo);
-
-                            if (lectura == 0)
-                            {
-                                commit();
-                            }
-                            return "\r\nSe ha Creado el Procedimiento:" + nombre.Trim('_');
+                            string[] val = campo[x].Split(',');
+                            tipos += val[0] + ",";
+                            parametros += val[1] + ",";
 
                         }
-                        else
+
+                        tipos = tipos.Trim(',');
+                        parametros = parametros.Trim(',');
+
+                        Procedimiento nuevo = new Procedimiento(nombre, instrucciones);
+
+                        nuevo.tipos = tipos;
+                        nuevo.campos = parametros;
+
+                        nuevo.funcion = true;
+                        nuevo.tipo = tipo;
+
+                        maestro.bases.aux.procedimientos.Insertar(nuevo);
+
+                        if (lectura == 0)
                         {
-
-                            string[] campo = campos.Split(';');
-
-                            string tipos = "";
-                            string parametros = "";
-
-                            for (int x = 0; x < campo.Length; x++)
-                            {
-                                string[] val = campo[x].Split(',');
-                                tipos += val[0] + ",";
-                                parametros += val[1] + ",";
-
-                            }
-
-                            tipos = tipos.Trim(',');
-                            parametros = parametros.Trim(',');
-
-                            Procedimiento nuevo = new Procedimiento(nombre, instrucciones);
-
-                            nuevo.tipos = tipos;
-                            nuevo.campos = parametros;
-
-                            nuevo.funcion = true;
-                            nuevo.tipo = tipo;
-
-                            maestro.bases.aux.procedimientos.Insertar(nuevo);
-
-                            if (lectura == 0)
-                            {
-                                commit();
-                            }
-                            return "\r\nSe ha Creado el Procedimiento:" + nombre.Trim('_');
+                            commit();
                         }
-
+                        return "\r\nSe ha Creado el Procedimiento:" + nombre.Trim('_');
                     }
+
                 }
             }
-            else
-            {
-                return "Usted no tiene Permisos sobre la Base:" + Base;
-            }
+
+            //if (GetPermiso(usuario, Base))
+            //{
+
+                
+            //}
+            //else
+            //{
+            //    return "Usted no tiene Permisos sobre la Base:" + Base;
+            //}
 
 
 
@@ -3918,7 +3962,23 @@ namespace Proyecto1_Compi2.Elementos
         {
             maestro.bases.existe(Base);
 
-            maestro.bases.aux.historial += codigo;
+            if(codigo.Contains("CREAR BAS"))
+            {
+                if(maestro.bases.aux.historial.Contains("CREAR BAS"))
+                {
+
+                }
+                else
+                {
+                    maestro.bases.aux.historial += codigo;
+                }
+            }
+            else
+            {
+                maestro.bases.aux.historial += codigo;
+            }
+
+            
 
             if (lectura == 0)
             {
@@ -4683,7 +4743,7 @@ namespace Proyecto1_Compi2.Elementos
                     {
                         string nombrep = ActuarXML(nodo.ChildNodes[0]);
                         string tipo = ActuarXML(nodo.ChildNodes[1]);
-                        string codigo = ActuarXML(nodo.ChildNodes[3]).Trim('@');
+                        string codigo = ActuarXML(nodo.ChildNodes[3]).Replace("@@", "");
 
                         string parametros = ActuarXML(nodo.ChildNodes[2]);
                         parametros = parametros.Replace(",", ",@");
@@ -4698,8 +4758,8 @@ namespace Proyecto1_Compi2.Elementos
                             string parametros = ActuarXML(nodo.ChildNodes[1]);
 
                             parametros = parametros.Replace(",", ",@");
-                            
-                            string codigo = ActuarXML(nodo.ChildNodes[2]).Trim('@');
+
+                            string codigo = ActuarXML(nodo.ChildNodes[2]).Replace("@@", "");
 
                             Crear_Procedimiento(nombrep, BaseL, parametros, codigo);
 
@@ -4708,7 +4768,7 @@ namespace Proyecto1_Compi2.Elementos
                         {
                             string nombrep = ActuarXML(nodo.ChildNodes[0]);
                             string tipo = ActuarXML(nodo.ChildNodes[1]);
-                            string codigo = ActuarXML(nodo.ChildNodes[2]).Trim('@');
+                            string codigo = ActuarXML(nodo.ChildNodes[2]).Replace("@@", "");
 
                             Crear_funcion(nombrep, BaseL, "", codigo, tipo);
                         }
@@ -4720,7 +4780,7 @@ namespace Proyecto1_Compi2.Elementos
                     {
                         string nombrep = ActuarXML(nodo.ChildNodes[0]);
 
-                        string codigo = ActuarXML(nodo.ChildNodes[1]).Trim('@');
+                        string codigo = ActuarXML(nodo.ChildNodes[1]).Replace("@@", "");
 
                         Crear_Procedimiento(nombrep+"_", BaseL, "", codigo);
                     }
